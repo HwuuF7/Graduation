@@ -1,0 +1,29 @@
+$textColor: #707070;
+
+.mint-field {
+    // border-top: 1px solid $textColor;
+    // border-bottom: 1px solid $textColor;
+    background-color: $textColor;
+
+    ::v-deep input,
+    ::v-deep textarea {
+        color: #fff;
+        background-color: $textColor;
+        resize: none;
+    }
+
+    // ::v-deep .mint-field-clear>i {
+    //     // color: #fff;
+    //     background-color: #fff;
+    // }
+}
+
+
+// 修改性别样式
+.mint-radiolist {
+    ::v-deep .mint-cell {
+        background-color: $textColor;
+        color: #fff;
+    }
+
+}

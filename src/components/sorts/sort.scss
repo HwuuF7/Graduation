@@ -1,0 +1,23 @@
+.sort {
+    .mint-navbar {
+        overflow-x: scroll;
+        // IE
+        scrollbar-width: none;
+        /* Firefox */
+        -ms-overflow-style: none;
+        color: #535353;
+
+        // 隐藏滚动条
+        &::-webkit-scrollbar {
+            display: none;
+        }
+
+        .mint-tab-item {
+
+            ::v-deep .mint-tab-item-label {
+                font-size: 1rem;
+                font-weight: 700;
+            }
+        }
+    }
+}

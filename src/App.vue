@@ -1,32 +1,55 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+    <div id="app">
+        <router-view />
     </div>
-    <router-view/>
-  </div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+    export default {
+        data() {
+            return {
 
-#nav {
-  padding: 30px;
+            }
+        },
+        //生命周期 - 创建完成（访问当前this实例）
+        created() {
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
+        },
+        //生命周期 - 挂载完成（访问DOM元素）
+        mounted() {
 
-    &.router-link-exact-active {
-      color: #42b983;
+        }
     }
-  }
-}
+</script>
+
+<style scoped lang='scss'>
+    /* @import url(); 引入css类 */
+    // 375px => 100vw 
+    // 1vw = 3.75px
+    @import url('./assets/css/global.css');
+
+    #app {
+        width: 100vw;
+        height: 100vh;
+        overflow: auto;
+        // position: relative;
+    }
+
+    /*  @media screen and (max-width: 1024px) {
+        #app {
+            color: green;
+            // font-size: 2rem;
+            font-size: 5vw;
+            
+    
+        }
+    }
+
+    @media screen and (min-width: 1024px) {
+        #app {
+            color: red;
+            font-size: 3rem;
+        }
+
+    } */
 </style>

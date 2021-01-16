@@ -1,0 +1,14 @@
+.mine {
+    width: 100%;
+    height: calc(100vh - 3.44rem);
+    background: #f8f8f8;
+    overflow: hidden;
+
+    .mine-title {
+        font-size: .9rem;
+        padding: 0 .8rem;
+        color: #999;
+        margin-top: .6rem;
+        margin-bottom: .2rem;
+    }
+}

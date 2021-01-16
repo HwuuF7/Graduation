@@ -1,0 +1,220 @@
+.page-all {
+    background: #fff;
+    // position: relative;
+    overflow: auto;
+    height: 100%;
+    padding-bottom: 3.44rem;
+
+    .page-scroll {
+
+        .mint-tab-container {
+
+            .mint-tab-container-wrap {
+                .mint-tab-container-item.uestc-info {
+
+                    // 成电INFO页的头部导航栏
+                    .mint-navbar.info-navbar {
+                        z-index: 3;
+
+                        .mint-tab-item {
+                            position: relative;
+
+                            &.is-selected {
+                                color: #748aa0;
+                                transition: all .3s ease;
+                                -webkit-transition: all .3s ease;
+                                border: none;
+                                margin: 0;
+                            }
+
+                            &.is-selected::after {
+
+                                border: 1px solid red;
+                                content: '';
+                                position: absolute;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate(-50%, -30%);
+                                background-color: #748aa0;
+                                display: block;
+                                width: 1.2rem;
+                                height: .8rem;
+                                border-radius: .3rem;
+                                opacity: .2;
+                            }
+
+                            .mint-tab-item-label {
+                                font-size: 1rem;
+                                font-weight: 700;
+                            }
+
+                        }
+
+
+                    }
+
+                    // 成电INFO页导航栏下面的主体
+                    .info-main {
+                        position: relative;
+                        top: 3.125rem;
+                        overflow: hidden;
+                        margin-bottom: 3.125rem;
+
+                        // 轮播图
+                        .homepage-swipper {
+                            // height: 10vh;
+                            height: calc(180 * (100vw - .4rem)/ 640);
+                            padding: .4rem 1.2rem 0;
+
+                            .mint-swipe {
+                                .mint-swipe-items-wrap {
+                                    .mint-swipe-item {
+                                        a>img {
+                                            width: 100%;
+                                            height: 100%;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // 小菜单
+                        .homepage-menu {
+                            padding: .6rem .3rem;
+                            display: flex;
+                            flex-flow: row wrap;
+
+                            .homepage-menuItem {
+                                width: 20%;
+                                margin-bottom: .9rem;
+                                display: flex;
+                                flex-direction: column;
+                                justify-content: center;
+                                align-items: center;
+                                border: 1px solid red;
+
+                                p {
+                                    color: #666;
+                                    font-size: .8rem;
+                                    height: 1.2rem;
+                                    line-height: 1.2rem;
+                                    overflow: hidden;
+                                }
+                            }
+                        }
+
+                        // 详情信息
+                        .homepage-moreinfo {}
+
+                        div.loadingMore {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            padding: 1rem 0 2rem;
+
+                            >span {
+                                position: relative;
+                                left: -8%;
+
+                                &::after {
+                                    display: inline-block;
+                                    height: 1rem;
+                                    line-height: 1rem;
+                                    width: 3.7rem;
+                                    position: absolute;
+                                    content: '加载中';
+                                    bottom: 10%;
+                                    left: 100%;
+                                    text-align: left;
+                                    margin-left: .3rem;
+                                    font-size: .9rem;
+                                    color: #888;
+                                }
+                            }
+
+                            >p {
+                                width: 7rem;
+                                height: 2.2rem;
+                                line-height: 1rem;
+                                font-size: .9rem;
+                                color: #888;
+                                text-align: center;
+                                padding: .6rem 0;
+                            }
+                        }
+
+                        // 发消息按钮
+                        .sendMessageBtn {
+                            position: fixed;
+                            left: 50%;
+                            bottom: 14%;
+                            margin-left: -12%;
+                            z-index: 3;
+                            animation: slideInUp .3s ease-in;
+
+                            .mint-button {
+                                width: 5.7rem;
+                                color: #fff;
+                                background-color: #738aa0;
+                                border-radius: 1.2rem;
+                                box-shadow: .1rem .1rem .7rem 0 rgba(116, 138, 160, .5);
+
+                            }
+                        }
+                    }
+
+
+
+                }
+            }
+        }
+    }
+
+
+    .sendMessagePop {
+        width: 80vw;
+        border-radius: .2rem;
+
+        .messageTitle {
+            padding: .9rem;
+            text-align: center;
+            position: relative;
+            font-weight: 700;
+
+            &::after {
+                content: '';
+                position: absolute;
+                left: 50%;
+                bottom: .6rem;
+                width: .84em;
+                height: .3rem;
+                margin-left: -.4rem;
+                background-color: #ddd;
+                border-radius: .15rem;
+            }
+        }
+
+        .messageMain {
+            margin-bottom: .6rem;
+            display: flex;
+            flex-flow: row wrap;
+
+            .sortItem {
+                padding: .6rem .9rem;
+                flex: 1 0 50%;
+                text-align: center;
+            }
+        }
+    }
+}
+
+@keyframes slideInUp {
+    0% {
+        transform: translate3d(0, 100%, 0);
+        visibility: visible;
+    }
+
+    100% {
+        transform: translate3d(0, 0, 0);
+    }
+}

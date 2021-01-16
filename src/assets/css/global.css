@@ -1,0 +1,48 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    list-style: none;
+}
+
+/* :root {
+    font-size: 16px;
+} */
+
+html,
+body {
+    width: 100vw;
+    height: 100vh;
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+}
+
+.line-10 {
+    height: .6rem;
+    background-color: #f8f8f8;
+}
+
+
+/* 对话框样式 */
+.mint-toast.infoMore-toastClass {
+    z-index: 9999;
+}
+
+
+/* 顶部导航栏bug修复 */
+.mint-navbar .mint-tab-item.is-selected {
+    margin-bottom: 0 !important;
+}
+
+.sort .mint-navbar .mint-tab-item {
+    flex-basis: 25%;
+    flex-shrink: 0;
+}
+
+/* 表单项的上下两条线取消 */
+.mint-cell .mint-cell-wrapper {
+    background-image: none;
+}

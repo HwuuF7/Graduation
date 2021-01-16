@@ -1,0 +1,179 @@
+.infoMore {
+    .detailInfo {
+        border: none;
+    }
+
+    // 联系方式
+    .info-contact {
+        border: 1px solid red;
+        padding: .9rem .9rem 0 .9rem;
+
+        >p {
+            font-size: .9rem;
+            padding-bottom: .6rem;
+            color: #999;
+            position: relative;
+
+            &::after {
+                content: '';
+                position: absolute;
+                left: 0;
+                bottom: 10%;
+                width: 100%;
+                height: 1px;
+                background-color: #fbf6f0;
+            }
+        }
+
+        >div {
+            position: relative;
+            padding: .9rem 0;
+
+            >p {
+                line-height: 1.6;
+            }
+
+            p.contact-impart {
+                font-size: .8rem;
+                color: #999;
+                margin-top: .4rem;
+                letter-spacing: .04rem;
+            }
+
+            p.icon {
+                position: absolute;
+                top: .9rem;
+                color: #c7956d;
+                width: 2.5rem;
+                height: 2.5rem;
+                padding: .48rem;
+                background-color: #f8f8f8;
+                text-align: center;
+                border-radius: 50%;
+
+                &.call {
+                    right: 3rem;
+                }
+
+                &.fav {
+                    right: 0;
+                }
+            }
+        }
+
+    }
+
+    // 二维码
+    .info-qrCode {
+        padding: .6rem;
+        display: flex;
+        align-items: center;
+
+        .info-qrCode-message {
+            margin-left: .3rem;
+            flex: 1;
+
+            >p {
+                line-height: 1.6;
+
+                &:last-child {
+                    color: #999;
+                    font-size: .8rem;
+                }
+            }
+        }
+
+        .info-qrCode-img {
+            width: 4.3rem;
+            height: 4.3rem;
+
+            >img {
+                width: 100%;
+                height: 100%;
+            }
+        }
+    }
+
+    // 评论
+    .info-comments {
+        .comment-header {
+            display: flex;
+            margin: 0 .9rem;
+            padding: .7rem 0;
+            color: #999;
+            line-height: 1.4rem;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #fbf6f0;
+        }
+    }
+
+
+    // 回复输入框
+    .mint-popup {
+        width: 80%;
+        max-width: calc(100vw - 5.4rem);
+        border-radius: .2rem;
+
+        .popHeader {
+            height: 3.4rem;
+            padding-left: .6rem;
+
+            .mint-button {
+                width: 2.4rem;
+                padding: 0;
+                height: 100%;
+
+
+            }
+
+
+        }
+
+        .popMid {
+            padding: .9rem;
+            min-height: 4.4rem;
+            word-break: break-all;
+            line-height: 1.3;
+            color: #999;
+            border-top: 1px solid #d5d5d6;
+
+
+            .mint-cell:last-child,
+            ::v-deep .mint-cell-wrapper {
+                background-image: none;
+
+            }
+
+            ::v-deep textarea {
+                font-size: 1.2rem;
+            }
+        }
+
+        .popFooter {
+            color: pink;
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #d5d5d6;
+
+            .mint-button {
+                flex: 1;
+
+                border: 0 {
+                    radius: 0;
+
+                }
+
+                &:last-child {
+                    border-left: 1px solid #d5d5d6;
+                }
+
+                &::after {
+                    background-color: #e8e8e8;
+                }
+            }
+        }
+    }
+
+
+}
