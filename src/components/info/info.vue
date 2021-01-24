@@ -9,54 +9,42 @@
 
                 <mt-tab-container-item id="UESTC" class="uestc-info">
 
-                    <!-- 导航栏区域 -->
-                    <mt-navbar v-model="infoActive" class="info-navbar" fixed>
-                        <mt-tab-item id="homepage">首页</mt-tab-item>
-                        <mt-tab-item id="search">搜索</mt-tab-item>
-                        <mt-tab-item id="other">红包</mt-tab-item>
-                    </mt-navbar>
-
-                    <!-- 中间区域 -->
-                    <div class="info-main">
-                        <!-- 成电INFO页的另外tab跳转页 -->
-                        <mt-tab-container v-model="infoActive">
-
-                            <!-- 成电INFO页 -->
-                            <mt-tab-container-item id="homepage">
-                                <!-- 轮播图 -->
-                                <div class='homepage-swipper'>
-                                    <mt-swipe :auto="4000">
-                                        <mt-swipe-item>
-                                            <a href="javascript:;">
-                                                <img src="../../assets/imgs/tuodan.png" alt="你一定会脱单的">
-                                            </a>
-                                        </mt-swipe-item>
-                                        <mt-swipe-item>
-                                            <a href="javascript:;">
-                                                <img src="../../assets/imgs/tuodan.png" alt="你一定会脱单的">
-                                            </a>
-                                        </mt-swipe-item>
-                                    </mt-swipe>
-                                </div>
+                    <mt-search v-model="searchVal" cancel-text="取消" placeholder="请输入搜索关键字"
+                        @keyup.enter.native="searchInfo">
+                    </mt-search>
+                    <!-- 轮播图 -->
+                    <div class='homepage-swipper'>
+                        <mt-swipe :auto="4000">
+                            <mt-swipe-item>
+                                <a href="javascript:;">
+                                    <img src="../../assets/imgs/tuodan.png" alt="你一定会脱单的">
+                                </a>
+                            </mt-swipe-item>
+                            <mt-swipe-item>
+                                <a href="javascript:;">
+                                    <img src="../../assets/imgs/tuodan.png" alt="你一定会脱单的">
+                                </a>
+                            </mt-swipe-item>
+                        </mt-swipe>
+                    </div>
 
 
-                                <!-- 小菜单区域 -->
-                                <div class="homepage-menu" @click.stop.capture="sortPush">
-                                    <div class="homepage-menuItem" v-for="(menu,menuIndex) in homepageMenu"
-                                        :key='menuIndex' :data-sort='menu.icon'>
-                                        <a href="javascript:;">图标</a>
-                                        <p>{{menu.content}}</p>
-                                    </div>
-                                </div>
+                    <!-- 小菜单区域 -->
+                    <div class="homepage-menu" @click.stop.capture="sortPush">
+                        <div class="homepage-menuItem" v-for="(menu,menuIndex) in homepageMenu" :key='menuIndex'
+                            :data-sort='menu.icon'>
+                            <a href="javascript:;">图标</a>
+                            <p>{{menu.content}}</p>
+                        </div>
+                    </div>
 
-                                <!-- 间隔线 -->
-                                <div class="line-10"></div>
+                    <!-- 间隔线 -->
+                    <div class="line-10"></div>
 
-                                <!-- 详情信息 -->
-                                <div class="homepage-moreinfo" v-infinite-scroll="loadTest"
-                                    infinite-scroll-disabled="loading" infinite-scroll-distance="10"
-                                    @click.stop.capture="parentPush">
-                                    <!-- <detail-info :model='infoDetail[0]'>
+                    <!-- 详情信息 -->
+                    <div class="homepage-moreinfo" v-infinite-scroll="loadTest" infinite-scroll-disabled="loading"
+                        infinite-scroll-distance="10" @click.stop.capture="parentPush">
+                        <!-- <detail-info :model='infoDetail[0]'>
                                     </detail-info>
                                     <detail-info :model='testModel' />
                                     <detail-info :model='testModel' />
@@ -65,47 +53,31 @@
                                     <detail-info :model='testModel' />
                                     <detail-info :model='testModel' />
                                     <detail-info :model='testModel' /> -->
-                                    <detail-info :model='testModel' :data-info_id='testModel.infoId' />
-                                    <detail-info :model='testModel2' :data-info_id='testModel2.infoId' />
-                                    <p class="testP" v-for="i in testP" :key="i">{{i}}*i</p>
+                        <detail-info :model='testModel' :data-info_id='testModel.infoId' />
+                        <detail-info :model='testModel2' :data-info_id='testModel2.infoId' />
+                        <p class="testP" v-for="i in testP" :key="i">{{i}}*i</p>
 
 
-                                </div>
-                                <!-- 加载动画 -->
-                                <div class="loadingMore">
-                                    <mt-spinner v-show="!loading" type="snake" color='#ffabe1' :size='32'>
-                                    </mt-spinner>
-                                    <p v-show="loading">- 没有更多了 -</p>
-                                </div>
-                            </mt-tab-container-item>
+                    </div>
 
-                            <!-- 成电Search页 -->
-                            <mt-tab-container-item id="search">
-                                搜索
-                            </mt-tab-container-item>
 
-                            <!-- 成电other页 -->
-                            <mt-tab-container-item id="other">
-                                <other />
-                            </mt-tab-container-item>
-                        </mt-tab-container>
+                    <!-- 加载动画 -->
+                    <div class="loadingMore">
+                        <mt-spinner v-show="!loading" type="snake" color='#ffabe1' :size='32'>
+                        </mt-spinner>
+                        <p v-show="loading">- 没有更多了 -</p>
+                    </div>
 
-                        <!-- 无处不在的底部发送消息按钮 -->
-                        <div class="sendMessageBtn" v-show="showSendBtn">
-                            <mt-button plain type='primary' size='small' @click.native="sendMessage">发消息</mt-button>
-                        </div>
+                    <!-- 无处不在的底部发送消息按钮 -->
+                    <div class="sendMessageBtn" v-show="showSendBtn">
+                        <mt-button plain type='primary' size='small' @click.native="sendMessage">发消息</mt-button>
                     </div>
                 </mt-tab-container-item>
 
 
-                <mt-tab-container-item id="WALL">
-                    <div>表白墙</div>
-                </mt-tab-container-item>
 
-
-
-                <mt-tab-container-item id="FORUM">
-                    <div>论坛</div>
+                <mt-tab-container-item id="CHAT">
+                    <div>聊天</div>
                 </mt-tab-container-item>
 
 
@@ -123,13 +95,9 @@
                 <img slot="icon" src="@/assets/imgs/test.png">
                 成电
             </mt-tab-item>
-            <mt-tab-item id="WALL">
+            <mt-tab-item id="CHAT">
                 <img slot="icon" src="@/assets/imgs/test.png">
-                表白墙
-            </mt-tab-item>
-            <mt-tab-item id="FORUM">
-                <img slot="icon" src="@/assets/imgs/test.png">
-                论坛
+                CHAT
             </mt-tab-item>
             <mt-tab-item id="MINE">
                 <img slot="icon" src="@/assets/imgs/test.png">
@@ -164,8 +132,8 @@
                 testP: 5,
                 loading: false,
                 showSendBtn: true,
-                infoActive: 'homepage',
                 selected: 'UESTC',
+                searchVal: '',
                 homepageMenu: [{
                     icon: 'news',
                     content: '新闻时事'
@@ -307,14 +275,14 @@
                 sendMessageVisible: false,
                 messageSort: {
                     'jobs': '招聘求职',
-                    'cars': '校内拼车',
-                    'houses': '校园租房',
+                    // 'cars': '校内拼车',
+                    // 'houses': '校园租房',
                     'unused': '闲置二手',
                     'counts': '优惠信息',
                     'finds': '寻人找物',
                     'helps': '打听求助',
-                    'chats': '闲来有聊',
-                    'dinners': '约饭走起'
+                    // 'chats': '闲来有聊',
+                    // 'dinners': '约饭走起'
                 }
             }
         },
@@ -322,6 +290,9 @@
 
         },
         methods: {
+            searchInfo() {
+                console.log('search', this.searchVal);
+            },
             // 这里留着实现节流！！！
             loadTest() {
                 this.showSendBtn = false;
@@ -372,9 +343,6 @@
         },
         watch: {
             selected(newVal) {
-                console.log(newVal);
-            },
-            infoActive(newVal) {
                 console.log(newVal);
             }
         }

@@ -22,8 +22,8 @@
                 </label>
             </div>
             <div class="login-region">
-                <mt-button ref='estc' type='primary' @click.prevent="getRegion('estc')">estc</mt-button>
-                <mt-button ref='zs' type='primary' @click.prevent="getRegion('zs')" class="region-selected">zs
+                <mt-button ref='estc' plain type='primary' @click.prevent="getRegion('estc')">estc</mt-button>
+                <mt-button ref='zs' plain type='primary' @click.prevent="getRegion('zs')" class="region-selected">zs
                 </mt-button>
             </div>
             <mt-button plain class="login-btn" @click.native="login">登录</mt-button>

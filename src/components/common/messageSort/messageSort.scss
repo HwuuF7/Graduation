@@ -2,7 +2,9 @@
     height: 100%;
     position: relative;
 
-    .mint-field {
+    .mint-field,
+    .mint-cell,
+    .upload {
 
         // 加底线
         &::after {
@@ -20,12 +22,123 @@
         ::v-deep textarea {
             resize: none;
         }
+
+        ::v-deep .mint-checklist {
+            border-left: 1px solid #ddd;
+            color: #777;
+
+            .mint-checklist-title {
+                margin: 0;
+            }
+
+            .mint-cell {
+
+                .mint-cell-wrapper {
+                    padding: 0;
+                }
+            }
+        }
     }
 
-    .mint-button {
-        position: absolute;
-        bottom: 2%;
-        left: 50%;
-        transform: translateX(-50%);
+    // 标签样式
+    .mint-cell {
+
+
+        ::v-deep .mint-cell-wrapper {
+            padding-top: .8rem;
+            padding-bottom: .8rem;
+
+            .mint-cell-title {
+                width: 105px;
+                flex: none;
+            }
+
+            .mint-cell-value {
+                flex: 1;
+                display: flex;
+                flex-flow: row wrap;
+                align-items: center;
+
+                >span {
+                    margin-bottom: .2rem;
+                    margin-left: .3rem;
+                }
+            }
+        }
+
+        .message-tag {
+            background-color: #fff;
+            display: inline-block;
+            height: 2rem;
+            padding: 0 .6rem;
+            line-height: 1.9rem;
+            font-size: .8rem;
+            color: #909399;
+            border: 1px solid #d3d4d6;
+            border-radius: .25rem;
+            box-sizing: border-box;
+            white-space: nowrap;
+        }
+
+        // 标签选中之后的样式
+        .message-tag-selected {
+            background-color: #409eff;
+            color: #fff;
+            transition: all ease .4s;
+        }
+    }
+
+    .surePost {
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+        padding: .5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 3;
+        background-color: #fff;
+
+        .mint-button {
+            width: 85%;
+            border-radius: 1.7rem;
+            box-shadow: 0 0 1rem 0 rgba(33, 150, 243, .5);
+        }
+    }
+
+    .mint-actionsheet.innerTagsSheet {
+        ::v-deep .mint-actionsheet-list {
+            display: flex;
+            flex-wrap: wrap;
+            background-color: #fff;
+
+            .mint-actionsheet-listitem {
+                flex-basis: 50%;
+
+                &:nth-of-type(2n) {
+                    border-left: 1px solid #e0e0e0;
+                }
+
+                &:nth-of-type(even):nth-last-child(1),
+                &:nth-of-type(odd):nth-last-child(2),
+                &:nth-of-type(odd):last-of-type {
+                    border-bottom: none;
+                }
+            }
+
+        }
+    }
+
+    .shared-sort {
+        padding-bottom: 3.5rem;
+
+        .upload {
+            padding: .8rem 10px;
+            position: relative;
+
+            .upload-title {
+                padding-bottom: .6rem;
+            }
+        }
     }
 }

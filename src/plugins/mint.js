@@ -18,7 +18,10 @@ import {
     Radio,
     MessageBox,
     Actionsheet,
-    Popup
+    Popup,
+    Switch,
+    Checklist,
+    Search
 } from 'mint-ui'
 
 Vue.component(Button.name, Button);
@@ -37,7 +40,9 @@ Vue.component(Field.name, Field);
 Vue.component(Radio.name, Radio);
 Vue.component(Actionsheet.name, Actionsheet);
 Vue.component(Popup.name, Popup);
-
+Vue.component(Switch.name, Switch);
+Vue.component(Checklist.name, Checklist);
+Vue.component(Search.name, Search);
 // Vue.component(Toast.name, Toast);
 // Vue.use(Button)
 Vue.prototype.$toast = Toast;

@@ -3,7 +3,6 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-
 import './plugins/mint.js'
 import {
     timeFormat
@@ -13,7 +12,6 @@ import diyDirectives from './utils/throttle.js'
 import utils from './utils/index.js'
 Vue.use(utils)
 Vue.use(diyDirectives)
-
 
 
 import graLoad from './components/loading/loading.vue'

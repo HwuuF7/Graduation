@@ -6,6 +6,9 @@ const hello = function () {
     test()
 }
 
+import axios from 'axios'
+
+
 // 获取事件冒泡的路径 兼容性
 const eventPath = function (evt) {
     const path = (evt.composedPath && evt.composedPath()) || evt.path,
@@ -50,7 +53,8 @@ const parentPush = function (el, findClassName) {
 const globalFun = {
     $test: test,
     $hello: hello,
-    $parentPush: parentPush
+    $parentPush: parentPush,
+    $http: axios,
 }
 
 export default {
