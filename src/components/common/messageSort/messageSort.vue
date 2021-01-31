@@ -4,7 +4,7 @@
 
     <!-- 发消息表单 -->
     <div class='messageSort'>
-        <mt-field label="意图" disableClear @focus.native.capture="selectPurpose" v-model="messageForm.purpose">
+        <mt-field label="意图" disableClear @focus.native.capture="selectPurpose" v-model="messageForm.catogory">
         </mt-field>
         <mt-field label="行业" disableClear @focus.native.capture="selectProfession" v-model="messageForm.innerTag"
             v-show='showInnerTags'>
@@ -30,32 +30,31 @@
 
         <!-- 闲置二手模块 -->
         <div class="unused-sort" v-if="showSort('unused')">
-            <mt-field label="价格" placeholder="价格" v-model="messageForm.price">
-                <mt-checklist v-model="messageForm.discuss" :options="['面议']"></mt-checklist>
+            <mt-field label="价格" placeholder="价格" v-model="messageForm.price" :disabled='discuss'>
+                <div class='unused-discuss'>
+                    <input type="checkbox" name="discuss" id="discussRadio" hidden v-model="discuss">
+                    <label for="discussRadio">
+                        <div class="check-icon"></div>
+                        <span>面议</span>
+                    </label>
+                </div>
             </mt-field>
         </div>
 
         <!-- 共有的模块 -->
         <div class="shared-sort">
-            <mt-field label="联系人" v-model="messageForm.linkman" placeholder='你的姓名'></mt-field>
-            <mt-field label="联系电话" v-model="messageForm.phone" placeholder='手机号或者微信号'></mt-field>
+            <!-- <mt-field label="联系人" v-model="messageForm.linkman" placeholder='你的姓名'></mt-field> -->
+            <!-- <mt-field label="联系电话" v-model="messageForm.phone" placeholder='手机号或者微信号'></mt-field> -->
             <mt-cell title="标签" v-show="showTags">
                 <span class="message-tag" @click.stop="selectTags" v-for="(tag,tagIndex) in specificTags"
                     :key="tagIndex" :data-tag='tag'>{{tag}}</span>
             </mt-cell>
-            <!-- 这里要进行额外实现 ！！！！！！！-->
-            <!-- <mt-field label='图片上传' v-model='messageForm.pictures'>
-                <addPictures />
-            </mt-field> -->
             <div class="upload">
                 <p class="upload-title">图片上传</p>
                 <addPictures ref='addPictures' :maxSelect='6' />
             </div>
-
-
-            <mt-field type='textarea' rows='5' v-model.trim='messageForm.description' :placeholder='specificDesc'>
+            <mt-field type='textarea' rows='5' v-model.trim='messageForm.content' :placeholder='specificDesc'>
             </mt-field>
-
         </div>
 
         <!-- 显示意图选择 -->
@@ -68,6 +67,12 @@
 </template>
 
 <script>
+    /*  
+        // 联系人
+        linkman: '',
+        // 联系电话
+        phone: '', 
+    */
     import addPictures from '@/components/common/addPictures/addPictures.vue';
     export default {
         components: {
@@ -77,13 +82,19 @@
             return {
                 // 路由跳转获取的参数
                 getSort: '',
+                // 闲置二手交易模块时 价格选择了面议
+                discuss: false,
                 messageForm: {
-                    purpose: '请选择',
-                    linkman: '',
-                    phone: '',
+                    // 用户标识 先写死
+                    openId: 'oAXSp6XInXomKM783mGi-Y2JPiKY',
+                    // 大分类 -->catogory ['招聘','求职']
+                    catogory: '请选择',
+                    // 标签 
                     tags: [],
+                    // 图片
                     pictures: null,
-                    description: '',
+                    // 相关描述
+                    content: '',
                 },
                 // 意图选择显示
                 purposeSheetVisible: false,
@@ -125,10 +136,7 @@
             // 根据模块拿到大分类数据
             this.purposeActions = this.prePurposeActionsMap.get(this.getSort)
         },
-        //生命周期 - 挂载完成（访问DOM元素）
-        mounted() {
 
-        },
         methods: {
             // 初始化静态数据
             initStaticInfo() {
@@ -256,7 +264,7 @@
                 if (bORs === 'B') {
                     // 大分类
                     return () => {
-                        this.messageForm.purpose = purTag
+                        this.messageForm.catogory = purTag
                         this.surePurpose()
                     }
                 } else {
@@ -284,7 +292,7 @@
             surePurpose() {
 
                 // 获取到转换后的EnglishVal 招聘->recruit
-                let tagKey = this.preConvertMap.get(this.messageForm.purpose)
+                let tagKey = this.preConvertMap.get(this.messageForm.catogory)
 
                 // 获取小分类
                 if (this.preInnerTagsActionsMap.has(tagKey)) {
@@ -299,13 +307,68 @@
 
             },
             // 确认发布
-            sendMessage() {
-                if (this.messageForm.discuss) {
-                    this.messageForm.discuss = this.messageForm.discuss.length > 0;
-                }
-                this.messageForm.pictures = this.$refs.addPictures.sendPictures()
-                console.log('发布2', this.messageForm);
+            async sendMessage() {
+                /*  if (this.discuss) {
+                     this.messageForm.price = '面议'
+                 }
+                 const picForm = this.$refs.addPictures.sendPictures()
+                 console.log('发布2', this.messageForm);
+                 let config = {
+                     headers: {
+                         'Content-Type': 'multipart/form-data'
+                     }
+                 }
+                 // 没有图片 直接发
+                 if(!picForm){
+                     const {data:res}  =  await this.$http.post('/homepage/view/addInfo', this.messageForm, config)
+                 } */
 
+                let config = {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
+                let test = {
+                    openId: "oAXSp6XInXomKM783mGi-Y2JPiKY",
+                    type: '二手闲置',
+                    catogory: '闲置出售',
+                    content: '小哥哥快来耍~~~',
+                    innerTag: '课本书籍',
+                    tags: ['二本书籍'],
+                    pictures: ['http://119.23.222.17/campus_community/img/1612015459325.jpg'],
+                }
+
+                const {
+                    data: res
+                } = await this.$http.post('/homepage/view/addInfo', test, config).catch(err => {
+                    console.log(err);
+                })
+                console.log(res, '====');
+
+                /* const {
+                    data: res
+                } = await this.$http.post('/homepage/view/uploadImg', picForm, config)
+                    .then(async (res) => {
+                        const {
+                            data: pictures
+                        } = res
+                        this.messageForm.pictures = pictures
+                        console.log('走这里了');
+                        return await this.$http.post('/homepage/view/addInfo', this.messageForm, config)
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        return this.$toast({
+                            message: '发送信息失败',
+                            iconClass: 'iconfont icon-tixing',
+                            className: 'toastIcon'
+                        })
+                    }) */
+                console.log(res)
+                // const {
+                //     data: res
+                // } = await this.$http.post('/homepage/view/addInfo', this.messageForm)
+                // console.log(res);
                 // 发布完后跳转首页
                 // this.$router.push('/info')
             },
@@ -328,17 +391,18 @@
             changeMessageForm(moduleSort) {
                 let moduleArr = [
                     ['jobs', {
+                        type: '招聘求职',
                         innerTag: '请选择小分类22'
                     }],
                     ['unused', {
-                        price: '',
-                        discuss: []
+                        type: '二手闲置',
+                        price: null,
                     }],
                 ]
                 let moduleMap = new Map(moduleArr)
                 let addForm = moduleMap.has(moduleSort) && moduleMap.get(moduleSort);
                 if (addForm) {
-                    this.messageForm = Object.assign(this.messageForm, addForm);
+                    this.messageForm = Object.assign({}, this.messageForm, addForm);
                     console.log('改变后的表单：', this.messageForm);
                 }
             },
@@ -350,20 +414,22 @@
         computed: {
             // 是否展示选择具体(小)分类 比如文体户外、生活用品
             showInnerTags() {
-                return this.messageForm.purpose !== '请选择' && this.innerTagsActions.length > 0
+                return this.messageForm.catogory !== '请选择' && this.innerTagsActions.length > 0
             },
             // 是否展示标签 比如二手书籍、准新正品 和上面不一样
             showTags() {
-                return this.messageForm.purpose !== '请选择' && this.specificTags.length > 0
+                return this.messageForm.catogory !== '请选择' && this.specificTags.length > 0
             },
             showSort(sortName) {
                 return this.showSpecificSort
             },
-
         },
         watch: {
-            money(v) {
-                console.log('pr:--', v);
+            'messageForm.discuss'(newDis) {
+                console.log(this.messageForm);
+                if (newDis) {
+                    this.messageForm.price = ''
+                }
             }
         }
     }

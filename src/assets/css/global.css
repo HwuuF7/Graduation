@@ -20,6 +20,18 @@ a {
     text-decoration: none;
 }
 
+.fz-12 {
+    font-size: 1.2rem;
+}
+
+.fz-15 {
+    font-size: 1.5rem;
+}
+
+.fz-2 {
+    font-size: 2rem;
+}
+
 .line-10 {
     height: .6rem;
     background-color: #f8f8f8;
@@ -45,4 +57,9 @@ a {
 /* 表单项的上下两条线取消 */
 .mint-cell .mint-cell-wrapper {
     background-image: none;
+}
+
+/* toast弹出框的图标大小 */
+.toastIcon>i {
+    font-size: 2rem;
 }

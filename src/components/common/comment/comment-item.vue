@@ -1,15 +1,15 @@
 <template>
     <div class="comment-item" v-if="replyInfo.length">
         <ul>
-            <li class="reply-item" v-for='(comment,index) in replyInfo' :key='comment.commentID'>
+            <li class="reply-item" v-for='(comment,index) in replyInfo' :key='comment.commentId'>
                 <p @click.stop.capture="catchReplyEvent(comment,index)">
-                    <span class="commentator">{{comment.commentator}}</span>
+                    <span class="commentator">{{comment.userName}}</span>
                     <template v-if="!secondary">
                         <span>:</span>
                     </template>
                     <template v-else>
                         <span class="isReply">回复</span>
-                        <span class="commentator">{{comment.replyToWho}}</span>
+                        <span class="commentator">{{comment.replyCommentUserName}}</span>
                         <span>:</span>
                     </template>
                     <span class="content">{{comment.content}}</span>

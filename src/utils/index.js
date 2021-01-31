@@ -7,6 +7,18 @@ const hello = function () {
 }
 
 import axios from 'axios'
+// axios配置
+axios.defaults.baseURL = ' http://119.23.222.17:9001';
+// 添加请求拦截器
+axios.interceptors.request.use((config) => {
+    // 在发送请求之前做些什么
+    // config.headers.common['Authorization'] = 'good';
+    // console.log(config);
+    return config;
+}, function (error) {
+    // 对请求错误做些什么
+    return Promise.reject(error);
+});
 
 
 // 获取事件冒泡的路径 兼容性

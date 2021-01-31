@@ -23,21 +23,80 @@
             resize: none;
         }
 
-        ::v-deep .mint-checklist {
-            border-left: 1px solid #ddd;
-            color: #777;
 
-            .mint-checklist-title {
-                margin: 0;
+        .unused-discuss {
+            display: flex;
+            align-items: center;
+            padding-left: .4rem;
+            border-left: 1px solid #ddd;
+            position: relative;
+
+            &::before {
+                position: absolute;
+                top: 0;
+                content: '';
+                width: 1.7rem;
+                height: 1.7rem;
+                border-radius: 50%;
+                box-sizing: border-box;
+                border: 1px solid #748aa0;
+                // background-color: #f6f6f6;
             }
 
-            .mint-cell {
+            // 选择面议框样式
+            label {
+                display: flex;
+                position: relative;
+                align-items: center;
 
-                .mint-cell-wrapper {
-                    padding: 0;
+                .check-icon {
+                    // display: none;
+                    opacity: 0;
+                    width: 1.7rem;
+                    height: 1.7rem;
+                    border-radius: 50%;
+
+                    &::after {
+                        position: absolute;
+                        content: '';
+                        top: 55%;
+                        left: 3%;
+                        width: .6rem;
+                        height: 1.2rem;
+                        border-top: 3px solid #fff;
+                        border-right: 3px solid #fff;
+                        transform: scaleX(-1) rotate(135deg);
+                        transform-origin: left top;
+                    }
+                }
+
+                >span {
+                    margin: 0 .3rem;
+                    color: #999;
+                }
+
+            }
+
+            input:checked {
+                +label {
+                    .check-icon {
+                        // display: block;
+                        opacity: 1;
+                        background-color: rgba(64, 158, 255, .8);
+                        transition: all .3s ease-out;
+                    }
                 }
             }
+
         }
+    }
+
+    // 禁用框的背景色
+    ::v-deep input[type="text"]:disabled {
+        background-color: #fff;
+        color: #fff;
+        -webkit-text-fill-color: #fff;
+        cursor: not-allowed;
     }
 
     // 标签样式
@@ -106,6 +165,7 @@
         }
     }
 
+    // 小分类样式
     .mint-actionsheet.innerTagsSheet {
         ::v-deep .mint-actionsheet-list {
             display: flex;

@@ -8,6 +8,7 @@ import ModInfo from '@/components/mine/modInfo.vue'
 import ModAttach from '@/components/mine/modAttach/modAttach.vue'
 import Sort from '@/components/sorts/sort.vue'
 import MessageSort from '@/components/common/messageSort/messageSort.vue'
+import AboutMe from '@/components/mine/aboutMe/aboutMe.vue';
 
 Vue.use(VueRouter)
 
@@ -32,7 +33,13 @@ const routes = [{
         path: '/info',
         component: Info,
         meta: {
-            isSecret: false
+            // 判断是进入修改个人信息还是修改密码
+            isSecret: false,
+            /*  判断进入哪个组件
+             0->我发布的
+             1->我回复的
+             2->我收藏的 */
+            activeCom: 0,
         }
     },
     {
@@ -51,6 +58,10 @@ const routes = [{
     {
         path: '/mine/modinfo/:mod',
         component: ModAttach
+    },
+    {
+        path: '/mine/aboutMe',
+        component: AboutMe
     }, {
         path: '/list',
         component: Sort

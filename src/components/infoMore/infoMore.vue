@@ -1,14 +1,18 @@
 <template>
     <div class="infoMore">
-        <detail-info :model='info' :isMore='true' />
+        <detail-info :model='infoDetail' isMore />
         <div class="info-contact">
             <p>联系方式</p>
             <div>
                 <p>联系人:</p>
                 <p>电话:</p>
-                <p class="contact-impart">联系我时，请告知是在成电微帮上看到的</p>
-                <p class="icon call">x</p>
-                <p class="icon fav">y</p>
+                <p class="contact-impart">联系我时，请告知是在成电翻江上看到的</p>
+                <p class="icon chat " @click.stop="startChat">
+                    <span class='iconfont icon-shouye fz-15'></span>
+                </p>
+                <p class="icon fav" @click.stop="startFav">
+                    <span class='iconfont icon-tuijian fz-15'></span>
+                </p>
             </div>
         </div>
         <div class="line-10"></div>
@@ -29,7 +33,7 @@
                 <!-- 可以留个图标 -->
                 <span @click.stop="replyToRoot">我要评论></span>
             </div>
-            <comment v-for="(comment ) in commentInfo" :key="comment.commentID" :commentInfo='comment'
+            <comment v-for="(comment ) in commentInfo" :key="comment.commentId" :commentInfo='comment'
                 @replyToFirst='replyToFirst(comment,arguments)'></comment>
 
         </div>
@@ -43,8 +47,8 @@
                 <mt-button type='danger'>表情</mt-button>
             </div>
             <div class="popMid">
-                <mt-field :placeholder="replyToWhoInfo ? `回复${replyToWhoInfo.commentator}` : ''" type="textarea"
-                    rows="4" v-model="replyContent"></mt-field>
+                <mt-field :placeholder="replyToWhoInfo ? `回复${replyToWhoInfo.userName}` : ''" type="textarea" rows="4"
+                    v-model.trim="replyContent"></mt-field>
             </div>
             <div class="popFooter">
                 <mt-button plain @click="cancelReply">取消</mt-button>
@@ -61,6 +65,109 @@
         mapState,
         mapMutations
     } from 'vuex';
+
+    /*
+           // 留着过年
+            // 要增加一个评论ID 和 toWhich评论ID
+            commentInfo: [{
+            // 评论的一个ID
+            commentID: '001',
+            // 评论人的ID
+            commentatorID: '123',
+            // 一级评论人
+            commentator: '小老妹',
+            // 一级评论内容
+            content: '你真棒',
+            rootType: true,
+            // 在哪个帖子下回复的 根评论的话就是指向帖子的ID
+            replyToWhich: '123',
+            // 回复列表
+            replyLists: [{
+                    commentID: '002',
+                    commentatorID: '456',
+                    commentator: '清风自来',
+                    replyToID: '123',
+                    replyToWho: '小老妹',
+                    content: '真的吗？',
+                    rootType: false,
+                    // 如果是二级评论的话就指向的是回复哪个评论
+                    replyToWhich: '001',
+                    replyLists: [{
+                        commentID: '003',
+                        commentatorID: '123',
+                        commentator: '小老妹',
+                        replyToID: '456',
+                        replyToWho: '清风自来',
+                        content: '真的哦',
+                        rootType: false,
+                        replyToWhich: '002',
+                        replyLists: []
+                    }, {
+                        commentID: '004',
+                        commentatorID: '789',
+                        commentator: '其他人',
+                        replyToID: '456',
+                        replyToWho: '清风自来',
+                        content: '其他人的回复',
+                        rootType: false,
+                        replyToWhich: '002',
+                        replyLists: []
+                    }]
+                },
+                {
+                    commentID: '005',
+                    commentatorID: '001',
+                    commentator: '菜狗',
+                    replyToID: '123',
+                    replyToWho: '小老妹',
+                    content: '红豆泥',
+                    rootType: false,
+                    replyToWhich: '001',
+                    replyLists: [{
+                        commentID: '006',
+                        commentatorID: '789',
+                        commentator: '其他人',
+                        replyToID: '001',
+                        replyToWho: '菜狗',
+                        content: '你可真是只菜狗',
+                        rootType: false,
+                        replyToWhich: '005',
+                        replyLists: [{
+                            commentID: '007',
+                            commentatorID: '001',
+                            commentator: '菜狗',
+                            replyToID: '789',
+                            replyToWho: '其他人',
+                            content: '你才是',
+                            rootType: false,
+                            replyToWhich: '006',
+                            replyLists: []
+                        }]
+                    }]
+                }
+            ]
+        },
+        {
+            commentID: '008',
+            commentatorID: '456',
+            commentator: '清风自来',
+            content: '厉害厉害',
+            rootType: true,
+            // 在哪个帖子下回复的
+            replyToWhich: '123',
+            replyLists: [{
+                commentID: '999',
+                commentatorID: '111',
+                commentator: 'young',
+                replyToID: '456',
+                replyToWho: '清风自来',
+                content: '纳尼',
+                rootType: false,
+                replyToWhich: '008',
+                replyLists: []
+            }]
+        }
+    ], */
     export default {
         components: {
             detailInfo,
@@ -106,107 +213,10 @@
                     // 浏览次数
                     visitTimes: 10000,
                 },
-                // 要增加一个评论ID 和 toWhich评论ID
-                commentInfo: [{
-                        // 评论的一个ID
-                        commentID: '001',
-                        // 评论人的ID
-                        commentatorID: '123',
-                        // 一级评论人
-                        commentator: '小老妹',
-                        // 一级评论内容
-                        content: '你真棒',
-                        rootType: true,
-                        // 在哪个帖子下回复的 根评论的话就是指向帖子的ID
-                        replyToWhich: '123',
-                        // 回复列表
-                        replyLists: [{
-                                commentID: '002',
-                                commentatorID: '456',
-                                commentator: '清风自来',
-                                replyToID: '123',
-                                replyToWho: '小老妹',
-                                content: '真的吗？',
-                                rootType: false,
-                                // 如果是二级评论的话就指向的是回复哪个评论
-                                replyToWhich: '001',
-                                replyLists: [{
-                                    commentID: '003',
-                                    commentatorID: '123',
-                                    commentator: '小老妹',
-                                    replyToID: '456',
-                                    replyToWho: '清风自来',
-                                    content: '真的哦',
-                                    rootType: false,
-                                    replyToWhich: '002',
-                                    replyLists: []
-                                }, {
-                                    commentID: '004',
-                                    commentatorID: '789',
-                                    commentator: '其他人',
-                                    replyToID: '456',
-                                    replyToWho: '清风自来',
-                                    content: '其他人的回复',
-                                    rootType: false,
-                                    replyToWhich: '002',
-                                    replyLists: []
-                                }]
-                            },
-                            {
-                                commentID: '005',
-                                commentatorID: '001',
-                                commentator: '菜狗',
-                                replyToID: '123',
-                                replyToWho: '小老妹',
-                                content: '红豆泥',
-                                rootType: false,
-                                replyToWhich: '001',
-                                replyLists: [{
-                                    commentID: '006',
-                                    commentatorID: '789',
-                                    commentator: '其他人',
-                                    replyToID: '001',
-                                    replyToWho: '菜狗',
-                                    content: '你可真是只菜狗',
-                                    rootType: false,
-                                    replyToWhich: '005',
-                                    replyLists: [{
-                                        commentID: '007',
-                                        commentatorID: '001',
-                                        commentator: '菜狗',
-                                        replyToID: '789',
-                                        replyToWho: '其他人',
-                                        content: '你才是',
-                                        rootType: false,
-                                        replyToWhich: '006',
-                                        replyLists: []
-                                    }]
-                                }]
-                            }
-                        ]
-                    },
-                    {
-                        commentID: '008',
-                        commentatorID: '456',
-                        commentator: '清风自来',
-                        content: '厉害厉害',
-                        rootType: true,
-                        // 在哪个帖子下回复的
-                        replyToWhich: '123',
-                        replyLists: [{
-                            commentID: '999',
-                            commentatorID: '111',
-                            commentator: 'young',
-                            replyToID: '456',
-                            replyToWho: '清风自来',
-                            content: '纳尼',
-                            rootType: false,
-                            replyToWhich: '008',
-                            replyLists: []
-                        }]
-                    }
-                ],
+                // 获取的评论信息
+                commentInfo: [],
                 popUpVisible: false,
+                // 输入的回复内容
                 replyContent: '',
                 // 判断是回复根评论 还是回复评论的回复 true为根评论 
                 replyRoot: null,
@@ -215,15 +225,45 @@
 
         methods: {
             // 获取信息
-            getInfoById(infoId) {
+            async getInfoById(infoId) {
                 // 发起请求获取帖子信息
-                console.log('获取信息成功!');
+
+
+                // 获取评论信息
+                const {
+                    data: res
+                } = await this.$http.get('/comment/loadcomments/1').catch(err =>
+                    this.$toast({
+                        message: '获取评论信息失败',
+                        iconClass: 'iconfont icon-close',
+                        className: 'toastIcon'
+                    })
+                )
+                // 递归改造数据
+                function appendReplyLists(replyArr, replyID) {
+                    let lists = []
+                    if (Array.isArray(replyArr) && replyArr.length > 0) {
+                        replyArr.forEach(item => {
+                            if (item.replyCommentId === replyID) {
+                                lists.push(item)
+                                item.replyLists = appendReplyLists(replyArr, item.commentId)
+                            }
+                        })
+                    }
+                    return lists
+                }
+                res.forEach((levelRpy) => {
+                    levelRpy.reply = appendReplyLists(levelRpy.reply, 0)
+                })
+                this.commentInfo = res
+                console.log('获取评论信息成功!', res);
+                // console.table(this.commentInfo);
             },
-            // 删除回复
+            // 点击评论弹出的删除回复
             deleteReply() {
                 console.log('删除回复');
             },
-            // 点击回复
+            // 点击评论弹出的回复
             replyTo() {
                 console.log('进行回复');
                 this.popUpVisible = true;
@@ -341,16 +381,21 @@
                 this.replyRoot = false;
                 this.changeReplytoWho(comment)
             },
+            // 发起聊天 ==>调用俊威
+            startChat() {
+                console.log('开始聊天');
+            },
+            // 添加收藏
+            startFav() {
+                console.log('添加至收藏');
+            },
             ...mapMutations(['changeReplytoWho']),
 
         },
         created() {
             this.infoId = this.$route.params.infoId
             // 发起请求获取信息
-            this.getInfoById(this.getInfoById)
-        },
-        mounted() {
-
+            this.getInfoById(this.infoId)
         },
         computed: {
             replySheetActions() {
@@ -372,11 +417,9 @@
                 },
             },
             // 从vuex获取确定回复哪一位
-            ...mapState(['replyToWhoInfo']),
+            ...mapState(['replyToWhoInfo', 'infoDetail']),
         },
-        watch: {
 
-        }
     }
 </script>
 

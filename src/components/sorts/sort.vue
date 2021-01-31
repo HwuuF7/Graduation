@@ -7,7 +7,8 @@
         <mt-tab-container v-model="activeName">
             <mt-tab-container-item v-for='eachName in differSub' :key='eachName' :id="eachName">
                 <div @click.stop.capture="jumpDetail">
-                    <detail-info :model='testModel' :data-info_id='testModel.infoId' />
+                    <detail-info v-for="info in modelInfo" :key="info.infoId" :model='info'
+                        :data-info_id='info.infoId' />
                 </div>
             </mt-tab-container-item>
         </mt-tab-container>
@@ -95,7 +96,7 @@
         },
         methods: {
             // 获取对应数据
-            getInfo(activeName) {
+            async getInfo(activeName) {
                 console.log(activeName);
                 // 找到子分类对应的索引
                 const subIndex = this.differSub.findIndex(subName => subName === activeName);
@@ -103,7 +104,22 @@
                 // 比如/news/0 =>校内新闻 /1 => 省内新闻
                 // 格式和之前首页展示的一样
                 // this.modelInfo=xx
-
+                const {
+                    data: res
+                } = await this.$http.get('/catogory/catogoryPage', {
+                    params: {
+                        type: 'lostingFind',
+                        pageBegin: 0,
+                        pageSize: 20,
+                        catogory: '失物招领'
+                    }
+                }).catch(err => this.$toast({
+                    message: '获取失物失败',
+                    iconClass: 'iconfont icon-close',
+                    className: 'toastIcon'
+                }))
+                this.modelInfo = res
+                console.log(res);
             },
             // 事件捕获跳转到详情页
             jumpDetail(ev) {

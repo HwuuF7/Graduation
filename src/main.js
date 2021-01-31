@@ -3,6 +3,9 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
+
+import './assets/css/iconfont/iconfont.css'
+import './assets/css/global.css'
 import './plugins/mint.js'
 import {
     timeFormat

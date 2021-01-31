@@ -8,17 +8,17 @@
         <form class="login-form" action="">
             <div class="login-username">
                 <label>
-                    <span>小图标</span>
+                    <span class="iconfont icon-icon- fz-15"></span>
                     <input type="text" ref='username' name='username' placeholder="账号" @focus="hello"
                         v-model='loginForm.username'>
-                    <!-- 清除按钮 -->
+                    <span class="iconfont icon-qingchu fz-12"></span>
                 </label>
             </div>
             <div class="login-password">
                 <label>
-                    <span>小图标</span>
+                    <span class='iconfont icon-mimayincang fz-15'></span>
                     <input type="password" name='password' placeholder="密码" v-model="loginForm.password">
-                    <!-- 清除按钮 -->
+                    <span class="iconfont icon-qingchu fz-12"></span>
                 </label>
             </div>
             <div class="login-region">
@@ -26,8 +26,8 @@
                 <mt-button ref='zs' plain type='primary' @click.prevent="getRegion('zs')" class="region-selected">zs
                 </mt-button>
             </div>
-            <mt-button plain class="login-btn" @click.native="login">登录</mt-button>
         </form>
+        <mt-button plain class="login-btn" @click.native="login">登录</mt-button>
 
     </div>
 </template>
@@ -50,6 +50,9 @@
             login() {
                 console.log('login');
                 console.table(this.loginForm);
+                // this.$http.get('/wxLogin').then(res => {
+                //     console.log(res, '--');
+                // })
                 this.$router.push('/info');
             },
             getRegion(region) {

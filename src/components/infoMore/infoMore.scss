@@ -43,15 +43,18 @@
             p.icon {
                 position: absolute;
                 top: .9rem;
-                color: #c7956d;
+                color: #03506f;
                 width: 2.5rem;
                 height: 2.5rem;
                 padding: .48rem;
                 background-color: #f8f8f8;
                 text-align: center;
                 border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
 
-                &.call {
+                &.chat {
                     right: 3rem;
                 }
 

@@ -26,7 +26,7 @@
     /* @import url(); 引入css类 */
     // 375px => 100vw 
     // 1vw = 3.75px
-    @import url('./assets/css/global.css');
+    // @import url('./assets/css/global.css');
 
     #app {
         width: 100vw;

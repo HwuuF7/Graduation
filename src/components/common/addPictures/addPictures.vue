@@ -177,24 +177,29 @@
                 this.limit = this.maxSelect - this.imgList.length;
             },
             // 发送图片
-            sendPictures() {
-                // 往formData表单数组添加图片信息
-                this.previewList.forEach(file => {
-                    this.formData.append('files', file, file.name)
-                })
+             sendPictures() {
                 console.log('OK');
+                if (this.previewList.length > 0) {
+                    // 往formData表单数组添加图片信息
+                    this.previewList.forEach(file => {
+                        this.formData.append('files', file, file.name)
+                    })
+                return this.formData
+                } else {
+                   return null
+                }
                 // this.$http.get('http://localhost:7777/test').then(res => {
                 //     console.log(res, '---getfo');
                 // })
-                let config = {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                }
-                this.$http.post('http://119.23.222.17:9001/homepage/view/uploadImg', this.formData, config).then(
-                    res => {
-                        console.log(res, '---post');
-                    })
+                // let config = {
+                //     headers: {
+                //         'Content-Type': 'multipart/form-data'
+                //     }
+                // }
+                // const {
+                //     data: pictures
+                // } = await this.$http.post('/homepage/view/uploadImg', this.formData, config)
+                // console.log(pictures);
                 // this.$http.post('http://localhost:7777/upload', this.formData, config).then(res => console.log(res))
                 // return this.formData
             },

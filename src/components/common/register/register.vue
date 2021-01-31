@@ -1,9 +1,9 @@
 <template>
     <div class="register">
         <form action="" class="register-form">
-            <div class="register-username" style="border:1px solid red">
+            <div class="register-username">
                 <label>
-                    <span>小图标</span>
+                    <span class="iconfont icon-icon- fz-15"></span>
                     <input type="text" ref='username' name='username' placeholder="用户名" @focus="hello"
                         v-model.trim.lazy="registerForm.username" autocomplete="off">
                     <!-- 清除按钮 -->
@@ -12,7 +12,7 @@
             </div>
             <div class="register-password">
                 <label>
-                    <span>小图标</span>
+                    <span class='iconfont icon-mima_yincang fz-15'></span>
                     <input type="password" name='password' placeholder="密码" v-model.trim.lazy="registerForm.password">
                     <!-- 清除按钮 -->
 
@@ -22,7 +22,7 @@
             </div>
             <div class="register-passwordAgain">
                 <label>
-                    <span>小图标</span>
+                    <span></span>
                     <input type="password" name='passwordAgain' placeholder="确认密码"
                         v-model.trim.lazy="registerForm.passwordAgain">
                     <!-- 清除按钮 -->
@@ -32,7 +32,7 @@
             </div>
             <div class="register-email">
                 <label>
-                    <span>小图标</span>
+                    <span class="iconfont icon-youxiang1 fz-15"></span>
                     <input type="text" name='email' placeholder="邮箱" v-model.trim.lazy="registerForm.email"
                         autocomplete="off">
                     <!-- 清除按钮 -->
@@ -41,7 +41,7 @@
             </div>
             <div class="register-authCode">
                 <label>
-                    <span>验证码</span>
+                    <span class='iconfont icon-yanzhengma fz-15'></span>
                     <input type="text" name='authCode' v-model.trim="registerForm.authCode" autocomplete="off"
                         maxlength='4'>
                     <mt-button class="authCode" size='small' type='primary' @click.native.prevent="countDown"
@@ -58,9 +58,9 @@
                 <p class="attention" v-show="authVerify.isShow">{{authVerify.showMsg}}</p>
 
             </div>
-            <mt-button plain class="register-btn" @click.native.prevent="register">注册</mt-button>
-        </form>
 
+        </form>
+        <mt-button plain class="register-btn" @click.native.prevent="register">注册</mt-button>
 
     </div>
 </template>

@@ -7,6 +7,8 @@ export default new Vuex.Store({
     state: {
         replySheetVisible: false,
         replyToWhoInfo: null,
+        // 点击帖子详情跳转带过去的信息
+        infoDetail: null,
     },
     mutations: {
         // 点击事件触发一次 第一次true
@@ -22,6 +24,9 @@ export default new Vuex.Store({
         // }
         changeReplytoWho(state, val) {
             state.replyToWhoInfo = val
+        },
+        changeInfoDetail(state, val) {
+            state.infoDetail = val
         }
     },
     actions: {},
