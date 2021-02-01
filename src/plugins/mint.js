@@ -48,3 +48,13 @@ Vue.component(Search.name, Search);
 Vue.prototype.$toast = Toast;
 Vue.prototype.$indicator = Indicator;
 Vue.prototype.$message = MessageBox;
+
+// 对弹出框的再次封装
+const reToast = function (msg, icon) {
+    Toast({
+        message: msg,
+        iconClass: `iconfont ${icon}`,
+        className: 'toastIcon'
+    })
+}
+Vue.prototype.$reToast = reToast;

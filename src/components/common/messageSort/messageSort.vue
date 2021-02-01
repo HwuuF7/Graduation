@@ -63,6 +63,7 @@
         <div class="surePost">
             <mt-button type='primary' @click="sendMessage">确定发布</mt-button>
         </div>
+
     </div>
 </template>
 
@@ -74,6 +75,7 @@
         phone: '', 
     */
     import addPictures from '@/components/common/addPictures/addPictures.vue';
+    import fixedData from './messageData.js';
     export default {
         components: {
             addPictures
@@ -92,7 +94,7 @@
                     // 标签 
                     tags: [],
                     // 图片
-                    pictures: null,
+                    pictures: [],
                     // 相关描述
                     content: '',
                 },
@@ -104,8 +106,6 @@
 
                 // 预先准备的大分类选择静态数据（Map类型）
                 prePurposeActionsMap: null,
-                // 预先准备的转换静态数据（Map类型） ex:'招聘=>recruit' 方便小分类选择 和 模块默认信息
-                preConvertMap: null,
                 // 预先准备的小分类选择静态数据（Map类型）
                 preInnerTagsActionsMap: null,
                 // 预先准备的模块标签和默认详情提示静态数据（Map类型）
@@ -118,7 +118,7 @@
 
                 // 确切的模块信息 由意图Purpose来决定
                 specificTags: [],
-                specificDesc: '请选择意图'
+                specificDesc: '请选择意图',
             }
         },
         //生命周期 - 创建完成（访问当前this实例）
@@ -127,7 +127,6 @@
                 module: this.getSort
             } = this.$route.query);
             console.log('当前模块--', this.getSort);
-
             // 根据模块应用不同的表单
             this.changeMessageForm(this.getSort)
             // 初始化静态数据
@@ -141,17 +140,16 @@
             // 初始化静态数据
             initStaticInfo() {
                 console.log('初始化');
+                // 从固定数据中取出子分类(二手闲置下=>{出售,求购})
+                let {
+                    categorys: purposeBig,
+                    uniqueInfo
+                } = fixedData
 
-                // 大分类
-                let purposeBig = {
-                    "jobs": ['招聘', '求职'],
-                    "unused": ['出售', '求购'],
-                    "finds": ['寻人', '寻物', '失物招领'],
-                    "counts": ['优惠分享', '砍几刀'],
-                    "helps": ['打听', '求助']
-                }
+                // 初始化对应模块的默认信息
+                this.preModuleInfoMap = new Map(uniqueInfo)
 
-                // 意图（大分类）选择的格式数组
+                // 注册点击事件 意图（大分类）选择的格式数组
                 let purposeActionsArr = []
                 for (const purpose in purposeBig) {
                     let tempActions = purposeBig[purpose].map(act => {
@@ -162,97 +160,25 @@
                     })
                     purposeActionsArr.push([purpose, tempActions])
                 }
-
-                // 小分类
-                let innerTagsSm = {
-                    "recruit": ['家教', '实习', '兼职'],
-                    "job": ['找家教', '找实习', '找兼职', '其他'],
-                    "unused-sell": ['课本书籍', '手机数码', '文体户外', '生活用品', '服装配饰', '美容保健', '交通工具', '其他'],
-                    "unused-buy": ['课本书籍', '手机数码', '文体户外', '生活用品', '服装配饰', '美容保健', '交通工具', '其他'],
-                }
-                // innerTags(小分类)选择的格式数组
-                let innerTagsActionsArr = []
-                for (const innerTag in innerTagsSm) {
-                    let tempActions = innerTagsSm[innerTag].map(act => {
-                        return {
-                            name: act,
-                            method: this.selectMethod('s', act)
-                        }
-                    })
-                    innerTagsActionsArr.push([innerTag, tempActions])
-                }
-
-                // ChinesePurpose->EnglishMap转换
-                let convertArr = [
-                    ['招聘', 'recruit'],
-                    ['求职', 'job'],
-                    ['出售', 'unused-sell'],
-                    ['求购', 'unused-buy'],
-                    ['寻人', 'find-man'],
-                    ['寻物', 'find-good'],
-                    ['失物招领', 'find-losts'],
-                    ['优惠分享', 'count-share'],
-                    ['砍几刀', 'count-cut'],
-                    ['打听', 'seek'],
-                    ['求助', 'help']
-                ]
-
-                // 每个模块相应的默认标签和详情提示
-                let moduleInfoArr = [
-                    ['recruit', {
-                        tags: ['五险一金', '包吃', '包住', '双休', '年底双薪', '住房补助', '话费补助', '交通补助'],
-                        defaultDesc: '请说明招聘岗位、任职要求、公司介绍等'
-                    }],
-                    ['job', {
-                        tags: ['沟通力强', '学习力强', '执行力强'],
-                        defaultDesc: '个人介绍、工作经历、职位等信息'
-                    }],
-                    ['unused-sell', {
-                        tags: ['二手书籍', '电子产品', '生活用品', '准新正品', '当面验货'],
-                        defaultDesc: '请简要说明您的物品名称、参数、价格等信息'
-                    }],
-                    ['unused-buy', {
-                        tags: ['二手书籍', '电子产品', '生活用品', '准新正品', '当面验货'],
-                        defaultDesc: '请简要说明您的物品名称、参数、价格等信息'
-                    }],
-                    ['find-man', {
-                        tags: [],
-                        defaultDesc: '人物的特征信息..'
-                    }],
-                    ['find-good', {
-                        tags: [],
-                        defaultDesc: '物品信息描述..'
-                    }],
-                    ['find-losts', {
-                        tags: [],
-                        defaultDesc: '物品的特征信息及领取地点信息..'
-                    }],
-                    ['count-share', {
-                        tags: [],
-                        defaultDesc: '请务必说明优惠内容、时间及地点'
-                    }],
-                    ['count-cut', {
-                        tags: [],
-                        defaultDesc: '活动描述'
-                    }],
-                    ['seek', {
-                        tags: [],
-                        defaultDesc: '打听的人或事'
-                    }],
-                    ['help', {
-                        tags: [],
-                        defaultDesc: '求助描述'
-                    }],
-                ]
-
                 // 初始化大分类选择
                 this.prePurposeActionsMap = new Map(purposeActionsArr)
+
+                // 注册点击事件 innerTags(小分类)选择的格式数组
+                let innerTagsActionsArr = []
+                for (const [key, value] of this.preModuleInfoMap.entries()) {
+                    if (value['innerTags'].length > 0) {
+                        let arr = value['innerTags'].map(act => {
+                            return {
+                                name: act,
+                                method: this.selectMethod('s', act)
+                            }
+                        })
+                        innerTagsActionsArr.push([key, arr])
+                    }
+                }
                 // 初始化小分类选择
                 this.preInnerTagsActionsMap = new Map(innerTagsActionsArr)
-                // 初始化转换Map
-                this.preConvertMap = new Map(convertArr)
-                // 初始化对应模块的默认信息
-                this.preModuleInfoMap = new Map(moduleInfoArr)
+
             },
             // 请选择的method封装
             // 接收参数为 ：
@@ -285,92 +211,96 @@
                 console.log('选择小分类');
                 this.innerTagVisible = true;
             },
-            test() {
-                console.log('test---');
-            },
             // 确认是招聘还是求职
             surePurpose() {
 
-                // 获取到转换后的EnglishVal 招聘->recruit
-                let tagKey = this.preConvertMap.get(this.messageForm.catogory)
-
+                let {
+                    catogory
+                } = this.messageForm
                 // 获取小分类
-                if (this.preInnerTagsActionsMap.has(tagKey)) {
-                    this.innerTagsActions = this.preInnerTagsActionsMap.get(tagKey)
+                if (this.preInnerTagsActionsMap.has(catogory)) {
+                    this.innerTagsActions = this.preInnerTagsActionsMap.get(catogory)
+                } else {
+                    //  选完大分类 没有二级分类 则将二级分类设置为一级分类相同 发送至后端
+                    this.messageForm.innerTag = catogory
                 }
-
-                // 赋值对应的模块信息
-                if (this.preModuleInfoMap.has(tagKey)) {
-                    this.specificTags = this.preModuleInfoMap.get(tagKey).tags
-                    this.specificDesc = this.preModuleInfoMap.get(tagKey).defaultDesc
-                }
-
+                const specificInfo = this.preModuleInfoMap.get(catogory)
+                this.specificTags = specificInfo['tags'];
+                this.specificDesc = specificInfo['defaultDesc']
             },
             // 确认发布
             async sendMessage() {
-                /*  if (this.discuss) {
-                     this.messageForm.price = '面议'
-                 }
-                 const picForm = this.$refs.addPictures.sendPictures()
-                 console.log('发布2', this.messageForm);
-                 let config = {
-                     headers: {
-                         'Content-Type': 'multipart/form-data'
-                     }
-                 }
-                 // 没有图片 直接发
-                 if(!picForm){
-                     const {data:res}  =  await this.$http.post('/homepage/view/addInfo', this.messageForm, config)
-                 } */
+                // 改造发送数据
+                if (this.discuss) {
+                    this.messageForm.price = '面议'
+                }
 
+                const picForm = this.$refs.addPictures.sendPictures()
+                console.log('发布2', this.messageForm);
+
+                // post请求头配置
                 let config = {
                     headers: {
-                        'Content-Type': 'multipart/form-data'
+                        'Content-Type': 'application/x-www-form-urlencoded'
                     }
                 }
-                let test = {
-                    openId: "oAXSp6XInXomKM783mGi-Y2JPiKY",
-                    type: '二手闲置',
-                    catogory: '闲置出售',
-                    content: '小哥哥快来耍~~~',
-                    innerTag: '课本书籍',
-                    tags: ['二本书籍'],
-                    pictures: ['http://119.23.222.17/campus_community/img/1612015459325.jpg'],
+
+                let finalRes;
+                // 没有图片 直接发
+                if (picForm.length === 0) {
+                    // 数据转化
+                    const postMsg = new URLSearchParams(this.messageForm).toString()
+                    finalRes = await this.$http.post('/homepage/view/addInfo', postMsg, config).catch(err => {
+                        console.log(err);
+                    })
+
+
+                } else {
+                    // 先发图片
+                    const res = await this.$http.post('/homepage/view/uploadImg', picForm, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    }).catch(err => {
+                        console.log(err);
+                    })
+                    // 这里是请求错误
+                    if (!res) {
+                        return this.sendErr()
+
+                    }
+                    // 解构出图片
+                    const {
+                        data: pictures
+                    } = res
+                    // 这里是返回出错
+                    if (pictures.length < 1) {
+                        return this.sendErr()
+
+                    }
+                    // 改造数据
+                    this.messageForm.pictures = pictures;
+                    // 数据转化
+                    const postMsg = new URLSearchParams(this.messageForm).toString()
+                    finalRes = await this.$http.post('/homepage/view/addInfo', postMsg, config).catch(err => {
+                        console.log(err);
+                    })
+
                 }
 
-                const {
-                    data: res
-                } = await this.$http.post('/homepage/view/addInfo', test, config).catch(err => {
-                    console.log(err);
-                })
-                console.log(res, '====');
+                // 这里是请求错误
+                if (!finalRes) {
+                    return this.sendErr()
+                }
 
-                /* const {
-                    data: res
-                } = await this.$http.post('/homepage/view/uploadImg', picForm, config)
-                    .then(async (res) => {
-                        const {
-                            data: pictures
-                        } = res
-                        this.messageForm.pictures = pictures
-                        console.log('走这里了');
-                        return await this.$http.post('/homepage/view/addInfo', this.messageForm, config)
-                    })
-                    .catch(err => {
-                        console.log(err);
-                        return this.$toast({
-                            message: '发送信息失败',
-                            iconClass: 'iconfont icon-tixing',
-                            className: 'toastIcon'
-                        })
-                    }) */
-                console.log(res)
-                // const {
-                //     data: res
-                // } = await this.$http.post('/homepage/view/addInfo', this.messageForm)
-                // console.log(res);
-                // 发布完后跳转首页
-                // this.$router.push('/info')
+                // 解构出返回结果
+                const {
+                    data: result
+                } = finalRes
+                if (result.status === 200) {
+                    return this.sendPss()
+                }
+
             },
             // 选中标签
             selectTags(ev) {
@@ -389,17 +319,11 @@
             // 增加提交表单字段 
             // 参数为 模块名
             changeMessageForm(moduleSort) {
-                let moduleArr = [
-                    ['jobs', {
-                        type: '招聘求职',
-                        innerTag: '请选择小分类22'
-                    }],
-                    ['unused', {
-                        type: '二手闲置',
-                        price: null,
-                    }],
-                ]
-                let moduleMap = new Map(moduleArr)
+                // 从固定数据解构出模块对应的表单字段
+                let {
+                    attachForm
+                } = fixedData
+                let moduleMap = new Map(attachForm)
                 let addForm = moduleMap.has(moduleSort) && moduleMap.get(moduleSort);
                 if (addForm) {
                     this.messageForm = Object.assign({}, this.messageForm, addForm);
@@ -409,7 +333,33 @@
             // 根据不同模块展示不同的表单
             showSpecificSort(sortName) {
                 return sortName === this.getSort
-            }
+            },
+            // 抽离重复代码->发送信息失败的提示信息
+            sendErr() {
+                this.$reToast('发送信息失败', ' icon-tixing');
+                // 重置数据
+                this.messageForm = {
+                    // 用户标识 先写死
+                    openId: 'oAXSp6Wo7ugTt8hQ2EJw5Jmim4YE',
+                    // 大分类 -->catogory ['招聘','求职']
+                    catogory: '请选择',
+                    // 标签 
+                    tags: [],
+                    // 图片
+                    pictures: [],
+                    // 相关描述
+                    content: '',
+                };
+                this.specificTags = [];
+                this.specificDesc = '请选择意图';
+                this.changeMessageForm(this.getSort)
+            },
+            // 发送信息成功的提示信息
+            sendPss() {
+                this.$reToast('发送信息成功', ' icon-queren')
+                // 发布完后跳转首页
+                // this.$router.push('/info')
+            },
         },
         computed: {
             // 是否展示选择具体(小)分类 比如文体户外、生活用品

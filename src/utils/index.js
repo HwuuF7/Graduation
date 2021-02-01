@@ -5,7 +5,6 @@ const hello = function () {
     console.log('this is hello2222');
     test()
 }
-
 import axios from 'axios'
 // axios配置
 axios.defaults.baseURL = ' http://119.23.222.17:9001';
@@ -60,6 +59,9 @@ const parentPush = function (el, findClassName) {
     })
     return targetTag
 }
+
+
+
 
 
 const globalFun = {

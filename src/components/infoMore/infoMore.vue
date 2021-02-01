@@ -324,7 +324,7 @@
                 this.closeDialog();
             },
             // 提交回复
-            commitReply() {
+            async commitReply() {
                 if (this.replyContent.length < 1) {
                     return this.$toast({
                         message: '输入不能为空',
@@ -337,24 +337,63 @@
                 // 回复根评论
                 if (this.replyRoot) {
                     // 构造一个回复者
-                    let tempComment = { // 评论的一个ID
-                        commentID: '111',
-                        // 评论人的ID
-                        commentatorID: '123',
-                        // 一级评论人
-                        commentator: '小老弟',
-                        // 一级评论内容
+                    /*  let tempComment = { // 评论的一个ID
+                         commentID: '111',
+                         // 评论人的ID
+                         commentatorID: '123',
+                         // 一级评论人
+                         commentator: '小老弟',
+                         // 一级评论内容
+                         content: this.replyContent,
+                         rootType: true,
+                         // 在哪个帖子下回复的 根评论的话就是指向帖子的ID
+                         replyToWhich: '123',
+                         replyLists: []
+                     };
+                     this.commentInfo.push(tempComment); */
+
+                    let tempComment = {
+                        infoId: 1,
+                        openId: 'oAXSp6Wo7ugTt8hQ2EJw5Jmim4YE',
+                        commentLevel: 1,
                         content: this.replyContent,
-                        rootType: true,
-                        // 在哪个帖子下回复的 根评论的话就是指向帖子的ID
-                        replyToWhich: '123',
-                        replyLists: []
-                    };
-                    this.commentInfo.push(tempComment);
+                        // parentCommentId: null,
+                        // replyCommentId: null,
+                        // replyCommentUserId: null,
+                        // replyCommentUserName: null
+                    }
+                    const mid = new URLSearchParams(tempComment).toString()
+                    const {
+                        data: res
+                    } = await this.$http.post('/comment/addComment', mid, {
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        }
+                    })
+                    console.log(res, '-----366');
                 } else {
-                    this.insertComment(this.replyToWhoInfo);
+                    // this.insertComment(this.replyToWhoInfo);
+                    let tempComment = {
+                        infoId: 1,
+                        openId: 'oAXSp6XInXomKM783mGi-Y2JPiKY',
+                        commentLevel: 2,
+                        content: this.replyContent,
+                        parentCommentId: 27,
+                        // replyCommentId: null,
+                        // replyCommentUserId: null,
+                        // replyCommentUserName: null
+                    }
+                    const mid = new URLSearchParams(tempComment).toString()
+                    const {
+                        data: res
+                    } = await this.$http.post('/comment/addComment', mid, {
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        }
+                    })
+                    console.log(res, '-----394');
                 }
-                console.log('----', this.commentInfo, '----')
+                this.getInfoById(1)
                 this.closeDialog();
             },
             // 关闭对话框的重复操作
@@ -379,6 +418,7 @@
                 this.popUpVisible = getFromSon[0];
                 // 置回复为false 代表回复评论的评论
                 this.replyRoot = false;
+                console.log(comment, '---402');
                 this.changeReplytoWho(comment)
             },
             // 发起聊天 ==>调用俊威

@@ -36,7 +36,6 @@
                 <!-- 图片展示区域 -->
                 <div class="bomPictures" v-if="hasPictures">
                     <img v-for="(pic,picIndex) in model.pictures" :key='picIndex' :src="pic" alt="你看不到的秘密">
-
                 </div>
                 <!-- 时间与浏览次数 -->
                 <p class="timeVisits">{{model.createTime | timeFormat}}，{{model.viewNum ? model.viewNum : 0}}人浏览
@@ -59,9 +58,13 @@
             isSetTop: Boolean,
             isMore: Boolean
         },
-        created() {},
+        created() {
+            console.log(this.model);
+        },
         data() {
-            return {}
+            return {
+
+            }
         },
         methods: {},
         computed: {
@@ -69,7 +72,8 @@
                 return !!this.model.infoExplains.purchase
             },
             hasTags() {
-                return !!this.model.tags
+                //  对空数组进行判断
+                return this.model.tags.length > 0
             },
             hasPictures() {
                 return this.model.pictures.length > 0

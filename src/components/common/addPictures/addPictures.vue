@@ -32,7 +32,6 @@
         </mt-popup>
 
 
-        <mt-button type='primary' @click="sendPictures">OK</mt-button>
     </div>
 </template>
 
@@ -107,12 +106,14 @@
         },
         data() {
             return {
+                // 专门存放读取成功后的base64URL
                 imgList: [],
                 // 默认为三张
-                limit: 3,
+                limit: 0,
                 size: 0,
                 // 发送这个至后端
                 formData: new FormData(),
+                // 这个存的是读取时的file结构
                 previewList: [],
                 loadingPopVisible: false,
             }
@@ -128,7 +129,6 @@
             },
             // 选择图片
             fileChange(ev) {
-                console.log(ev);
                 // 大小为0 判断异常
                 if (!ev.target.files[0].size) return;
                 // 将files数组进行遍历读取
@@ -161,7 +161,6 @@
 
                 // 先进行备份 后面留置formData使用
                 this.previewList.push(file)
-                console.log(file);
                 // 生成配置函数
                 const evConfig = this.produceEvConfig(this)
                 let reader = new PartFileReader(file, 'readAsArrayBuffer', evConfig)
@@ -177,31 +176,18 @@
                 this.limit = this.maxSelect - this.imgList.length;
             },
             // 发送图片
-             sendPictures() {
+            sendPictures() {
                 console.log('OK');
+                console.log(this.previewList);
                 if (this.previewList.length > 0) {
                     // 往formData表单数组添加图片信息
                     this.previewList.forEach(file => {
                         this.formData.append('files', file, file.name)
                     })
-                return this.formData
+                    return this.formData
                 } else {
-                   return null
+                    return []
                 }
-                // this.$http.get('http://localhost:7777/test').then(res => {
-                //     console.log(res, '---getfo');
-                // })
-                // let config = {
-                //     headers: {
-                //         'Content-Type': 'multipart/form-data'
-                //     }
-                // }
-                // const {
-                //     data: pictures
-                // } = await this.$http.post('/homepage/view/uploadImg', this.formData, config)
-                // console.log(pictures);
-                // this.$http.post('http://localhost:7777/upload', this.formData, config).then(res => console.log(res))
-                // return this.formData
             },
             // 修改进度条和修改data数据
             produceEvConfig(vue) {
@@ -233,7 +219,6 @@
                                 vue.imgList.push(
                                     url
                                 );
-                                console.log(vue.imgList);
                             }
                             newReader.readAsDataURL(merge)
 
