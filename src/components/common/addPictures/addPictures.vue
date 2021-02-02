@@ -235,7 +235,14 @@
                         })
                     }
                 }
-            }
+            },
+            // 提交数据时重置formData previewList可以不清空 保存图片的存在
+            // 由父组件进行调用
+            deleteFormData() {
+                if (this.formData.has('files')) {
+                    this.formData.delete('files')
+                }
+            },
         },
 
         computed: {

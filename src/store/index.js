@@ -7,8 +7,16 @@ export default new Vuex.Store({
     state: {
         replySheetVisible: false,
         replyToWhoInfo: null,
+        /*  用于判断是回复二级评论 还是多级评论 
+         true为二级评论  false为多级评论 */
+        replyLevelFlag: null,
         // 点击帖子详情跳转带过去的信息
-        infoDetail: null,
+        infoDetail: {
+            // 数据
+            info: null,
+            // 是否置顶
+            isSetTop: null,
+        }
     },
     mutations: {
         // 点击事件触发一次 第一次true
@@ -22,11 +30,13 @@ export default new Vuex.Store({
         //     state.replySheetVisible = v;
         //     console.log('触发了vuex2', state);
         // }
-        changeReplytoWho(state, val) {
-            state.replyToWhoInfo = val
+        changeReplytoWho(state, [who, levelFlag]) {
+            this.replyLevelFlag = levelFlag;
+            state.replyToWhoInfo = who;
         },
-        changeInfoDetail(state, val) {
-            state.infoDetail = val
+        changeInfoDetail(state, [info, isSetTop]) {
+            state.infoDetail.info = info
+            state.infoDetail.isSetTop = isSetTop
         }
     },
     actions: {},

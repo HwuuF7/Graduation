@@ -43,21 +43,10 @@
                     <div class="homepage-moreinfo" v-infinite-scroll="loadTest" infinite-scroll-disabled="loading"
                         infinite-scroll-distance="10">
 
-
-                        <!--  @click.stop.capture="parentPush"
                         <detail-info v-for="info in topInfo" :key="info.infoId" isSetTop :model='info'
-                            :data-info_id='info.infoId'></detail-info>
+                            @click.native.stop="linkToMore(info,true)"></detail-info>
                         <detail-info v-for="info in mainInfo" :key='info.infoId' :model='info'
-                            :data-info_id='info.infoId'></detail-info> -->
-
-                        <detail-info v-for="info in topInfo" :key="info.infoId" isSetTop :model='info'
-                            :data-info_id='info.infoId' @click.native.stop="linkToMore(info)"></detail-info>
-                        <detail-info v-for="info in mainInfo" :key='info.infoId' :model='info'
-                            :data-info_id='info.infoId' @click.native.stop="linkToMore(info)"></detail-info>
-
-                        <!-- <detail-info :model='testModel' :data-info_id='testModel.infoId' />
-                        <detail-info :model='testModel2' :data-info_id='testModel2.infoId' /> -->
-
+                            @click.native.stop="linkToMore(info,false)"></detail-info>
 
                         <p class="testP" v-for="i in testP" :key="i+'c'">{{i}}*i</p>
 
@@ -122,43 +111,6 @@
 </template>
 
 <script>
-    // 以后会用到？
-    /*  homepageMenu: [{
-                    icon: 'news',
-                    content: '新闻时事'
-                }, {
-                    icon: 'jobs',
-                    content: '招聘求职'
-                }, {
-                    icon: 'cars',
-                    content: '校内拼车'
-                }, {
-                    icon: 'houses',
-                    content: '校园租房'
-                }, {
-                    icon: 'unused',
-                    content: '闲置二手'
-                }, {
-                    icon: 'counts',
-                    content: '优惠信息'
-                }, {
-                    icon: 'finds',
-                    content: '寻人寻物'
-                }, {
-                    icon: 'helps',
-                    content: '打听求助'
-                }, {
-                    icon: 'chats',
-                    content: '闲来无聊'
-                }, {
-                    icon: 'dinners',
-                    content: '约饭走起'
-                }],
-
- */
-
-
-
     import detailInfo from '@/components/common/detailInfo/detailInfo.vue';
     import other from '@/components/other/other.vue';
     import mine from '@/components/mine/mine.vue';
@@ -219,117 +171,14 @@
                 // 获取非置顶信息时的查询条件
                 mainForm: {
                     pageBegin: 0,
-                    pageSize: 4,
+                    pageSize: 30,
                 },
                 // 非置顶数据拉取完毕的标志
                 mainInfoEnd: false,
                 // 非置顶信息
                 mainInfo: [],
 
-                infoDetail: [{
-                    // 发帖ID
-                    infoId: '',
-                    // 用户ID
-                    userId: '',
-                    // 用户头像(后端返回数据如果为空 前端给一个默认头像)
-                    userAvatar: require('@/assets/imgs/test.png'),
-                    // 用户名(后端返回数据如果为空 前端给一个'匿名用户')
-                    userName: '芜湖',
-                    // 该信息是否需要置顶
-                    isSetTop: false,
-                    // 分类关键词(必填项)
-                    cateKeyWord: '生活用品',
-                    // 用户发表的信息内容(必填项)
-                    messageContent: 'hello world',
-                    // 如果是交易性质的信息,则返回详细介绍,否则为空对象
-                    transactionIntro: {
-                        // 交易类型: 出售/求购
-                        transType: '求购',
-                        // 交易价格: 具体值/面议
-                        transPrice: '面议'
-                    },
-                    // 描述标签(字符串数组- 可空)
-                    descriptionTags: ['电子产品', '准新正品', '当面验货'],
-                    // 展示图片(url数组- 可为空(0-6/9张))
-                    showPictures: [require('@/assets/imgs/test.jpg'), require('@/assets/imgs/test.jpg'),
-                        require('@/assets/imgs/test.jpg'), require('@/assets/imgs/test.jpg'), require(
-                            '@/assets/imgs/test.jpg'), require('@/assets/imgs/test.jpg')
-                    ],
-                    // 消息是否已经结束了
-                    isOver: false,
-                    // 发帖时间
-                    messageTime: new Date('2020/1/9 15:00').getTime(),
-                    // 浏览次数
-                    visitTimes: 10000,
-                }],
-                testModel: {
-                    // 发帖ID
-                    infoId: '123',
-                    // 用户头像(后端返回数据如果为空 前端给一个默认头像)
-                    userAvatar: require('@/assets/imgs/test.png'),
-                    // 用户名(后端返回数据如果为空 前端给一个'匿名用户')
-                    userName: '芜湖22',
-                    // 该信息是否需要置顶
-                    isSetTop: true,
-                    // 分类关键词(必填项)
-                    cateKeyWord: '生活用品22',
-                    // 用户发表的信息内容(必填项)
-                    messageContent: 'hello world22',
-                    // 如果是交易性质,则返回详细介绍
-                    // transactionIntro: {
-                    //     // 交易类型: 出售/求购
-                    //     transType: '出售',
-                    //     // 交易价格: 具体值/面议
-                    //     transPrice: '40'
-                    // },
-                    transactionIntro: {},
-                    // 描述标签(字符串数组- 可空)
-                    // descriptionTags: ['电子产品', '准新正品', '当面验货'],
-                    descriptionTags: [],
-                    // 展示图片(url数组- 可为空)
-                    // showPictures: [require('@/assets/imgs/test.png'), require('@/assets/imgs/test.png')],
-                    showPictures: [],
-                    // 消息是否已经结束了
-                    isOver: true,
-                    // 发帖时间
-                    messageTime: new Date('2020/12/15 15:00').getTime(),
-                    // 浏览次数
-                    visitTimes: 120,
-                },
-                testModel2: {
-                    // 发帖ID
-                    infoId: '123456',
-                    // 用户头像(后端返回数据如果为空 前端给一个默认头像)
-                    userAvatar: null,
-                    // 用户名(后端返回数据如果为空 前端给一个'匿名用户')
-                    userName: '芜湖223333',
-                    // 该信息是否需要置顶
-                    isSetTop: true,
-                    // 分类关键词(必填项)
-                    cateKeyWord: '生活用品223',
-                    // 用户发表的信息内容(必填项)
-                    messageContent: 'hello world223',
-                    // 如果是交易性质,则返回详细介绍
-                    // transactionIntro: {
-                    //     // 交易类型: 出售/求购
-                    //     transType: '出售',
-                    //     // 交易价格: 具体值/面议
-                    //     transPrice: '40'
-                    // },
-                    transactionIntro: {},
-                    // 描述标签(字符串数组- 可空)
-                    // descriptionTags: ['电子产品', '准新正品', '当面验货'],
-                    descriptionTags: [],
-                    // 展示图片(url数组- 可为空)
-                    // showPictures: [require('@/assets/imgs/test.png'), require('@/assets/imgs/test.png')],
-                    showPictures: [],
-                    // 消息是否已经结束了
-                    isOver: true,
-                    // 发帖时间
-                    messageTime: new Date('2020/12/15 15:00').getTime(),
-                    // 浏览次数
-                    visitTimes: 120,
-                },
+
                 // 记录点击的帖子ID 用于事件委托跳转
                 pushInfoId: '',
                 // 发消息弹出框
@@ -371,41 +220,37 @@
             },
             // 获取置顶信息
             async getTopInfo() {
+
+                const res = await this.$http.get('homepage/view/topInfo').catch(err => console.log(err))
+                if (!res) return this.$reToast('获取失败', 'icon-close')
                 const {
-                    data: res
-                } = await this.$http.get('homepage/view/topInfo').catch(err => this.$toast({
-                    message: '获取失败',
-                    iconClass: 'iconfont icon-close',
-                    className: 'toastIcon'
-                }))
-                if (res && res.length > 0) {
+                    data: infos
+                } = res
+                if (infos.length > 0) {
                     // 这个是一次性获取了
-                    this.topInfo = res
+                    this.topInfo = infos
                 }
-                console.log(res);
+                console.log(infos);
             },
             // 获取非置顶信息 
             // 返回值为获取到的数据条目
             async getMainInfo() {
-                const {
-                    data: res
-                } = await this.$http.get('/homepage/view/queryall', {
+                // this.$reToast('无更多数据', 'icon-tixing')
+                const res = await this.$http.get('/homepage/view/queryall', {
                     params: this.mainForm
-                }).catch(err => this.$toast({
-                    message: '获取失败',
-                    iconClass: 'iconfont icon-close',
-                    className: 'toastIcon'
-                }))
-                if (res && res.length > 0) {
-                    this.mainInfo = this.mainInfo.concat(res)
-                    // 加载到如期的数据数量
-                    if (res.length === this.mainForm.pageSize) {}
+                }).catch(err => console.log(err))
+                if (!res) return this.$reToast('获取失败', 'icon-close')
+                const {
+                    data: infos
+                } = res
+                if (infos.length > 0) {
+                    this.mainInfo = this.mainInfo.concat(infos)
                     // 加载到少的数量
-                    else {
-                        this.mainInfoEnd = true;
+                    if (infos.length !== this.mainForm.pageSize) {
+                        this.mainInfoEnd = true
                     }
-                    console.log(this.mainInfo, this.mainInfoEnd);
-                    this.mainForm.pageBegin += res.length
+                    // console.log(this.mainInfo, this.mainInfoEnd);
+                    this.mainForm.pageBegin += infos.length
                 } else {
                     // 比如总共15条数据 获取三次都是满5的获取完 那么再请求 就会res.length=0
                     // 数据拉取完结束
@@ -417,18 +262,14 @@
                 console.log('search', this.searchVal);
             },
             // 内部已经实现了节流 loading就代表了节流标志
-            // 节流获取信息
+            // 触底节流获取信息
             async loadTest() {
                 this.showSendBtn = false;
-                console.log('触发了');
+                // console.log('触发了');
                 this.loading = true;
                 if (this.mainInfoEnd) {
                     this.showSendBtn = true;
-                    return this.$toast({
-                        message: '无更多数据',
-                        iconClass: 'iconfont icon-tixing',
-                        className: 'toastIcon'
-                    })
+                    return this.$reToast('无更多数据', 'icon-tixing')
                 }
                 await this.getMainInfo()
                 this.loading = false;
@@ -457,24 +298,14 @@
                     }
                 });
             },
-            // 跳转帖子详情的事件委托
-            parentPush(ev) {
-                console.log('事件委托');
-                const targetTag = this.$parentPush(ev, 'detailInfo')
-                // 拿到帖子ID data-xx 只能小写
-                const infoID = targetTag.dataset.info_id;
-                // 将当前点击跳转的信息复制一份存入vuex
-                // this.changeInfoDetail()
-                // 跳转
-                this.$router.push(`/info/${infoID}`);
-            },
+
             // 帖子跳转至详情信息
-            linkToMore(info) {
+            linkToMore(info, isSetTop) {
                 const {
                     infoId
                 } = info
                 // 将当前点击跳转的信息复制一份存入vuex
-                this.changeInfoDetail(info)
+                this.changeInfoDetail([info, isSetTop])
                 this.$router.push(`/info/${infoId}`)
             },
             ...mapMutations(['changeInfoDetail'])

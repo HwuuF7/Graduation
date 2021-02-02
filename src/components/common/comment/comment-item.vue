@@ -54,7 +54,7 @@
                 // this.replySheetVisible = true
                 this.isShowReplySheet(true)
                 // console.log(comment, index);
-                this.changeReplytoWho(comment)
+                this.changeReplytoWho([comment, false])
                 console.log(this.$store.state.replyToWhoInfo);
             },
             // // 删除回复

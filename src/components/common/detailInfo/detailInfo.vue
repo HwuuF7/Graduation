@@ -2,8 +2,8 @@
     <div class="detailInfo" v-if="model">
         <!-- 头像区域 -->
         <div class="infoAvatar">
-            <img v-if="!!!model.headImg" src="@/assets/imgs/xiaojiang.png" alt="默认头像">
-            <img v-else :src="model.headImg" :alt="`${model.userName}头像`">
+            <img v-if='!!model.headImg' :src="model.headImg" :alt="`${model.userName}头像`">
+            <img v-else src="@/assets/imgs/xiaojiang.png" alt="默认头像">
         </div>
         <!-- 内容主体 -->
         <div class="infoMain">
@@ -11,19 +11,18 @@
             <p class="mainTop">
                 <span>{{model.userName}}</span>
                 <span class="setTop" v-if="isSetTop">置顶</span>
-                <span class="report" v-if="isMore">举报</span>
             </p>
             <!-- 中部详细信息 -->
             <div class="mainMid">
                 <!-- 分类关键词和内容主体 -->
                 <p class="mainMidP">
-                    <span>{{model.catogory}}</span>
+                    <span>{{model.innerTag}}</span>
                     {{model.content}}
                 </p>
                 <!-- 明码标价区域 -->
-                <div v-if="isTransact">
-                    <p class='mainMidP'>交易类型：{{model.infoExplains.purchase.purchaseType}}</p>
-                    <p class="mainMidP"> 价格：{{model.infoExplains.purchase.purchasePrice}}</p>
+                <div v-if="isUnused">
+                    <p class='mainMidP'>交易类型：{{model.catogory}}</p>
+                    <p class="mainMidP"> 价格：{{model.price}}</p>
                 </div>
 
             </div>
@@ -56,11 +55,8 @@
         props: {
             model: Object,
             isSetTop: Boolean,
-            isMore: Boolean
         },
-        created() {
-            console.log(this.model);
-        },
+        created() {},
         data() {
             return {
 
@@ -68,8 +64,8 @@
         },
         methods: {},
         computed: {
-            isTransact() {
-                return !!this.model.infoExplains.purchase
+            isUnused() {
+                return this.model.type === 'unUsed'
             },
             hasTags() {
                 //  对空数组进行判断

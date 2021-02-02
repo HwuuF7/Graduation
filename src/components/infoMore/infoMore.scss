@@ -5,9 +5,9 @@
 
     // 联系方式
     .info-contact {
-        border: 1px solid red;
         padding: .9rem .9rem 0 .9rem;
 
+        // 分界标题
         >p {
             font-size: .9rem;
             padding-bottom: .6rem;
@@ -28,9 +28,37 @@
         >div {
             position: relative;
             padding: .9rem 0;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
 
             >p {
                 line-height: 1.6;
+                text-align: center;
+                border-radius: 20%;
+
+                border-bottom: {
+                    style: inset;
+                    color: hotpink;
+                }
+
+                width: 3rem;
+                height: 3rem;
+                color: #03506f;
+                background-color: azure;
+
+                >span {
+                    display: inline-block;
+                    transform: translateY(-.2rem);
+                    font-size: 2.5rem;
+                }
+
+                &.highLight {
+                    background-color: floralwhite;
+                    color: hotpink;
+                    border-bottom-color: azure;
+                    transition: color .3s ease-out;
+                }
             }
 
             p.contact-impart {
@@ -108,6 +136,14 @@
             align-items: center;
             justify-content: space-between;
             border-bottom: 1px solid #fbf6f0;
+        }
+
+        .emptyComments {
+            background: url('../../assets/imgs/empty.png') no-repeat center center;
+            background-size: 12rem;
+            width: 100%;
+            min-height: 21.6rem;
+            height: 100%;
         }
     }
 

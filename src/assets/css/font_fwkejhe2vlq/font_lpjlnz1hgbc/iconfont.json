@@ -83,6 +83,13 @@
       "unicode_decimal": 58908
     },
     {
+      "icon_id": "4186772",
+      "name": "收藏",
+      "font_class": "shoucang",
+      "unicode": "e630",
+      "unicode_decimal": 58928
+    },
+    {
       "icon_id": "5270863",
       "name": "确认-充值成功",
       "font_class": "queren",
@@ -135,8 +142,8 @@
       "icon_id": "8783395",
       "name": "失物招领",
       "font_class": "dibudaohanglan-",
-      "unicode": "e630",
-      "unicode_decimal": 58928
+      "unicode": "e631",
+      "unicode_decimal": 58929
     },
     {
       "icon_id": "9402945",
@@ -188,11 +195,25 @@
       "unicode_decimal": 58898
     },
     {
+      "icon_id": "12279056",
+      "name": "收藏",
+      "font_class": "Collection_icon",
+      "unicode": "e68f",
+      "unicode_decimal": 59023
+    },
+    {
       "icon_id": "12646128",
       "name": "密码重置",
       "font_class": "mimazhongzhi",
       "unicode": "e731",
       "unicode_decimal": 59185
+    },
+    {
+      "icon_id": "13409747",
+      "name": "收藏",
+      "font_class": "shoucang1",
+      "unicode": "e654",
+      "unicode_decimal": 58964
     },
     {
       "icon_id": "13579750",
@@ -221,6 +242,13 @@
       "font_class": "zhaopinshenqing",
       "unicode": "e60b",
       "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "14488532",
+      "name": "收藏",
+      "font_class": "ziyuan141",
+      "unicode": "e788",
+      "unicode_decimal": 59272
     },
     {
       "icon_id": "15644313",
@@ -267,7 +295,7 @@
     {
       "icon_id": "18460200",
       "name": "收藏",
-      "font_class": "shoucang",
+      "font_class": "shoucang2",
       "unicode": "e603",
       "unicode_decimal": 58883
     },

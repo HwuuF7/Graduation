@@ -87,8 +87,8 @@
                 // 闲置二手交易模块时 价格选择了面议
                 discuss: false,
                 messageForm: {
-                    // 用户标识 先写死
-                    openId: 'oAXSp6XInXomKM783mGi-Y2JPiKY',
+                    // 用户标识 先写死 用的'总助的openID'
+                    openId: 'oAXSp6Wo7ugTt8hQ2EJw5Jmim4YE',
                     // 大分类 -->catogory ['招聘','求职']
                     catogory: '请选择',
                     // 标签 
@@ -236,7 +236,6 @@
                 }
 
                 const picForm = this.$refs.addPictures.sendPictures()
-                console.log('发布2', this.messageForm);
 
                 // post请求头配置
                 let config = {
@@ -250,9 +249,10 @@
                 if (picForm.length === 0) {
                     // 数据转化
                     const postMsg = new URLSearchParams(this.messageForm).toString()
-                    finalRes = await this.$http.post('/homepage/view/addInfo', postMsg, config).catch(err => {
-                        console.log(err);
-                    })
+                    finalRes = await this.$http.post('/homepage/view/addInfo', postMsg, config).catch(
+                        err => {
+                            console.log(err);
+                        })
 
 
                 } else {
@@ -285,7 +285,7 @@
                     finalRes = await this.$http.post('/homepage/view/addInfo', postMsg, config).catch(err => {
                         console.log(err);
                     })
-
+                    console.log('发布2', this.messageForm);
                 }
 
                 // 这里是请求错误
@@ -350,8 +350,11 @@
                     // 相关描述
                     content: '',
                 };
+                this.discuss = false;
                 this.specificTags = [];
                 this.specificDesc = '请选择意图';
+                // 调用添加图片组件的清除formData
+                this.$refs.addPictures.deleteFormData()
                 this.changeMessageForm(this.getSort)
             },
             // 发送信息成功的提示信息

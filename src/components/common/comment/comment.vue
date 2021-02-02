@@ -39,70 +39,7 @@
         },
         data() {
             return {
-                // 评论的数据格式
-                /*  commentInfo: [{
-                        // 评论人的ID
-                        commentatorID: '123',
-                        // 一级评论人
-                        commentator: '小老妹',
-                        // 一级评论内容
-                        content: '你真棒',
-                        // 回复列表
-                        replyLists: [{
-                                commentatorID: '456',
-                                commentator: '清风自来',
-                                replyToID: '123',
-                                replyToWho: '小老妹',
-                                content: '真的吗？',
-                                replyLists: [{
-                                    commentatorID: '123',
-                                    commentator: '小老妹',
-                                    replyToID: '456',
-                                    replyToWho: '清风自来',
-                                    content: '真的哦',
-                                    replyLists: []
-                                }, {
-                                    commentatorID: '789',
-                                    commentator: '其他人',
-                                    replyToID: '456',
-                                    replyToWho: '清风自来',
-                                    content: '其他人的回复',
-                                    replyLists: []
-                                }]
-                            },
-                            {
-                                commentatorID: '001',
-                                commentator: '菜狗',
-                                replyToID: '123',
-                                replyToWho: '小老妹',
-                                content: '红豆泥',
-                                replyLists: [{
-                                    commentatorID: '789',
-                                    commentator: '其他人',
-                                    replyToID: '001',
-                                    replyToWho: '菜狗',
-                                    content: '你可真是只菜狗',
-                                    replyLists: [{
-                                        commentatorID: '001',
-                                        commentator: '菜狗',
-                                        replyToID: '789',
-                                        replyToWho: '其他人',
-                                        content: '你才是',
-                                        replyLists: []
-                                    }]
-                                }]
-                            }
-                        ]
-                    },
-                    {
-                        commentatorID: '456',
-                        commentator: '清风自来',
-                        replyToID: '123',
-                        replyToWho: '小老妹',
-                        content: '厉害厉害',
-                        replyLists: []
-                    }
-                ]*/
+
             }
         },
         //生命周期 - 创建完成（访问当前this实例）

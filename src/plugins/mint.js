@@ -54,7 +54,7 @@ const reToast = function (msg, icon) {
     Toast({
         message: msg,
         iconClass: `iconfont ${icon}`,
-        className: 'toastIcon'
+        className: 'toastIcon infoMore-toastClass'
     })
 }
 Vue.prototype.$reToast = reToast;
