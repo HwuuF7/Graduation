@@ -88,7 +88,7 @@
                 discuss: false,
                 messageForm: {
                     // 用户标识 先写死 用的'总助的openID'
-                    openId: 'oAXSp6Wo7ugTt8hQ2EJw5Jmim4YE',
+                    openId: 'oAXSp6YZ5f2589pqQ7k5TwE9oZn0',
                     // 大分类 -->catogory ['招聘','求职']
                     catogory: '请选择',
                     // 标签 
@@ -249,7 +249,7 @@
                 if (picForm.length === 0) {
                     // 数据转化
                     const postMsg = new URLSearchParams(this.messageForm).toString()
-                    finalRes = await this.$http.post('/homepage/view/addInfo', postMsg, config).catch(
+                    finalRes = await this.$http.post('/info/view/addInfo', postMsg, config).catch(
                         err => {
                             console.log(err);
                         })
@@ -257,7 +257,7 @@
 
                 } else {
                     // 先发图片
-                    const res = await this.$http.post('/homepage/view/uploadImg', picForm, {
+                    const res = await this.$http.post('/info/view/uploadImg', picForm, {
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         }
@@ -282,7 +282,7 @@
                     this.messageForm.pictures = pictures;
                     // 数据转化
                     const postMsg = new URLSearchParams(this.messageForm).toString()
-                    finalRes = await this.$http.post('/homepage/view/addInfo', postMsg, config).catch(err => {
+                    finalRes = await this.$http.post('/info/view/addInfo', postMsg, config).catch(err => {
                         console.log(err);
                     })
                     console.log('发布2', this.messageForm);
@@ -340,7 +340,7 @@
                 // 重置数据
                 this.messageForm = {
                     // 用户标识 先写死
-                    openId: 'oAXSp6Wo7ugTt8hQ2EJw5Jmim4YE',
+                    openId: 'oAXSp6YZ5f2589pqQ7k5TwE9oZn0',
                     // 大分类 -->catogory ['招聘','求职']
                     catogory: '请选择',
                     // 标签 

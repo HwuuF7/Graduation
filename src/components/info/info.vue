@@ -212,7 +212,7 @@
             async getSwipperInfo() {
                 const {
                     data: res
-                } = await this.$http.get('/homepage/carouselAd').catch(err => console.log(err))
+                } = await this.$http.get('/info/carouselAd').catch(err => console.log(err))
                 // 接收到的数据为对象数组
                 // 对轮播顺序进行排序
                 this.swipperInfo = res.sort((a, b) => a.levelShow - b.levelShow)
@@ -221,7 +221,7 @@
             // 获取置顶信息
             async getTopInfo() {
 
-                const res = await this.$http.get('homepage/view/topInfo').catch(err => console.log(err))
+                const res = await this.$http.get('/info/view/topInfo').catch(err => console.log(err))
                 if (!res) return this.$reToast('获取失败', 'icon-close')
                 const {
                     data: infos
@@ -236,7 +236,7 @@
             // 返回值为获取到的数据条目
             async getMainInfo() {
                 // this.$reToast('无更多数据', 'icon-tixing')
-                const res = await this.$http.get('/homepage/view/queryall', {
+                const res = await this.$http.get('/info/view/queryall', {
                     params: this.mainForm
                 }).catch(err => console.log(err))
                 if (!res) return this.$reToast('获取失败', 'icon-close')
@@ -257,6 +257,7 @@
                     console.log('END');
                     this.mainInfoEnd = true;
                 }
+                console.log(infos);
             },
             searchInfo() {
                 console.log('search', this.searchVal);

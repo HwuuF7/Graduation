@@ -8,8 +8,8 @@
         <div class="show-img">
             <ul class="img-list">
                 <li v-for="(url,index) in imgList" :key="index">
-                    <img class="del" src="../../../assets/imgs/money.png" @click.stop="delImg(index)" />
-                    <img :src="url">
+                    <!-- <img class="del" src="../../../assets/imgs/money.png" @click.stop="delImg(index)" /> -->
+                    <img :src="url" @click.stop="previewPicture(url,index)">
                 </li>
                 <li class="loadingLi" v-show="loadingPopVisible">
                     <span ref='loadingLi'></span>
@@ -22,16 +22,24 @@
             </ul>
         </div>
 
-
+        <!-- 加载中的弹出框 -->
         <mt-popup v-model="loadingPopVisible" popup-transition="popup-fade" :closeOnClickModal='false'>
             <div class="loading-toast">
                 <mt-spinner type="fading-circle" :size='38'></mt-spinner>
                 <p>上传中</p>
             </div>
-
         </mt-popup>
 
-
+        <!-- 预览图片的弹出框 -->
+        <mt-popup v-model="previewPopVisible" popup-transition="popup-fade" class="previewPicture">
+            <div class="pictureBox" @click.stop="previewPopVisible = false" ref="pictureBox">
+                <!-- <img src="../../../assets/imgs/long.jpg" alt=""> -->
+                <!-- <img src="../../../assets/imgs/7f.png" alt=""> -->
+            </div>
+            <div class="deleteBox" @click.stop="delImg">
+                <span class="iconfont icon-lajitong fz-15"></span>
+            </div>
+        </mt-popup>
     </div>
 </template>
 
@@ -115,7 +123,16 @@
                 formData: new FormData(),
                 // 这个存的是读取时的file结构
                 previewList: [],
+                // 加载中弹出框
                 loadingPopVisible: false,
+                // 预览图片弹出框
+                previewPopVisible: false,
+                preDelInfo: {
+                    // 预览或删除的url
+                    url: null,
+                    // 图片Index 删除用
+                    index: null,
+                }
             }
         },
         created() {
@@ -169,11 +186,24 @@
                 this.size += file.size;
             },
             // 删除图片
-            delImg(index) {
+            delImg() {
+                const {
+                    index
+                } = this.preDelInfo
                 this.size -= this.previewList[index].size;
                 this.previewList.splice(index, 1);
                 this.imgList.splice(index, 1);
                 this.limit = this.maxSelect - this.imgList.length;
+                // 关闭预览弹出框
+                this.previewPopVisible = false;
+            },
+            // 查看图片 
+            previewPicture(url, index) {
+                this.preDelInfo.url = url;
+                this.preDelInfo.index = index;
+                this.$refs.pictureBox.style.backgroundImage = `url(${url})`;
+                // console.log('ccc~', this.preDelInfo);
+                this.previewPopVisible = true;
             },
             // 发送图片
             sendPictures() {
@@ -331,6 +361,47 @@
         ::v-deep .v-modal {
             background: #fff;
             opacity: 0;
+        }
+
+        .mint-popup.previewPicture {
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, .95);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            div.pictureBox {
+                flex-grow: 1;
+                width: 100%;
+                // display: flex;
+                // justify-content: center;
+                // align-items: center;
+                // background-image: url('../../../assets/imgs/long.jpg');
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: contain;
+
+            }
+
+            div.deleteBox {
+                color: #fff;
+                height: 3.2rem;
+                min-height: 3.2rem;
+                line-height: 3.2rem;
+                flex-basis: 3.2rem;
+                flex-shrink: 0;
+                flex-grow: 0;
+                width: 100%;
+                text-align: center;
+                background: #374045;
+
+                >span {
+                    vertical-align: middle;
+                }
+            }
         }
     }
 </style>

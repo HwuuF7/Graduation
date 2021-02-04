@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <!-- <link rel="stylesheet" href="less/event.css" /> -->
+    <script>
+        (function () {
+            var html = document.documentElement;
+            var hWidth = html.getBoundingClientRect().width;
+            var scale = hWidth / 15;
+            html.style.fontSize = scale + 'px';
+        })()
+
+        document.addEventListener('touchstart', function (ev) {
+            ev.preventDefault();
+        })
+    </script>
+    <title>图片无缝滚动</title>
+</head>
+
+<body>
+    <section>
+        <ul id="list">
+            <li><img src="./7f.png" /></li>
+            <li><img src="./7f.png" /></li>
+
+            <li><img src="./tuodan.png" /></li>
+            <li><img src="./7f.png" /></li>
+            <li><img src="./7f.png" /></li>
+
+
+            <!--  <li><img src="img/img.jpg"/></li>
+    <li><img src="img/img2.jpg"/></li>
+    <li><img src="img/img3.jpg"/></li>
+    <li><img src="img/img4.jpg"/></li>
+    <li><img src="img/img.jpg"/></li> -->
+        </ul>
+        <div id="dot"><a class="active" href="#"></a><a href="#"></a><a href="#"></a><a href="#"></a></div>
+    </section>
+    <script>
+        window.onload = function () {
+            var oList = document.querySelector('#list');
+            var aLi = oList.querySelectorAll('li');
+            var oDot = document.querySelector('#dot');
+            var oA = oDot.querySelectorAll('a');
+            var len = aLi.length;
+            var num = oA.length;
+            var disX = 0;
+            var disL = 0;
+            var dL = 0;
+            var w = aLi[0].offsetWidth;
+            var n = 0;
+
+            oList.addEventListener('touchstart', start);
+            oList.addEventListener('touchmove', move);
+            oList.addEventListener('touchend', end);
+
+
+            function start(ev) {
+                var ev = ev.changedTouches[0];
+                disX = ev.pageX;
+                disL = oList.offsetLeft;
+                oList.style.transition = null;
+                if (disL == 0) {
+                    disL = -w * num;
+                    oList.style.left = disL + 'px';
+                }
+                //console.log(w*(len-1))
+                if (disL == -w * (len - 1)) {
+                    disL = -w;
+                    oList.style.left = disL + 'px';
+                }
+            }
+
+            function move(ev) {
+                var ev = ev.changedTouches[0];
+                dL = ev.pageX - disX;
+                oList.style.left = disL + dL + 'px';
+            }
+
+            function end(ev) {
+                var ev = ev.changedTouches[0];
+                var scale = Math.round(dL / w);
+                //console.log(scale)
+                oList.style.left = disL + scale * w + 'px';
+                disL = oList.offsetLeft;
+                if (disL == 0) {
+                    disL = -w * num;
+                }
+                if (disL == -w * (len - 1)) {
+                    disL = -w;
+                }
+                n = Math.abs((disL + w) / w);
+                for (var i = 0; i < num; i++) {
+                    oA[i].className = '';
+                }
+
+                oA[n].className = 'active';
+
+
+            }
+
+
+
+        }
+    </script>
+</body>
+
+</html>

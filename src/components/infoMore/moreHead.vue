@@ -31,26 +31,57 @@
             </div>
             <!-- 图片展示区域 -->
             <div class="bomPictures" v-if="hasPictures">
-                <img v-for="(pic,picIndex) in model.pictures" :key='picIndex' :src="pic" alt="你看不到的秘密">
+                <img v-for="(pic,picIndex) in model.pictures" :key='picIndex' :src="pic" alt="你看不到的秘密"
+                    @click.stop="previewPics(picIndex)">
             </div>
             <!-- 时间与浏览次数 -->
             <p class="bomVisits">
                 {{model.createTime | timeFormat}}发布，{{model.viewNum ? model.viewNum : 0}}人浏览
             </p>
         </footer>
+
+
+        <mt-popup v-model="previewVisible" popup-transition="popup-fade">
+
+            <preview :pictures='model.pictures' @closePop='closePreview' :see='previewVisible'
+                :preIndex='activePicIndex' />
+        </mt-popup>
     </div>
 </template>
 
 <script>
+    import preview from '@/components/common/preview/preview.vue';
     export default {
+        components: {
+            preview
+        },
         props: {
             model: Object,
             isSetTop: Boolean,
         },
         data() {
             return {
-
+                // 预览图片弹出框
+                previewVisible: false,
+                // 显示当前预览的第几张
+                activePicIndex: 0,
             }
+        },
+        created() {
+            // console.log(this.$u.config.v);
+        },
+        methods: {
+            previewPics(pIndex) {
+                // console.log('预览图片---', pIndex);
+                // 更改显示的图片
+                this.activePicIndex = pIndex;
+                this.previewVisible = true;
+            },
+            // 关闭预览图片
+            closePreview() {
+                // console.log('关闭预览~');
+                this.previewVisible = false;
+            },
         },
         computed: {
             isUnused() {
@@ -62,6 +93,10 @@
             },
             hasPictures() {
                 return this.model.pictures.length > 0
+            },
+            // 预览图片的数量
+            previewLength() {
+                return this.model.pictures.length
             },
         }
     }
@@ -190,6 +225,17 @@
                 margin-top: .6rem;
                 color: #999;
             }
+        }
+
+        .mint-popup {
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, .95);
+            color: #fff;
+
+
+
+
         }
     }
 </style>

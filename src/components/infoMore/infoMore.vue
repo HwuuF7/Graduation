@@ -108,19 +108,7 @@
                     console.log(err)
                 )
                 if (!res) return this.$reToast('获取评论信息失败', ' icon-close')
-                // 递归改造数据
-                /*  function appendReplyLists(replyArr, replyID) {
-                     let lists = []
-                     if (Array.isArray(replyArr) && replyArr.length > 0) {
-                         replyArr.forEach(item => {
-                             if (item.replyCommentId === replyID) {
-                                 lists.push(item)
-                                 item.replyLists = appendReplyLists(replyArr, item.commentId)
-                             }
-                         })
-                     }
-                     return lists
-                 } */
+
                 // 解构出评论数据
                 const {
                     data: comments
