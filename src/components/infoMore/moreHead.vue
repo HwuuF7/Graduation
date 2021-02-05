@@ -31,8 +31,10 @@
             </div>
             <!-- 图片展示区域 -->
             <div class="bomPictures" v-if="hasPictures">
-                <img v-for="(pic,picIndex) in model.pictures" :key='picIndex' :src="pic" alt="你看不到的秘密"
-                    @click.stop="previewPics(picIndex)">
+                <div v-for="(pic,picIndex) in model.pictures" :key='picIndex' @click.stop="previewPics(picIndex)">
+                    <img :src="pic" alt="你看不到的秘密">
+                </div>
+
             </div>
             <!-- 时间与浏览次数 -->
             <p class="bomVisits">
@@ -185,18 +187,54 @@
 
                 span {
                     flex: 0 0 auto;
-                    border-radius: .1rem;
+                    border-top-left-radius: .7rem;
+                    border-bottom-right-radius: .7rem;
                     border: 1px solid;
-                    border-right: none;
+                    border-left-width: .3rem;
+                    border-top-width: .1rem;
+                    margin-right: .2rem;
                     padding: 0 .3rem;
                     background: #fafafa;
+                    background-position: top right;
                     font-size: .6rem;
                     height: 1.4rem;
                     line-height: 1.4rem;
                     color: #748aa0;
+                    position: relative;
 
                     &:last-child {
-                        border-right: 1px solid;
+                        margin-right: 0;
+                    }
+
+                    &::before {
+                        content: '';
+                        position: absolute;
+                        top: -1px;
+                        right: -2px;
+                        width: .3rem;
+                        height: 100%;
+                        background: cadetblue;
+                        border-bottom-right-radius: .7rem;
+                    }
+
+                    &::after {
+                        content: '';
+                        position: absolute;
+                        left: 0;
+                        bottom: -1px;
+
+                        // width: calc(.4rem + 1px);
+                        // height: calc(100% + 2px);
+                        // border-bottom-left-radius: .7rem;
+                        // background: skyblue;
+                        border: {
+                            width: 0;
+                            left-width: .6rem;
+                            top-width: .6rem;
+                            style: solid;
+                            color: transparent;
+                            left-color: #65d6ce;
+                        }
                     }
                 }
 
@@ -206,14 +244,22 @@
             .bomPictures {
                 margin-top: .4rem;
                 width: calc(100vw - 5.5rem);
+                display: flex;
+                flex-flow: row wrap;
 
-                img {
+                div {
                     width: 5rem;
                     height: 5rem;
                     margin: .4rem .4rem 0 0;
+
+                    >img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }
                 }
 
-                img:nth-child(3n) {
+                div:nth-child(3n) {
                     margin-right: 0;
                 }
 

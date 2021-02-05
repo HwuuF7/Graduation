@@ -4,10 +4,11 @@
 
     <!-- 发消息表单 -->
     <div class='messageSort'>
-        <mt-field label="意图" disableClear @focus.native.capture="selectPurpose" v-model="messageForm.catogory">
+        <mt-field label="意图" placeholder='请选择消息意图' disableClear @focus.native.capture="selectPurpose"
+            v-model="messageForm.catogory">
         </mt-field>
-        <mt-field label="行业" disableClear @focus.native.capture="selectProfession" v-model="messageForm.innerTag"
-            v-show='showInnerTags'>
+        <mt-field label="分类" placeholder='请选择具体分类' disableClear @focus.native.capture="selectProfession"
+            v-model="messageForm.innerTag" v-show='showInnerTags'>
         </mt-field>
 
 
@@ -30,7 +31,7 @@
 
         <!-- 闲置二手模块 -->
         <div class="unused-sort" v-if="showSort('unused')">
-            <mt-field label="价格" placeholder="价格" v-model="messageForm.price" :disabled='discuss'>
+            <mt-field label="价格" placeholder="请输入价格或选择面议" v-model="messageForm.price" :disabled='discuss'>
                 <div class='unused-discuss'>
                     <input type="checkbox" name="discuss" id="discussRadio" hidden v-model="discuss">
                     <label for="discussRadio">
@@ -90,7 +91,7 @@
                     // 用户标识 先写死 用的'总助的openID'
                     openId: 'oAXSp6YZ5f2589pqQ7k5TwE9oZn0',
                     // 大分类 -->catogory ['招聘','求职']
-                    catogory: '请选择',
+                    catogory: '',
                     // 标签 
                     tags: [],
                     // 图片
@@ -249,7 +250,7 @@
                 if (picForm.length === 0) {
                     // 数据转化
                     const postMsg = new URLSearchParams(this.messageForm).toString()
-                    finalRes = await this.$http.post('/info/view/addInfo', postMsg, config).catch(
+                    finalRes = await this.$http.post('/info/release', postMsg, config).catch(
                         err => {
                             console.log(err);
                         })
@@ -282,7 +283,7 @@
                     this.messageForm.pictures = pictures;
                     // 数据转化
                     const postMsg = new URLSearchParams(this.messageForm).toString()
-                    finalRes = await this.$http.post('/info/view/addInfo', postMsg, config).catch(err => {
+                    finalRes = await this.$http.post('/info/release', postMsg, config).catch(err => {
                         console.log(err);
                     })
                     console.log('发布2', this.messageForm);

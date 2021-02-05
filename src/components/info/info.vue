@@ -10,9 +10,20 @@
                 <mt-tab-container-item id="UESTC" class="uestc-info">
 
                     <!-- 搜索框 -->
-                    <mt-search v-model="searchVal" cancel-text="取消" placeholder="请输入搜索关键字"
-                        @keyup.enter.native="searchInfo">
-                    </mt-search>
+                    <div class="homepage-search">
+                        <div class="search-cell">
+                            <div class="search-field">
+                                <div class="search-icon mintui mintui-search "></div>
+                                <div class="search-content">
+                                    <input type="search" placeholder="请输入搜索关键词" v-model.trim='searchVal'
+                                        @keyup.enter="searchInfo">
+                                    <span class="iconfont icon-qingchu" v-show="clearIconShow"
+                                        @click="searchVal = ''"></span>
+                                </div>
+                                <span class="search-sure" @click="searchInfo">确定</span>
+                            </div>
+                        </div>
+                    </div>
 
 
                     <!-- 轮播图 -->
@@ -85,16 +96,16 @@
         <!-- 底部跳转栏区域 -->
         <mt-tabbar v-model="selected" fixed>
             <mt-tab-item id="UESTC">
-                <img slot="icon" src="@/assets/imgs/test.png">
-                成电
+                <span slot="icon" class="iconfont icon-zhuye fz-12"></span>
+                <span>成电</span>
             </mt-tab-item>
             <mt-tab-item id="CHAT">
-                <img slot="icon" src="@/assets/imgs/test.png">
-                CHAT
+                <span slot="icon" class="iconfont icon-drxx59 fz-12"></span>
+                <span>CHAT</span>
             </mt-tab-item>
             <mt-tab-item id="MINE">
-                <img slot="icon" src="@/assets/imgs/test.png">
-                我的
+                <span slot="icon" class="iconfont icon-wode fz-12"></span>
+                <span>我的</span>
             </mt-tab-item>
         </mt-tabbar>
 
@@ -260,6 +271,7 @@
                 console.log(infos);
             },
             searchInfo() {
+                if (this.searchVal === '') return this.$reToast('输入不能为空！', 'icon-cuowu')
                 console.log('search', this.searchVal);
             },
             // 内部已经实现了节流 loading就代表了节流标志
@@ -310,6 +322,12 @@
                 this.$router.push(`/info/${infoId}`)
             },
             ...mapMutations(['changeInfoDetail'])
+        },
+        computed: {
+            // 搜索框的清除按钮是否可见
+            clearIconShow() {
+                return this.searchVal !== ''
+            }
         },
         watch: {
             selected(newVal) {

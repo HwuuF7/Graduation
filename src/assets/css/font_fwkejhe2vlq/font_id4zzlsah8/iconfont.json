@@ -20,6 +20,20 @@
       "unicode_decimal": 58902
     },
     {
+      "icon_id": "788028",
+      "name": "主页",
+      "font_class": "zhuye",
+      "unicode": "e648",
+      "unicode_decimal": 58952
+    },
+    {
+      "icon_id": "901937",
+      "name": "笑脸娃娃",
+      "font_class": "xiaolianwawa",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
       "icon_id": "963948",
       "name": "二手设备",
       "font_class": "ershoushebei",
@@ -132,6 +146,13 @@
       "unicode_decimal": 58896
     },
     {
+      "icon_id": "7387043",
+      "name": "我的",
+      "font_class": "wode",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
       "icon_id": "8094207",
       "name": "确认",
       "font_class": "queren1",
@@ -184,8 +205,8 @@
       "icon_id": "10635083",
       "name": "打叉",
       "font_class": "close",
-      "unicode": "e607",
-      "unicode_decimal": 58887
+      "unicode": "e608",
+      "unicode_decimal": 58888
     },
     {
       "icon_id": "10706941",
@@ -226,8 +247,8 @@
       "icon_id": "13646837",
       "name": "邮箱",
       "font_class": "youxiang",
-      "unicode": "e608",
-      "unicode_decimal": 58888
+      "unicode": "e609",
+      "unicode_decimal": 58889
     },
     {
       "icon_id": "13763395",
@@ -258,6 +279,13 @@
       "unicode_decimal": 59067
     },
     {
+      "icon_id": "16039777",
+      "name": "我的",
+      "font_class": "wode1",
+      "unicode": "e63f",
+      "unicode_decimal": 58943
+    },
+    {
       "icon_id": "17822452",
       "name": "邮箱",
       "font_class": "youxiang1",
@@ -268,8 +296,8 @@
       "icon_id": "18202483",
       "name": "线性优惠券",
       "font_class": "xianxingyouhuiquan",
-      "unicode": "e609",
-      "unicode_decimal": 58889
+      "unicode": "e60a",
+      "unicode_decimal": 58890
     },
     {
       "icon_id": "18311746",
@@ -310,22 +338,22 @@
       "icon_id": "18460208",
       "name": "验证码",
       "font_class": "yanzhengma",
-      "unicode": "e60a",
-      "unicode_decimal": 58890
+      "unicode": "e60c",
+      "unicode_decimal": 58892
     },
     {
       "icon_id": "18460210",
       "name": "我的",
-      "font_class": "wode",
-      "unicode": "e60c",
-      "unicode_decimal": 58892
+      "font_class": "wode2",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
     },
     {
       "icon_id": "18460213",
       "name": "作品",
       "font_class": "zuopin",
-      "unicode": "e60d",
-      "unicode_decimal": 58893
+      "unicode": "e60e",
+      "unicode_decimal": 58894
     },
     {
       "icon_id": "18522236",
@@ -368,6 +396,13 @@
       "font_class": "shounaxiang",
       "unicode": "e615",
       "unicode_decimal": 58901
+    },
+    {
+      "icon_id": "19728639",
+      "name": "笑脸",
+      "font_class": "smile-fill",
+      "unicode": "ebf1",
+      "unicode_decimal": 60401
     }
   ]
 }

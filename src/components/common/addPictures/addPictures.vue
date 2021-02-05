@@ -298,7 +298,7 @@
                 flex-flow: row wrap;
 
                 >li {
-                    border: 1px solid red;
+                    // border: 1px solid red;
                     flex: 0 0 calc((100vw - .55rem *3 - 1.8rem)/3);
                     height: calc((100vw - .55rem *3 - 1.8rem)/3);
                     text-align: center;
@@ -309,6 +309,7 @@
                     >img {
                         width: 100%;
                         height: 100%;
+                        object-fit: contain;
                     }
                 }
 
