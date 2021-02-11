@@ -17,7 +17,7 @@
                 <!-- 分类关键词和内容主体 -->
                 <p class="mainMidP">
                     <span>{{model.innerTag}}</span>
-                    {{model.content}}
+                    {{model.content | emojiDecode}}
                 </p>
                 <!-- 明码标价区域 -->
                 <div v-if="isUnused">

@@ -12,3 +12,21 @@ export function timeFormat(timestamp) {
         if (res !== 0) return `${res}${tags[i]}前`;
     }
 }
+
+// 封装含表情内容的解码
+export function emojiDecode(message) {
+    let patt = /&#\d+;/g;
+    let H, L, code;
+    let matchArr = message.match(patt) || [];
+    matchArr.forEach((item) => {
+        code = item.replace('&#', '').replace(';', '');
+        // 高位
+        H = Math.floor((code - 0x10000) / 0x400) + 0xD800;
+        // 低位
+        L = (code - 0x10000) % 0x400 + 0xDC00;
+        code = "&#" + code + ";";
+        let emoji = String.fromCharCode(H, L);
+        message = message.replace(code, emoji);
+    })
+    return message
+}

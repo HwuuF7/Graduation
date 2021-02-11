@@ -12,22 +12,13 @@
                         <span class="commentator">{{comment.replyCommentUserName}}</span>
                         <span>:</span>
                     </template>
-                    <span class="content">{{comment.content}}</span>
+                    <span class="content">{{comment.content | emojiDecode}}</span>
                 </p>
 
                 <comment-item :replyInfo='comment.replyLists' :secondary='true'></comment-item>
             </li>
         </ul>
-        <!-- 点击对应评论进行回复的弹出选择框 -->
-        <!-- <mt-actionsheet :actions="replySheetActions" v-model="replySheetVisible">
-        </mt-actionsheet> -->
     </div>
-
-
-
-
-
-
 
 </template>
 
@@ -39,15 +30,6 @@
         name: 'commentItem',
         // secondary代表二级评论的嵌套评论
         props: ['replyInfo', 'secondary'],
-        data() {
-            return {
-                // replySheetVisible: false,
-            }
-        },
-        created() {},
-        mounted() {
-
-        },
         methods: {
             // 监听回复谁
             catchReplyEvent(comment, index) {
@@ -57,29 +39,8 @@
                 this.changeReplytoWho([comment, false])
                 console.log(this.$store.state.replyToWhoInfo);
             },
-            // // 删除回复
-            // deleteReply() {
-            //     console.log('删除回复');
-            // },
-            // // 点击回复
-            // replyTo() {
-            //     console.log('进行回复');
-            // },
             ...mapMutations(['isShowReplySheet', 'changeReplytoWho']),
         },
-        computed: {
-            // replySheetActions() {
-            //     const names = ['删除回复', '回复'];
-            //     const methods = [this.deleteReply, this.replyTo];
-            //     return names.map((name, index) => {
-            //         return {
-            //             name,
-            //             method: methods[index]
-            //         }
-            //     })
-            // },
-
-        }
 
     }
 </script>

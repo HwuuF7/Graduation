@@ -6,10 +6,11 @@
         <!-- 个人基础信息修改选择跳转 -->
         <div v-if="!isSecret" class="baseInfo">
             <mt-cell title="头像" is-link class="userAvatar" :to='`${baseUrl}modAvatar`'>
-                <img :src="userInfo.avatar" alt="">
+                <img :src="userInfo.headImg" alt="">
             </mt-cell>
-            <mt-cell title="名字" is-link :value='userInfo.name' :to='`${baseUrl}modName`'></mt-cell>
-            <mt-cell title="性别" is-link :value='userInfo.sex ===`1` ? " 男" : "女" ' :to=' `${baseUrl}modSex`'></mt-cell>
+            <mt-cell title="名字" is-link :value='userInfo.userName' :to='`${baseUrl}modName`'></mt-cell>
+            <mt-cell title="性别" is-link :value='userInfo.gender ===1 ? " 男" : "女" ' :to=' `${baseUrl}modSex`'>
+            </mt-cell>
             <mt-cell title="地区" is-link :value='userInfo.region' :to='`${baseUrl}modRegion`'></mt-cell>
             <mt-cell title="个性签名" is-link :value='userInfo.signature' :to='`${baseUrl}modSignature`'></mt-cell>
         </div>
@@ -66,7 +67,7 @@
                 this.$router.go(-1)
             },
             getUserInfo() {
-                if (!sessionStorage.getItem('userInfo')) {
+                /* if (!sessionStorage.getItem('userInfo')) {
                     // 1、判断sessionStorage里有没有数据，没有就发起请求获取用户信息
                     this.userInfo = {
                         avatar: require('@/assets/imgs/test.jpg'),
@@ -81,12 +82,35 @@
                         newPassword: '',
                         newAgain: ''
                     }
+                    this.userInfo['code'] = 'xxx'
+                    console.log(this.userInfo);
                     // 2、在sessionStorage存一份 后续就不用再发请求了 直接从sessionStorage里拿
                     sessionStorage.setItem('userInfo', JSON.stringify(this.userInfo))
                 } else {
                     this.userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
+                } */
+                // 解构出必要信息
+                let {
+                    headImg,
+                    gender,
+                    userId,
+                    userName
+                } = this.$store.state.userInfo;
+                let usedInfo = {
+                    headImg,
+                    gender,
+                    userId,
+                    userName
                 }
-
+                this.userInfo = Object.assign({}, usedInfo, {
+                    region: 'uesc',
+                    signature: '一句话介绍自己',
+                    email: 'huwu@163.com',
+                    oldPassword: '',
+                    newPassword: '',
+                    newAgain: ''
+                })
+                console.log(this.userInfo);
             },
             // 获取得到焦点的元素 控制清除按钮的出现位置
             getFocusEle(el, cssIndex) {
@@ -130,7 +154,6 @@
         },
         destroyed() {
             window.name = '';
-            // console.log('会不会触发卸载');
         }
     }
 </script>

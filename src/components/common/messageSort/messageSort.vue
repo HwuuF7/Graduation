@@ -54,7 +54,7 @@
                 <p class="upload-title">图片上传</p>
                 <addPictures ref='addPictures' :maxSelect='6' />
             </div>
-            <mt-field type='textarea' rows='5' v-model.trim='messageForm.content' :placeholder='specificDesc'>
+            <mt-field type='textarea' rows='5' v-model.trim='originContent' :placeholder='specificDesc'>
             </mt-field>
         </div>
 
@@ -87,9 +87,11 @@
                 getSort: '',
                 // 闲置二手交易模块时 价格选择了面议
                 discuss: false,
+                // 因为要对表情进行编码 因此要新开一个字段来双向绑定内容
+                originContent: '',
                 messageForm: {
-                    // 用户标识 先写死 用的'总助的openID'
-                    openId: 'oAXSp6YZ5f2589pqQ7k5TwE9oZn0',
+                    // 用户标识 
+                    openId: '',
                     // 大分类 -->catogory ['招聘','求职']
                     catogory: '',
                     // 标签 
@@ -231,10 +233,27 @@
             },
             // 确认发布
             async sendMessage() {
+                // 判断有无登录
+                if (!this.$store.state.userInfo) {
+                    // 没有登录 就跳至授权登录
+                    console.log('跳转至登录');
+                    return window.location.href = this.$weixin
+                }
+                // 用户登录之后 解构出用户信息 
+                const {
+                    userInfo
+                } = this.$store.state
+                console.log('发送时的openID===', userInfo);
+                // 赋值给表单数据
+                this.messageForm.openId = userInfo.openId
+                // this.messageForm.openId = 'oAXSp6Wo7ugTt8hQ2EJw5Jmim4YE'
+
                 // 改造发送数据
                 if (this.discuss) {
                     this.messageForm.price = '面议'
                 }
+                // 对发布内容进行表情编码
+                this.messageForm.content = this.$emojiEncode(this.originContent);
 
                 const picForm = this.$refs.addPictures.sendPictures()
 
@@ -338,10 +357,13 @@
             // 抽离重复代码->发送信息失败的提示信息
             sendErr() {
                 this.$reToast('发送信息失败', ' icon-tixing');
+                console.log('重置的userInfo===', this.$store.state.userInfo);
                 // 重置数据
+                this.originContent = '';
                 this.messageForm = {
-                    // 用户标识 先写死
-                    openId: 'oAXSp6YZ5f2589pqQ7k5TwE9oZn0',
+                    // 用户标识 
+                    openId: this.$store.state.userInfo.openId,
+                    // openId: 'oAXSp6Wo7ugTt8hQ2EJw5Jmim4YE',
                     // 大分类 -->catogory ['招聘','求职']
                     catogory: '请选择',
                     // 标签 
@@ -362,7 +384,7 @@
             sendPss() {
                 this.$reToast('发送信息成功', ' icon-queren')
                 // 发布完后跳转首页
-                // this.$router.push('/info')
+                this.$router.push('/info')
             },
         },
         computed: {

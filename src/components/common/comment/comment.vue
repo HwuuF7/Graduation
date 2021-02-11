@@ -9,7 +9,7 @@
             <span class="userName">{{commentInfo.userName}}</span>
         </div>
         <div class="comment-content" @click.stop.capture="replyToFirst">
-            {{commentInfo.content}}
+            {{commentInfo.content | emojiDecode}}
         </div>
         <div class="comment-time">
             {{commentInfo.createTime | getFormatTime}}

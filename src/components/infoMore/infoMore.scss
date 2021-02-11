@@ -158,15 +158,15 @@
             height: 3.4rem;
             padding-left: .6rem;
 
-            .mint-button {
+            span {
+                color: #999;
+                display: flex;
                 width: 2.4rem;
+                justify-content: center;
+                align-items: center;
                 padding: 0;
                 height: 100%;
-
-
             }
-
-
         }
 
         .popMid {
@@ -186,6 +186,40 @@
 
             ::v-deep textarea {
                 font-size: 1.2rem;
+            }
+        }
+
+        .addEmoji {
+            padding: .6rem .6rem .9rem .6rem;
+            border-top: 1px solid #d5d5d6;
+
+            .mint-swipe {
+                min-height: 2.8rem;
+                height: 13rem;
+                padding-bottom: 1rem;
+
+                .mint-swipe-items-wrap {
+                    .mint-swipe-item {
+                        >div {
+                            display: flex;
+                            flex-flow: row wrap;
+                            align-content: stretch;
+
+                            >span {
+                                flex: 0 0 16.66%;
+                                padding: .2rem 0;
+                                font-size: 1.8rem;
+                                text-align: center;
+                            }
+                        }
+
+
+                    }
+                }
+
+                ::v-deep .mint-swipe-indicators {
+                    bottom: 0;
+                }
             }
         }
 

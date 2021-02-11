@@ -16,7 +16,7 @@
         <main>
             <p>
                 <span>{{model.innerTag}}</span>
-                {{model.content}}
+                {{model.content | emojiDecode}}
             </p>
             <div v-if="isUnused">
                 <p>交易类型：{{model.catogory}}</p>

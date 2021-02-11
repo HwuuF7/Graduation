@@ -9,6 +9,7 @@ import ModAttach from '@/components/mine/modAttach/modAttach.vue'
 import Sort from '@/components/sorts/sort.vue'
 import MessageSort from '@/components/common/messageSort/messageSort.vue'
 import AboutMe from '@/components/mine/aboutMe/aboutMe.vue';
+import Weixin from '../components/weixin.vue'
 
 Vue.use(VueRouter)
 
@@ -68,11 +69,28 @@ const routes = [{
     }, {
         path: '/sendMessage',
         component: MessageSort
+    }, {
+        path: '/weixin',
+        component: Weixin
     }
 ]
 
 const router = new VueRouter({
     routes
+})
+
+router.beforeEach(async (to, from, next) => {
+    if (to.path === '/') {
+        // location.href = 'http://119.23.222.17:9001/wxLogin'
+        return next()
+    }
+    console.log('=====================');
+    if (to.path === '/info') {
+        console.log('进来了');
+        return next()
+    }
+    console.log('进来2');
+    next()
 })
 
 export default router

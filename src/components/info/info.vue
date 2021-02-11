@@ -87,7 +87,7 @@
 
                 <!-- 我的 -->
                 <mt-tab-container-item id="MINE">
-                    <mine />
+                    <mine v-if="showMine" />
                 </mt-tab-container-item>
             </mt-tab-container>
         </div>
@@ -132,7 +132,7 @@
         components: {
             detailInfo,
             other,
-            mine
+            mine,
         },
         data() {
             return {
@@ -204,7 +204,9 @@
                     'helps': '打听求助',
                     // 'chats': '闲来有聊',
                     // 'dinners': '约饭走起'
-                }
+                },
+                // 根据登录状态是否显示"我的"
+                showMine: false,
             }
         },
         created() {
@@ -270,7 +272,7 @@
                 }
                 console.log(infos);
             },
-            searchInfo() {
+            async searchInfo() {
                 if (this.searchVal === '') return this.$reToast('输入不能为空！', 'icon-cuowu')
                 console.log('search', this.searchVal);
             },
@@ -330,8 +332,16 @@
             }
         },
         watch: {
-            selected(newVal) {
-                console.log(newVal);
+            selected(newTag) {
+                if (newTag === 'MINE') {
+                    // 判断是否登录
+                    if (!this.$store.state.userInfo) {
+                        // 跳转授权登录
+                        window.location.href = this.$weixin
+                    } else {
+                        this.showMine = true
+                    }
+                }
             }
         }
 

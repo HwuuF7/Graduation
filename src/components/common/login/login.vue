@@ -9,8 +9,7 @@
             <div class="login-username">
                 <label>
                     <span class="iconfont icon-icon- fz-15"></span>
-                    <input type="text" ref='username' name='username' placeholder="账号" @focus="hello"
-                        v-model='loginForm.username'>
+                    <input type="text" ref='username' name='username' placeholder="账号" v-model='loginForm.username'>
                     <span class="iconfont icon-qingchu fz-12"></span>
                 </label>
             </div>
@@ -33,20 +32,20 @@
 </template>
 
 <script>
+    import {
+        mapMutations
+    } from 'vuex';
     export default {
         data() {
             return {
                 loginForm: {
                     username: '',
                     password: '',
-                    region: 'zs'
+                    region: 'zs',
                 }
             }
         },
         methods: {
-            hello() {
-                console.log('hello');
-            },
             login() {
                 console.log('login');
                 console.table(this.loginForm);
@@ -59,11 +58,21 @@
                 this.$refs['estc'].$el.classList.toggle('region-selected');
                 this.$refs['zs'].$el.classList.toggle('region-selected');
                 this.loginForm.region = region;
-            }
+            },
+            async getUserInfo(code) {
+                if (!code) return console.log('没有code');
+                const res = await this.$http.get(`/getInfo?code=${code}`)
+                console.log(res, '======');
+                this.saveUserInfo(res.data.result)
+                console.log('存储成功===', this.$store.state.userInfo);
+                this.$router.replace('/info')
+            },
+            ...mapMutations(['saveUserInfo']),
         },
         //生命周期 - 创建完成（访问当前this实例）
         created() {
-
+            let code = this.$route.query.code || ''
+            this.getUserInfo(code)
         },
         //生命周期 - 挂载完成（访问DOM元素）
         mounted() {

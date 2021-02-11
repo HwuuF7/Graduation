@@ -7,7 +7,7 @@ const hello = function () {
 }
 import axios from 'axios'
 // axios配置
-axios.defaults.baseURL = ' http://119.23.222.17:9001';
+axios.defaults.baseURL = 'http://api.xiaochengxuxcx.com';
 // 添加请求拦截器
 axios.interceptors.request.use((config) => {
     // 在发送请求之前做些什么
@@ -60,6 +60,34 @@ const parentPush = function (el, findClassName) {
     return targetTag
 }
 
+// 封装表情转码存储至后端
+const emojiEncode = function (message) {
+    let patt = /[\ud800-\udbff][\udc00-\udfff]/g;
+    // 检测utf16字符正则
+    return message.replace(patt, function (char) {
+        var H, L, code;
+        if (char.length === 2) {
+            H = char.charCodeAt(0);
+            // 取出高位
+            L = char.charCodeAt(1);
+            // 取出低位
+            code = (H - 0xD800) * 0x400 + 0x10000 + L - 0xDC00;
+            // 转换算法
+            return "&#" + code + ";";
+        } else {
+            return char;
+        }
+    });
+}
+
+
+
+
+
+// 微信授权登录地址
+const url = encodeURIComponent('http://api.xiaochengxuxcx.com/weixin'),
+    appid = 'wx8578e7862b93f215',
+    href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${url}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect`;
 
 
 
@@ -69,6 +97,8 @@ const globalFun = {
     $hello: hello,
     $parentPush: parentPush,
     $http: axios,
+    $weixin: href,
+    $emojiEncode: emojiEncode,
 }
 
 export default {

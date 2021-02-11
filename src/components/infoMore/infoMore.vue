@@ -53,11 +53,22 @@
         <!-- 弹出回复对话框 -->
         <mt-popup v-model="popUpVisible" popup-transition="popup-fade">
             <div class="popHeader">
-                <mt-button type='danger'>表情</mt-button>
+                <span class="iconfont icon-xiaolianwawa fz-2" @click='showEmoji = !showEmoji'></span>
             </div>
             <div class="popMid">
                 <mt-field :placeholder="replyToWhoInfo ? `回复${replyToWhoInfo.userName}` : ''" type="textarea" rows="4"
                     v-model.trim="replyContent"></mt-field>
+            </div>
+            <div class="addEmoji" v-show='showEmoji'>
+                <mt-swipe :auto="0">
+                    <mt-swipe-item v-for="(loop,index) in emojiSwipeLength" :key='loop'>
+                        <div @click.capture.stop="chooseEmoji">
+                            <span v-for="emoji in emojiPerPage(index)" :key="emoji">
+                                {{emoji |decodeByHex}}
+                            </span>
+                        </div>
+                    </mt-swipe-item>
+                </mt-swipe>
             </div>
             <div class="popFooter">
                 <mt-button plain @click="popUpVisible = false">取消</mt-button>
@@ -71,10 +82,12 @@
     import detailInfo from '@/components/common/detailInfo/detailInfo.vue';
     import moreHead from './moreHead.vue';
     import comment from '@/components/common/comment/comment.vue';
+    import EMOJIS from './emoji.js';
     import {
         mapState,
         mapMutations
     } from 'vuex';
+    import emoji from './emoji.js';
 
 
     export default {
@@ -94,6 +107,8 @@
                 replyContent: '',
                 // 判断是回复根评论 还是回复评论的回复 true为根评论 
                 replyRoot: null,
+                showEmoji: false,
+                EMOJIS: EMOJIS.emojiArr
             }
         },
 
@@ -148,37 +163,42 @@
                     return this.$reToast('输入不能为空', 'icon-cuowu');
                 }
 
+
+                // 判断是否已经登录
+                if (!this.userInfo) {
+                    // 没有登录则跳转登录
+                    console.log('跳转至登录');
+                    return window.location.href = this.$weixin
+                    // 登录界面会接收到返回的code
+                }
+                // 判断出用户已登录后,构造评论必备信息
+                console.log('登录后:', this.userInfo);
+                let replyComment;
                 console.log('=====提交回复=====', this.replyContent);
 
-                let replyComment;
+
                 // 回复根评论
                 if (this.replyRoot) {
 
 
                     replyComment = {
+                        // 从Vuex中取出openId
+                        openId: this.userInfo.openId,
                         infoId: this.infoId,
-                        // 揭某的登录号
-                        openId: 'oAXSp6XInXomKM783mGi-Y2JPiKY',
                         commentLevel: 1,
-                        content: this.replyContent,
-                        // parentCommentId: null,
-                        // replyCommentId: null,
-                        // replyCommentUserId: null,
-                        // replyCommentUserName: null
+                        // 对评论内容进行表情编码
+                        content: this.$emojiEncode(this.replyContent),
                     }
 
                 } else {
 
                     replyComment = {
+                        // 从Vuex中取出openId
+                        openId: this.userInfo.openId,
                         infoId: this.infoId,
-                        // 我的id
-                        // openId: 'oAXSp6XInXomKM783mGi-Y2JPiKY',
-                        // 小刚的ID 回复多级评论
-                        openId: 'oAXSp6YZ5f2589pqQ7k5TwE9oZn0',
                         commentLevel: 2,
-                        content: this.replyContent,
+                        content: this.$emojiEncode(this.replyContent),
                         parentCommentId: this.replyToWhoInfo.parentCommentId,
-
                     }
                     // 回复的是多级评论 则填充完整信息
                     if (!this.replyLevelFlag) {
@@ -255,6 +275,10 @@
                     console.log(res);
                 })
             },
+            // 选择表情
+            chooseEmoji(ev) {
+                this.replyContent += ev.target.innerText;
+            },
             ...mapMutations(['changeReplytoWho']),
 
         },
@@ -262,6 +286,12 @@
             this.infoId = this.$route.params.infoId
             // 发起请求获取信息
             this.getInfoById(this.infoId)
+        },
+        filters: {
+            // 对表情(0x16进制)进行转码
+            decodeByHex(hex) {
+                return String.fromCodePoint(hex)
+            }
         },
         computed: {
             replySheetActions() {
@@ -282,8 +312,20 @@
                     this.$store.commit('isShowReplySheet', v);
                 },
             },
+            // 表情轮播的循环长度
+            emojiSwipeLength() {
+                return Math.ceil((this.EMOJIS.length / 24))
+            },
+            // 每页表情轮播展示的表情
+            emojiPerPage() {
+                // const emojisNum = this.EMOJIS.length;
+                // 接收页码 每页24个
+                return (pageIndex) => {
+                    return this.EMOJIS.slice(pageIndex * 24, (pageIndex + 1) * 24)
+                }
+            },
             // 从vuex获取确定回复哪一位
-            ...mapState(['replyToWhoInfo', 'replyLevelFlag', 'infoDetail']),
+            ...mapState(['replyToWhoInfo', 'replyLevelFlag', 'infoDetail', 'userInfo']),
         },
         watch: {
             // 监听回复对话框popup的关闭事件
