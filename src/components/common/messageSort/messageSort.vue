@@ -4,12 +4,18 @@
 
     <!-- 发消息表单 -->
     <div class='messageSort'>
-        <mt-field label="意图" placeholder='请选择消息意图' disableClear @focus.native.capture="selectPurpose"
+        <mt-cell title="意图" @click.native.capture="selectPurpose">
+            <p ref="catogory">{{messageForm.catogory}}</p>
+        </mt-cell>
+        <mt-cell title="分类" @click.native.capture="selectProfession" v-show='showInnerTags'>
+            <p ref="innerTag">{{messageForm.innerTag}}</p>
+        </mt-cell>
+        <!-- <mt-field label="意图" placeholder='请选择消息意图' disableClear 
             v-model="messageForm.catogory">
-        </mt-field>
-        <mt-field label="分类" placeholder='请选择具体分类' disableClear @focus.native.capture="selectProfession"
+        </mt-field> -->
+        <!-- <mt-field label="分类" placeholder='请选择具体分类' disableClear @focus.native.capture="selectProfession"
             v-model="messageForm.innerTag" v-show='showInnerTags'>
-        </mt-field>
+        </mt-field> -->
 
 
         <!-- 分模块 -->
@@ -93,7 +99,7 @@
                     // 用户标识 
                     openId: '',
                     // 大分类 -->catogory ['招聘','求职']
-                    catogory: '',
+                    catogory: '请选择消息意图',
                     // 标签 
                     tags: [],
                     // 图片
@@ -193,13 +199,16 @@
                 if (bORs === 'B') {
                     // 大分类
                     return () => {
-                        this.messageForm.catogory = purTag
+                        this.messageForm.catogory = purTag;
+                        console.log(this.$refs.catogory);
+                        this.$refs.catogory.style.color = '#000';
                         this.surePurpose()
                     }
                 } else {
                     // 小分类
                     return () => {
                         this.messageForm.innerTag = purTag
+                        this.$refs.innerTag.style.color = '#000';
                     }
                 }
 
@@ -390,11 +399,11 @@
         computed: {
             // 是否展示选择具体(小)分类 比如文体户外、生活用品
             showInnerTags() {
-                return this.messageForm.catogory !== '请选择' && this.innerTagsActions.length > 0
+                return this.messageForm.catogory !== '请选择消息意图' && this.innerTagsActions.length > 0
             },
             // 是否展示标签 比如二手书籍、准新正品 和上面不一样
             showTags() {
-                return this.messageForm.catogory !== '请选择' && this.specificTags.length > 0
+                return this.messageForm.catogory !== '请选择消息意图' && this.specificTags.length > 0
             },
             showSort(sortName) {
                 return this.showSpecificSort

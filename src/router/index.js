@@ -16,12 +16,13 @@ Vue.use(VueRouter)
 const routes = [{
         path: '/',
         //   name: 'Home',
+        // component: Index
+        redirect: '/info'
+    },
+    {
+        path: '/login',
         component: Index
     },
-    // {
-    //     path: '/login',
-    //     component: Login
-    // },
     // {
     //     path: '/register',
     //     component: Register

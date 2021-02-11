@@ -198,7 +198,8 @@
                         infoId: this.infoId,
                         commentLevel: 2,
                         content: this.$emojiEncode(this.replyContent),
-                        parentCommentId: this.replyToWhoInfo.parentCommentId,
+                        // 回复一级评论时parentCommentId为空 则设置为commentId即可
+                        parentCommentId: this.replyToWhoInfo.parentCommentId || this.replyToWhoInfo.commentId,
                     }
                     // 回复的是多级评论 则填充完整信息
                     if (!this.replyLevelFlag) {
@@ -241,7 +242,7 @@
                 this.popUpVisible = getFromSon[0];
                 // 置回复为false 代表回复评论的评论
                 this.replyRoot = false;
-                // console.log(comment, '---');
+                console.log(comment, '---');
                 this.changeReplytoWho([comment, true])
             },
             // 发起聊天 ==>调用俊威

@@ -219,6 +219,21 @@
 
                 ::v-deep .mint-swipe-indicators {
                     bottom: 0;
+
+                    .mint-swipe-indicator {
+                        opacity: .8;
+                        border-radius: .2rem;
+                        height: .2rem;
+                        transition: width ease .3s;
+                        width: .4rem;
+                        margin: 0;
+                        margin-right: .2rem;
+
+                        &.is-active {
+                            width: 1.2rem;
+                            background-color: rgb(33, 150, 243);
+                        }
+                    }
                 }
             }
         }

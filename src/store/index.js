@@ -36,7 +36,7 @@ export default new Vuex.Store({
         //     console.log('触发了vuex2', state);
         // }
         changeReplytoWho(state, [who, levelFlag]) {
-            this.replyLevelFlag = levelFlag;
+            state.replyLevelFlag = levelFlag;
             state.replyToWhoInfo = who;
         },
         changeInfoDetail(state, [info, isSetTop]) {

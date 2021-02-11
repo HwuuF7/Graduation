@@ -6,11 +6,11 @@
 const attachForm = [
     ['jobs', {
         type: '招聘求职',
-        innerTag: ''
+        innerTag: '请选择具体分类'
     }],
     ['unused', {
         type: '二手闲置',
-        innerTag: '',
+        innerTag: '请选择具体分类',
         price: null,
     }],
     ['finds', {

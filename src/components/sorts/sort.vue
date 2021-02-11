@@ -26,55 +26,53 @@
                 // 当前激活的某一项导航
                 activeName: null,
                 constModule: {
-                    'news': ['校内', '省内', '国内'],
-                    'jobs': ['家教', '兼职', '实习', '其他'],
-                    'cars': ['缺人', '缺车'],
-                    'houses': ['出租', '求租', '合租'],
-                    'unused': ['课本书籍', '手机数码', '文体户外', '生活用品', '服装配饰', '美容保健', '出行工具', '其他'],
-                    'counts': ['酒店客栈', '休闲娱乐', '生活服务', '购物', '旅游', '其他'],
-                    'finds': ['寻人', '找物', '宠物', '失物招领'],
-                    'helps': ['打听', '求助'],
-                    'chats': ['吐槽', '讨论', '聊天'],
-                    'dinners': ['约饭', '约玩'],
+                    'news': {
+                        type: 'news',
+                        sortArr: ['校内', '省内', '国内']
+                    },
+                    'jobs': {
+                        type: 'job',
+                        sortArr: ['家教', '兼职', '实习', '其他'],
+                    },
+                    'cars': {
+                        type: 'cars',
+                        sortArr: ['缺人', '缺车'],
+                    },
+                    'houses': {
+                        type: 'houses',
+                        sortArr: ['出租', '求租', '合租'],
+                    },
+                    'unused': {
+                        type: 'unUsed',
+                        sortArr: ['课本书籍', '手机数码', '文体户外', '生活用品', '服装配饰', '美容保健', '出行工具', '其他']
+                    },
+                    'counts': {
+                        type: 'preferential',
+                        sortArr: ['酒店客栈', '休闲娱乐', '生活服务', '购物', '旅游', '其他'],
+                    },
+                    'finds': {
+                        type: 'lostingFind',
+                        sortArr: ['寻人', '找物', '宠物', '失物招领'],
+                    },
+                    'helps': {
+                        type: 'help',
+                        sortArr: ['打听', '求助'],
+                    },
+                    'chats': {
+                        type: 'chats',
+                        sortArr: ['吐槽', '讨论', '聊天'],
+                    },
+                    'dinners': {
+                        type: 'dinners',
+                        sortArr: ['约饭', '约玩'],
+                    },
                 },
+                // 对应的模块大分类
+                type: null,
                 // 子页面对应子分类导航栏[数组]
                 differSub: null,
                 // 对应数据获取
                 modelInfo: [],
-                testModel: {
-                    // 发帖ID
-                    infoId: '123',
-                    // 用户头像(后端返回数据如果为空 前端给一个默认头像)
-                    userAvatar: require('@/assets/imgs/test.png'),
-                    // 用户名(后端返回数据如果为空 前端给一个'匿名用户')
-                    userName: '芜湖22',
-                    // 该信息是否需要置顶
-                    isSetTop: true,
-                    // 分类关键词(必填项)
-                    cateKeyWord: '生活用品22',
-                    // 用户发表的信息内容(必填项)
-                    messageContent: 'hello world22',
-                    // 如果是交易性质,则返回详细介绍
-                    // transactionIntro: {
-                    //     // 交易类型: 出售/求购
-                    //     transType: '出售',
-                    //     // 交易价格: 具体值/面议
-                    //     transPrice: '40'
-                    // },
-                    transactionIntro: {},
-                    // 描述标签(字符串数组- 可空)
-                    // descriptionTags: ['电子产品', '准新正品', '当面验货'],
-                    descriptionTags: [],
-                    // 展示图片(url数组- 可为空)
-                    // showPictures: [require('@/assets/imgs/test.png'), require('@/assets/imgs/test.png')],
-                    showPictures: [],
-                    // 消息是否已经结束了
-                    isOver: true,
-                    // 发帖时间
-                    messageTime: new Date('2020/12/15 15:00').getTime(),
-                    // 浏览次数
-                    visitTimes: 120,
-                },
             }
         },
         created() {},
@@ -86,8 +84,9 @@
                 let {
                     module: toModule
                 } = to.query;
+                vm.type = vm.constModule[toModule].type;
                 // 对应导航栏
-                vm.differSub = vm.constModule[toModule];
+                vm.differSub = vm.constModule[toModule].sortArr;
                 // 默认为第一项
                 // 为activeName设置了watch属性 
                 // 只要切换了子分类 就会自动获取对应数据
@@ -97,29 +96,24 @@
         methods: {
             // 获取对应数据
             async getInfo(activeName) {
-                console.log(activeName);
+                // console.log(this.type, activeName);
                 // 找到子分类对应的索引
-                const subIndex = this.differSub.findIndex(subName => subName === activeName);
+                // const subIndex = this.differSub.findIndex(subName => subName === activeName);
                 // 发送ModuleName和索引去获取数据
                 // 比如/news/0 =>校内新闻 /1 => 省内新闻
                 // 格式和之前首页展示的一样
                 // this.modelInfo=xx
-                const {
-                    data: res
-                } = await this.$http.get('/catogory/catogoryPage', {
+                const res = await this.$http.get('/catogory/catogoryPage', {
                     params: {
-                        type: 'lostingFind',
+                        type: this.type,
                         pageBegin: 0,
                         pageSize: 20,
-                        catogory: '失物招领'
+                        catogory: activeName
                     }
-                }).catch(err => this.$toast({
-                    message: '获取失物失败',
-                    iconClass: 'iconfont icon-close',
-                    className: 'toastIcon'
-                }))
-                this.modelInfo = res
-                console.log(res);
+                }).catch(err => console.log(err))
+                if (!res) return this.$reToast('获取信息失败！', 'icon-close')
+                // 获取成功后进行赋值
+                this.modelInfo = res.data
             },
             // 事件捕获跳转到详情页
             jumpDetail(ev) {
