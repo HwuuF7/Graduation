@@ -35,6 +35,8 @@ const routes = [{
         path: '/info',
         component: Info,
         meta: {
+            // 保持浏览状态
+            keepalive: true,
             // 判断是进入修改个人信息还是修改密码
             isSecret: false,
             /*  判断进入哪个组件
@@ -66,7 +68,10 @@ const routes = [{
         component: AboutMe
     }, {
         path: '/list',
-        component: Sort
+        component: Sort,
+        meta: {
+            keepalive: true,
+        }
     }, {
         path: '/sendMessage',
         component: MessageSort

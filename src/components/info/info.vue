@@ -1,13 +1,15 @@
 <template>
-    <div class="page-all">
-
+    <div class="page-all" @scroll="scrollY($el)" ref="scroll_page">
 
         <div class="page-scroll">
             <!-- 内容主体区域 -->
+
             <mt-tab-container v-model="selected">
 
                 <!-- 信息页 -->
-                <mt-tab-container-item id="UESTC" class="uestc-info">
+                <mt-tab-container-item id="UESTC" class="uestc-info" v-infinite-scroll="loadMore"
+                    infinite-scroll-disabled="loading" infinite-scroll-distance="10"
+                    :infinite-scroll-immediate-check='true' v-if="selected === 'UESTC'">
 
                     <!-- 搜索框 -->
                     <div class="homepage-search">
@@ -51,8 +53,7 @@
                     <div class="line-10"></div>
 
                     <!-- 详情信息 -->
-                    <div class="homepage-moreinfo" v-infinite-scroll="loadTest" infinite-scroll-disabled="loading"
-                        infinite-scroll-distance="10">
+                    <div class="homepage-moreinfo">
 
                         <detail-info v-for="info in topInfo" :key="info.infoId" isSetTop :model='info'
                             @click.native.stop="linkToMore(info,true)"></detail-info>
@@ -81,7 +82,8 @@
 
                 <!-- 聊天页 -->
                 <mt-tab-container-item id="CHAT">
-                    <div>聊天</div>
+                    <div v-for="i in 40" :key='i'>聊天</div>
+                    <p @click="gode" class="testP">跳转</p>
                 </mt-tab-container-item>
 
 
@@ -90,6 +92,7 @@
                     <mine v-if="showMine" />
                 </mt-tab-container-item>
             </mt-tab-container>
+
         </div>
 
 
@@ -119,6 +122,7 @@
             </div>
         </mt-popup>
     </div>
+
 </template>
 
 <script>
@@ -181,8 +185,10 @@
                 topInfo: [],
                 // 获取非置顶信息时的查询条件
                 mainForm: {
-                    pageBegin: 0,
+                    // 每页30条
                     pageSize: 30,
+                    // 第一页
+                    page: 1,
                 },
                 // 非置顶数据拉取完毕的标志
                 mainInfoEnd: false,
@@ -207,12 +213,31 @@
                 },
                 // 根据登录状态是否显示"我的"
                 showMine: false,
+                scrollTop: 0,
             }
         },
         created() {
             this.initial()
         },
+        activated() {
+            console.log('激活');
+            if (this.selected === 'UESTC') {
+                this.$refs.scroll_page.scrollTop = this.scrollTop;
+            }
+        },
+        // beforeRouteLeave() {
+
+        // },
         methods: {
+            gode() {
+                console.log('yes');
+            },
+            scrollY(ev) {
+                // 聊天和首页应该都会有滑动需求
+                if (this.selected === 'UESTC') {
+                    this.scrollTop = ev.scrollTop;
+                }
+            },
             async initial() {
                 // 获取轮播图数据
                 await this.getSwipperInfo()
@@ -248,10 +273,9 @@
             // 获取非置顶信息 
             // 返回值为获取到的数据条目
             async getMainInfo() {
-                // this.$reToast('无更多数据', 'icon-tixing')
-                const res = await this.$http.get('/info/view/queryall', {
-                    params: this.mainForm
-                }).catch(err => console.log(err))
+
+                const res = await this.$http.get(`/info/view/queryall?page=${this.mainForm.page}`).catch(err =>
+                    console.log(err))
                 if (!res) return this.$reToast('获取失败', 'icon-close')
                 const {
                     data: infos
@@ -261,9 +285,10 @@
                     // 加载到少的数量
                     if (infos.length !== this.mainForm.pageSize) {
                         this.mainInfoEnd = true
+                    } else {
+                        this.mainForm.page++;
                     }
                     // console.log(this.mainInfo, this.mainInfoEnd);
-                    this.mainForm.pageBegin += infos.length
                 } else {
                     // 比如总共15条数据 获取三次都是满5的获取完 那么再请求 就会res.length=0
                     // 数据拉取完结束
@@ -278,9 +303,9 @@
             },
             // 内部已经实现了节流 loading就代表了节流标志
             // 触底节流获取信息
-            async loadTest() {
+            async loadMore() {
                 this.showSendBtn = false;
-                // console.log('触发了');
+                console.log('触发了');
                 this.loading = true;
                 if (this.mainInfoEnd) {
                     this.showSendBtn = true;
@@ -332,6 +357,7 @@
             }
         },
         watch: {
+            // 底部选择进行切换的时候 要重新拉取数据
             selected(newTag) {
                 if (newTag === 'MINE') {
                     // 判断是否登录

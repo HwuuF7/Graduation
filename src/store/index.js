@@ -40,8 +40,8 @@ export default new Vuex.Store({
             state.replyToWhoInfo = who;
         },
         changeInfoDetail(state, [info, isSetTop]) {
-            state.infoDetail.info = info
-            state.infoDetail.isSetTop = isSetTop
+            state.infoDetail.info = info;
+            state.infoDetail.isSetTop = isSetTop || false;
         }
     },
     actions: {},

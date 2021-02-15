@@ -1,4 +1,7 @@
 .sort {
+    height: 100%;
+    overflow-y: auto;
+
     .mint-navbar {
         overflow-x: scroll;
         // IE
@@ -20,4 +23,38 @@
             }
         }
     }
+
+
+    .mint-tab-container {
+        height: calc(100vh - 3.4rem);
+        margin-top: 3.4rem;
+        overflow-y: scroll;
+
+
+        ::v-deep .mint-tab-container-wrap {
+            height: 100%;
+
+            .mint-tab-container-item {
+                height: 100%;
+                position: relative;
+
+                div.info-scroll {
+                    height: 100%;
+                    // height: auto;
+                    overflow-y: auto;
+                }
+
+                // 暂无数据的样式
+                div.no-info {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                }
+            }
+
+        }
+
+    }
+
 }

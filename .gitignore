@@ -1,7 +1,8 @@
 .DS_Store
 node_modules
 /dist
-
+# 忽略无用代码
+/src/useless.js
 
 # local env files
 .env.local

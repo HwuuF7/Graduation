@@ -288,6 +288,11 @@
             // 发起请求获取信息
             this.getInfoById(this.infoId)
         },
+        /* beforeRouteLeave(to, from, next) {
+            if(to.path === '/info') {
+                to.meta.
+            }
+        }, */
         filters: {
             // 对表情(0x16进制)进行转码
             decodeByHex(hex) {

@@ -376,3 +376,65 @@ insertComment(from) {
         // 浏览次数
         visitTimes: 10000,
     },
+
+// watch: {
+
+/* async "getForm.catogory"(newActName, oldActName) {
+    // 找出cate索引值
+    this.cateIndex = this.differSub.findIndex((sub) => sub === newActName)
+    console.log('yes', newActName);
+    // 切换的时候 要将loadEnd置回false
+    this.loadEnd = false;
+    // 将loading置回false 才可恢复滚动加载
+    this.loading = false;
+    // 查询信息的起始也要置为0
+    this.getForm.pageBegin = 0;
+    await this.getInfo(newActName, oldActName)
+    console.log('========', this.modelInfo);
+} */
+// 监听切换分类时的数据改变
+/*  async activeSort(newAct) {
+     console.log(newAct);
+     // 替换显示的数据
+     this.currentModelInfo = this.saveInfoMap.get(newAct)
+     // 找出cate索引值
+     this.cateIndex = this.differSub.findIndex((sub) => sub === newAct)
+     console.log(this.currentModelInfo);
+     // 解构
+     let {
+         loadEnd,
+         loadInfo,
+         getForm
+     } = this.currentModelInfo
+     // 判断是否是第一次进入
+     if (!loadEnd && loadInfo.length === 0) {
+         // 发起请求获取数据
+         await this.getInfo(getForm)
+     }
+ }, */
+// 监听切换分类时的数据改变
+/*  activeSort: {
+        async handler(newAct) {
+            console.log(newAct);
+            // 替换显示的数据
+            this.currentModelInfo = this.saveInfoMap.get(newAct)
+            // 找出cate索引值
+            this.cateIndex = this.differSub.findIndex((sub) => sub === newAct)
+            console.log(this.currentModelInfo);
+            // 解构
+            let {
+                loadEnd,
+                loadInfo,
+                getForm
+            } = this.currentModelInfo
+            // 判断是否是第一次进入
+            if (!loadEnd && loadInfo.length === 0) {
+                // 发起请求获取数据
+                await this.getInfo(getForm)
+            }
+        },
+        // immediate: true
+    }
+} */
+
+// },
