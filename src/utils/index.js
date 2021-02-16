@@ -80,7 +80,20 @@ const emojiEncode = function (message) {
     });
 }
 
-
+// 将post对象格式转换为formData
+const paramsToFormData = function (obj) {
+    const formData = new FormData();
+    Object.keys(obj).forEach((key) => {
+        if (obj[key] instanceof Array) {
+            obj[key].forEach((item) => {
+                formData.append(key, item);
+            });
+            return;
+        }
+        formData.append(key, obj[key]);
+    });
+    return formData;
+}
 
 
 
@@ -99,6 +112,7 @@ const globalFun = {
     $http: axios,
     $weixin: href,
     $emojiEncode: emojiEncode,
+    $paramsToFormData: paramsToFormData
 }
 
 export default {

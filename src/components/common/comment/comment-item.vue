@@ -33,10 +33,47 @@
         methods: {
             // 监听回复谁
             catchReplyEvent(comment, index) {
+                 // 判断是否已经登录
+                if (!this.$store.state.userInfo) {
+                    // 没有登录则跳转登录
+                    console.log('跳转至登录');
+                    return window.location.href = this.$weixin
+                    // 登录界面会接收到返回的code
+                }
                 // this.replySheetVisible = true
                 this.isShowReplySheet(true)
                 // console.log(comment, index);
-                this.changeReplytoWho([comment, false])
+                // 如果多级评论里 自己回复自己 就认为是回复一级评论
+              /*   if (this.$store.state.userInfo.userId === comment.userId) {
+                    console.log('进来了~');
+                    if (comment.replyCommentId === 0) {
+                        this.changeReplytoWho([comment, true])
+                    } else {
+                        // 对多级评论的同一个人进行补充回复
+                        // 解构 被回复的人 
+                        let {
+                            replyCommentUserName,
+                            parentCommentId,
+                            commentId,
+                            replyCommentUserId
+                        } = comment;
+                        // 改造被回复者的信息
+                        let replaceComment = {
+                            // 提交用
+                            parentCommentId,
+                            commentId,
+                            userId: replyCommentUserId,
+                            // 渲染用
+                            userName: replyCommentUserName,
+                        }
+                        this.changeReplytoWho([replaceComment, false])
+                    }
+
+                } else {
+                    // 正常的评论别人
+                    this.changeReplytoWho([comment, false])
+                } */
+                    this.changeReplytoWho([comment, false])
                 console.log(this.$store.state.replyToWhoInfo);
             },
             ...mapMutations(['isShowReplySheet', 'changeReplytoWho']),

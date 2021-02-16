@@ -159,20 +159,14 @@
             },
             // 提交回复
             async commitReply() {
+
+                // 判断出用户已登录后,构造评论必备信息
+                console.log('登录后:', this.userInfo);
+
                 if (this.replyContent.length < 1) {
                     return this.$reToast('输入不能为空', 'icon-cuowu');
                 }
 
-
-                // 判断是否已经登录
-                if (!this.userInfo) {
-                    // 没有登录则跳转登录
-                    console.log('跳转至登录');
-                    return window.location.href = this.$weixin
-                    // 登录界面会接收到返回的code
-                }
-                // 判断出用户已登录后,构造评论必备信息
-                console.log('登录后:', this.userInfo);
                 let replyComment;
                 console.log('=====提交回复=====', this.replyContent);
 
@@ -223,13 +217,21 @@
                 }
                 this.$reToast('评论成功!', 'icon-queren')
                 // 重新拉取数据
-                this.getInfoById(this.infoId)
+
+                await this.$http.all([this.getInfoById(this.infoId), this.pushMessage()])
                 // 关闭对话框
                 this.popUpVisible = false;
             },
             // 回复根评论
             replyToRoot() {
                 console.log('根ROOT');
+                // 判断是否已经登录
+                if (!this.userInfo) {
+                    // 没有登录则跳转登录
+                    console.log('跳转至登录');
+                    return window.location.href = this.$weixin
+                    // 登录界面会接收到返回的code
+                }
                 // 显示回复对话框
                 this.popUpVisible = true;
                 // 置回复根评论为true
@@ -244,6 +246,25 @@
                 this.replyRoot = false;
                 console.log(comment, '---');
                 this.changeReplytoWho([comment, true])
+            },
+            // 微信推送信息
+            async pushMessage() {
+                let level = this.replyRoot ? 1 : 2;
+                let toUserId = this.replyRoot ? this.infoDetail.info.userId : this.replyToWhoInfo.userId;
+                let postForm = {
+                    infoId: this.infoDetail.info.infoId,
+                    userName: this.userInfo.userName,
+                    level,
+                    toUserId
+                }
+                // 转换数据
+                const formData = this.$paramsToFormData(postForm)
+                console.log([...formData]);
+                await this.$http.post('/message', formData, {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                }).catch(err => console.log(err))
             },
             // 发起聊天 ==>调用俊威
             startChat() {
@@ -285,6 +306,7 @@
         },
         created() {
             this.infoId = this.$route.params.infoId
+            console.log(this.infoDetail);
             // 发起请求获取信息
             this.getInfoById(this.infoId)
         },
