@@ -1,8 +1,7 @@
 <template>
     <div class="infoMore">
-        <!-- <detail-info :model='infoDetail' isMore /> -->
 
-        <moreHead :model='infoDetail.info' :isSetTop="infoDetail.isSetTop" />
+        <moreHead :model='infoDetail.info' :isSetTop="infoDetail.isSetTop" :views='views' />
 
 
 
@@ -17,7 +16,7 @@
                     <span class='iconfont icon-shouye'></span>
                 </p>
                 <p @click.stop="startFav($event)">
-                    <span class='iconfont icon-shoucang'></span>
+                    <span class='iconfont icon-dianzan1'></span>
                 </p>
             </div>
         </div>
@@ -47,7 +46,7 @@
             <div class="emptyComments" v-if="commentInfo.length<1"></div>
         </div>
         <!-- 点击对应评论进行回复的弹出选择框 -->
-        <mt-actionsheet :actions="replySheetActions" v-model="mutualReplySheetVisible">
+        <mt-actionsheet :actions="mutualReplySheetVisible ? replySheetActions : []" v-model="mutualReplySheetVisible">
         </mt-actionsheet>
 
         <!-- 弹出回复对话框 -->
@@ -56,7 +55,7 @@
                 <span class="iconfont icon-xiaolianwawa fz-2" @click='showEmoji = !showEmoji'></span>
             </div>
             <div class="popMid">
-                <mt-field :placeholder="replyToWhoInfo ? `回复${replyToWhoInfo.userName}` : ''" type="textarea" rows="4"
+                <mt-field :placeholder="replyToWhoInfo ? `回复${replyToWhoInfo.toUserName}` : ''" type="textarea" rows="4"
                     v-model.trim="replyContent"></mt-field>
             </div>
             <div class="addEmoji" v-show='showEmoji'>
@@ -108,16 +107,20 @@
                 // 判断是回复根评论 还是回复评论的回复 true为根评论 
                 replyRoot: null,
                 showEmoji: false,
-                EMOJIS: EMOJIS.emojiArr
+                EMOJIS: EMOJIS.emojiArr,
+                // 浏览量
+                views: 0,
             }
         },
 
         methods: {
-            // 获取信息
+            // 获取帖子有关信息
             async getInfoById(infoId) {
                 // 发起请求获取帖子信息
-
-
+                await this.$http.all([this.getCommentInfo(infoId), this.getViews(infoId)])
+            },
+            // 获取评论信息
+            async getCommentInfo(infoId) {
                 // 获取评论信息
                 const res = await this.$http.get(`/comment/loadcomments/${infoId}`).catch(err =>
                     console.log(err)
@@ -148,9 +151,44 @@
                 }
                 return lists
             },
+            // 获取浏览量
+            async getViews(infoId) {
+                const res = await this.$http.get(`/info/getViews/${infoId}`).catch(err => console.log(err))
+                if (!res) throw new Error('获取浏览量失败！')
+                const {
+                    data: views
+                } = res
+                this.views = views
+                // console.log(views);
+            },
             // 点击评论弹出的删除回复
-            deleteReply() {
+            async deleteReply() {
                 console.log('删除回复');
+
+                let isDelete = await this.$message.confirm('确定删除此条评论?').then((confirm) => {
+                    return confirm
+                }, (cancel) => {
+                    return cancel;
+                })
+                if (isDelete === 'confirm') {
+                    let formData = this.$paramsToFormData({
+                        commentId: this.replyToWhoInfo.originCommentId
+                    });
+                    let res = await this.$http.post('/comment/dele', formData, {
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        }
+                    }).catch(err => console.log(err))
+                    if (res) {
+                        await this.getCommentInfo(this.infoId);
+                        return this.$reToast('已删除', 'icon-zhengque');
+                    } else {
+                        return this.$reToast('删除失败', 'icon-cuowu1');
+                    }
+                } else {
+                    return this.$reToast('已取消', 'icon-zhengque')
+                }
+
             },
             // 点击评论弹出的回复
             replyTo() {
@@ -194,6 +232,10 @@
                         content: this.$emojiEncode(this.replyContent),
                         // 回复一级评论时parentCommentId为空 则设置为commentId即可
                         parentCommentId: this.replyToWhoInfo.parentCommentId || this.replyToWhoInfo.commentId,
+                        // 回复一级评论的二级评论这一字段为0  方便判断
+                        replyCommentId: 0,
+                        replyCommentUserId: this.replyToWhoInfo.userId,
+                        replyCommentUserName: this.replyToWhoInfo.userName
                     }
                     // 回复的是多级评论 则填充完整信息
                     if (!this.replyLevelFlag) {
@@ -217,8 +259,7 @@
                 }
                 this.$reToast('评论成功!', 'icon-queren')
                 // 重新拉取数据
-
-                await this.$http.all([this.getInfoById(this.infoId), this.pushMessage()])
+                await this.$http.all([this.getCommentInfo(this.infoId), this.pushMessage()])
                 // 关闭对话框
                 this.popUpVisible = false;
             },
@@ -244,6 +285,8 @@
                 this.popUpVisible = getFromSon[0];
                 // 置回复为false 代表回复评论的评论
                 this.replyRoot = false;
+                // 渲染用的 回复XX
+                comment.toUserName = comment.userName;
                 console.log(comment, '---');
                 this.changeReplytoWho([comment, true])
             },
@@ -251,12 +294,19 @@
             async pushMessage() {
                 let level = this.replyRoot ? 1 : 2;
                 let toUserId = this.replyRoot ? this.infoDetail.info.userId : this.replyToWhoInfo.userId;
+                // 如果是点击自己回复自己的二级评论 则认为是回复一级评论 
+                // BUG解决：进行一级评论时 replyToWhoInfo为null
+                if (this.replyToWhoInfo && this.replyToWhoInfo.originUserId && (this.userInfo.userId === this
+                        .replyToWhoInfo.originUserId)) {
+                    toUserId = this.replyToWhoInfo.replyCommentUserId;
+                }
                 let postForm = {
                     infoId: this.infoDetail.info.infoId,
                     userName: this.userInfo.userName,
                     level,
                     toUserId
                 }
+                console.log(postForm, '282---');
                 // 转换数据
                 const formData = this.$paramsToFormData(postForm)
                 console.log([...formData]);
@@ -265,6 +315,7 @@
                         'Content-Type': 'application/x-www-form-urlencoded'
                     }
                 }).catch(err => console.log(err))
+                // await this.$http.post('/message', postForm).catch(err => console.log(err))
             },
             // 发起聊天 ==>调用俊威
             startChat() {
@@ -278,23 +329,33 @@
                 } = ev.currentTarget;
                 // ev.currentTarget.classList.toggle('highLight');
                 classList.toggle('highLight')
-                let prom;
+                let prom, isLike;
                 if (classList.contains('highLight')) {
+                    isLike = 1;
                     prom = this.$message({
                         title: '',
                         message: '已收藏',
                         closeOnClickModal: false
                     })
                 } else {
-                    tes = this.$message({
+                    isLike = 0;
+                    prom = this.$message({
                         title: '',
                         message: '已取消收藏',
                         closeOnClickModal: false
                     })
                 }
                 // 接收确定框的回调 发起请求修改数据
-                prom.then(res => {
-                    console.log(res);
+                prom.then(async (res) => {
+                    console.log(res, this.userInfo);
+                    let likeObj = {
+                        infoId: this.infoId,
+                        openId: this.userInfo.openId,
+                        likeLevel: 1,
+                        likeStatus: isLike,
+                    }
+                    let result = await this.$http.post('/info/like', likeObj).catch(err => console.log(err))
+                    console.log(result)
                 })
             },
             // 选择表情
@@ -323,8 +384,15 @@
         },
         computed: {
             replySheetActions() {
-                const names = ['删除回复', '回复'];
-                const methods = [this.deleteReply, this.replyTo];
+                let names, methods;
+                // 如果登录身份的用户ID跟评论的用户ID相等 才会出现删除自己回复
+                if (this.userInfo.userId === this.replyToWhoInfo.originUserId) {
+                    names = ['删除回复', '回复'];
+                    methods = [this.deleteReply, this.replyTo];
+                } else {
+                    names = ['回复'],
+                        methods = [this.replyTo];
+                }
                 return names.map((name, index) => {
                     return {
                         name,
@@ -360,7 +428,9 @@
             popUpVisible(bool) {
                 if (!bool) {
                     // 将回复内容置空
-                    this.replyContent = ''
+                    this.replyContent = '';
+                    // 将replyToWhoInfo置为null
+                    this.changeReplytoWho([null, null])
                 }
             }
         }

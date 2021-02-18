@@ -146,6 +146,20 @@
       "unicode_decimal": 58896
     },
     {
+      "icon_id": "7325940",
+      "name": "点赞",
+      "font_class": "dianzan",
+      "unicode": "e67c",
+      "unicode_decimal": 59004
+    },
+    {
+      "icon_id": "7338643",
+      "name": "点赞",
+      "font_class": "dianzan1",
+      "unicode": "e6ae",
+      "unicode_decimal": 59054
+    },
+    {
       "icon_id": "7387043",
       "name": "我的",
       "font_class": "wode",
@@ -291,6 +305,13 @@
       "font_class": "youxiang1",
       "unicode": "e68b",
       "unicode_decimal": 59019
+    },
+    {
+      "icon_id": "17967626",
+      "name": "点赞",
+      "font_class": "dianzan2",
+      "unicode": "eea3",
+      "unicode_decimal": 61091
     },
     {
       "icon_id": "18202483",

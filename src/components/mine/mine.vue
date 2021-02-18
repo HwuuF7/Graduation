@@ -5,13 +5,13 @@
         <p class='mine-title'>账号管理</p>
         <mt-cell title="账号修改" is-link @click.native="toMod(true)"></mt-cell>
         <p class='mine-title'>与我有关</p>
-        <mt-cell title="我发布的" @click.native="toAboutMe(0)">
+        <mt-cell title="我的发布" @click.native="toAboutMe(0)">
             <span slot="icon" class='iconfont icon-zuopin'></span>
         </mt-cell>
-        <mt-cell title="我回复的" @click.native="toAboutMe(1)">
+        <mt-cell title="我的参与" @click.native="toAboutMe(1)">
             <span slot="icon" class='iconfont icon-pinglun'></span>
         </mt-cell>
-        <mt-cell title="我收藏的" @click.native="toAboutMe(2)">
+        <mt-cell title="我的点赞" @click.native="toAboutMe(2)">
             <span slot="icon" class='iconfont icon-shoucang'></span>
         </mt-cell>
     </div>
@@ -49,14 +49,14 @@
                 }
             },
             issueByMe() {
-                console.log('我发布的');
+                console.log('我的发布');
                 this.$router.push('/mine/aboutMe')
             },
             replyByMe() {
-                console.log('我回复的');
+                console.log('我的参与');
             },
             favorByMe() {
-                console.log('我收藏的');
+                console.log('我的点赞');
             },
             // 跳转关于我的集成组件
             toAboutMe(activeCom) {

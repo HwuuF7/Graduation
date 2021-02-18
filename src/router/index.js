@@ -47,6 +47,7 @@ const routes = [{
         }
     },
     {
+        name: 'InfoMore',
         path: '/info/:infoId',
         component: InfoMore
     },
@@ -85,18 +86,38 @@ const router = new VueRouter({
     routes
 })
 
-router.beforeEach(async (to, from, next) => {
-    if (to.path === '/') {
-        // location.href = 'http://119.23.222.17:9001/wxLogin'
-        return next()
+router.beforeEach((to, from, next) => {
+    // 如果是从分类跳回主页面 要将keepAlive置为false 
+    // 再从主页面进分类时 就可以刷新获取
+    /*  if (from.path === ' ' && to.path === '/info') {
+         return next()
+     } */
+    if (from.path === '/info' && to.name === 'InfoMore') {
+        //  由首页跳详情页
+        from.meta.keepalive = true;
+        console.log('1===');
+        next()
+    } else if (from.path === '/info' && to.path === '/list') {
+        //  由首页跳分类页
+        from.meta.keepalive = false;
+        to.meta.keepalive = false;
+        console.log('2===');
+        next();
+    } else if (from.path === '/list' && to.name === 'InfoMore') {
+        //  由分类页跳详情页
+        from.meta.keepalive = true;
+        console.log('3===');
+        next()
+    } else if (from.path === '/list' && to.path === '/info') {
+        //  由详情页跳首页
+        from.meta.keepalive = false;
+        console.log(from);
+        to.meta.keepalive = false;
+        console.log('4===');
+        next()
+    } else {
+        next()
     }
-    console.log('=====================');
-    if (to.path === '/info') {
-        console.log('进来了');
-        return next()
-    }
-    console.log('进来2');
-    next()
 })
 
 export default router

@@ -119,43 +119,46 @@
             this.currentModelInfo = this.saveInfoMap.get(this.activeSort);
 
         },
-        // 获取跳转参数
+        // 从详情页返回时 维持原浏览高度
         /*  beforeRouteEnter(to, from, next) {
-             console.log('144');
-             next(vm => {
-                 // 获取跳转的模块
-                 console.log('122');
-                 let {
-                     module: toModule
-                 } = to.query;
-                 vm.getForm.type = vm.constModule[toModule].type;
-                 // 对应导航栏
-                 vm.differSub = vm.constModule[toModule].sortArr;
-                 // 默认为第一项
-                 // 为activeName设置了watch属性 
-                 // 只要切换了子分类 就会自动获取对应数据
-                 vm.getForm.catogory = vm.differSub[0];
-             })
-             next()
+             if (from.name === 'InfoMore') {
+                 next(vm => {
+                     console.log('从详情页返回', vm.$route);
+                     console.log(vm);
+                     // 从详情页返回时 滚动条高度维持
+                     // this.$refs[`info_scroll_${this.cateIndex}`][0].scrollTop = this.scrollTop
+                     vm.$refs[`info_scroll_${vm.cateIndex}`][0].scrollTop = vm.currentModelInfo.scrollTop;
+                 })
+             } else {
+                 next()
+             }
          }, */
         activated() {
-            console.log('激活2', this.currentModelInfo);
+            console.log('激活2', this.activeSort, this.currentModelInfo);
             // 从详情页返回时 滚动条高度维持
             // this.$refs[`info_scroll_${this.cateIndex}`][0].scrollTop = this.scrollTop
             this.$refs[`info_scroll_${this.cateIndex}`][0].scrollTop = this.currentModelInfo.scrollTop;
         },
         beforeRouteLeave(to, from, next) {
-            // 记录离开前的滚动条高度
-            // this.scrollTop = this.$refs[`info_scroll_${this.cateIndex}`][0].scrollTop
-            this.currentModelInfo.scrollTop = this.$refs[`info_scroll_${this.cateIndex}`][0].scrollTop;
-            // 保存数据  切换的时候会进行获取高度
-            this.saveInfoMap.set(this.activeSort, this.currentModelInfo)
-            console.log('before===', this.currentModelInfo.scrollTop);
-            next()
+            if (to.name === 'InfoMore') {
+                from.meta.keepalive = true;
+                console.log(from, '---145---');
+                // 记录离开前的滚动条高度
+                // this.scrollTop = this.$refs[`info_scroll_${this.cateIndex}`][0].scrollTop
+                this.currentModelInfo.scrollTop = this.$refs[`info_scroll_${this.cateIndex}`][0].scrollTop;
+                // 保存数据  切换的时候会进行获取高度
+                this.saveInfoMap.set(this.activeSort, this.currentModelInfo)
+                console.log('before===', this.currentModelInfo.scrollTop);
+                next()
+            } else {
+                from.meta.keepalive = false;
+                console.log(from);
+                next()
+            }
         },
         deactivated() {
             // console.log(this.$refs['info_scroll_0'][0].scrollTop, this.$refs['info_scroll_1'][0].scrollTop);
-            // console.log('deactive', this.constModule);
+            console.log('deactive', this.activeSort);
         },
         methods: {
             scrollY(ev) {

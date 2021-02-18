@@ -38,7 +38,7 @@
             </div>
             <!-- 时间与浏览次数 -->
             <p class="bomVisits">
-                {{model.createTime | timeFormat}}发布，{{model.viewNum ? model.viewNum : 0}}人浏览
+                {{model.createTime | timeFormat}}发布，{{views}}人浏览
             </p>
         </footer>
 
@@ -60,6 +60,7 @@
         props: {
             model: Object,
             isSetTop: Boolean,
+            views: Number,
         },
         data() {
             return {

@@ -37,7 +37,7 @@
                     <img v-for="(pic,picIndex) in model.pictures" :key='picIndex' :src="pic" alt="你看不到的秘密">
                 </div>
                 <!-- 时间与浏览次数 -->
-                <p class="timeVisits">{{model.createTime | timeFormat}}，{{model.viewNum ? model.viewNum : 0}}人浏览
+                <p class="timeVisits">{{model.createTime | timeFormat}}，{{model.views ? model.views : 0}}人浏览
                 </p>
                 <!-- 电话图标 -->
                 <!-- <span class="bomTel" v-if="!!!model.isOver">小</span> -->

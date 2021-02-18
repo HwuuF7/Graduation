@@ -225,9 +225,16 @@
                 this.$refs.scroll_page.scrollTop = this.scrollTop;
             }
         },
-        // beforeRouteLeave() {
-
-        // },
+        /*  beforeRouteLeave(to, from, next) {
+              if (to.path === "/list") {
+                  console.log('yes');
+                  to.meta.keepAlive = true;
+              } else {
+                  console.log('no');
+                  // to.meta.keepAlive = false;
+              }
+              next()
+         }, */
         methods: {
             gode() {
                 console.log('yes');
