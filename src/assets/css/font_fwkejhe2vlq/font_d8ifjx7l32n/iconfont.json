@@ -230,6 +230,13 @@
       "unicode_decimal": 58898
     },
     {
+      "icon_id": "11558844",
+      "name": "更多操作",
+      "font_class": "gengduocaozuo",
+      "unicode": "e63f",
+      "unicode_decimal": 58943
+    },
+    {
       "icon_id": "12279056",
       "name": "收藏",
       "font_class": "Collection_icon",
@@ -296,8 +303,15 @@
       "icon_id": "16039777",
       "name": "我的",
       "font_class": "wode1",
-      "unicode": "e63f",
-      "unicode_decimal": 58943
+      "unicode": "e640",
+      "unicode_decimal": 58944
+    },
+    {
+      "icon_id": "16563711",
+      "name": "更多操作",
+      "font_class": "cangpeitubiao_gengduocaozuo",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
     },
     {
       "icon_id": "17822452",
@@ -373,8 +387,8 @@
       "icon_id": "18460213",
       "name": "作品",
       "font_class": "zuopin",
-      "unicode": "e60e",
-      "unicode_decimal": 58894
+      "unicode": "e60f",
+      "unicode_decimal": 58895
     },
     {
       "icon_id": "18522236",

@@ -14,8 +14,10 @@ import {
 } from './utils/timeFormat.js'
 import diyDirectives from './utils/throttle.js'
 
-import utils from './utils/index.js'
-Vue.use(utils)
+import {
+    install
+} from './utils/index.js'
+Vue.use(install)
 Vue.use(diyDirectives)
 
 import graLoad from './components/loading/loading.vue'

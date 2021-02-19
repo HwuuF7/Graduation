@@ -1,10 +1,3 @@
-const test = function () {
-    console.log('this is a test function');
-}
-const hello = function () {
-    console.log('this is hello2222');
-    test()
-}
 import axios from 'axios'
 // axios配置
 axios.defaults.baseURL = 'http://api.xiaochengxuxcx.com';
@@ -103,19 +96,36 @@ const url = encodeURIComponent('http://api.xiaochengxuxcx.com/weixin'),
     href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${url}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect`;
 
 
+// 判断是否是微信端
+export const isWeiXin = function () {
+    var ua = window.navigator.userAgent.toLowerCase()
+    if (ua.indexOf('micromessenger') > -1) {
+        return true // 是微信端
+    } else {
+        return false
+    }
+}
+
+// 判断是否是移动端
+export const isMobile = function () {
+    if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
+        return true // 手机端
+    } else {
+        return false
+    }
+}
+
 
 
 const globalFun = {
-    $test: test,
-    $hello: hello,
     $parentPush: parentPush,
     $http: axios,
     $weixin: href,
     $emojiEncode: emojiEncode,
-    $paramsToFormData: paramsToFormData
+    $paramsToFormData: paramsToFormData,
 }
 
-export default {
+/* export default {
     install(Vue) {
         Object.keys(globalFun).forEach(fun => {
             Object.defineProperty(Vue.prototype, fun, {
@@ -123,6 +133,17 @@ export default {
                 writable: false
             })
         })
+    },
+    isWeiXin,
+    isMobile,
+} */
 
-    }
+// 挂载到Vue原型身上
+export function install(Vue) {
+    Object.keys(globalFun).forEach(fun => {
+        Object.defineProperty(Vue.prototype, fun, {
+            value: globalFun[fun],
+            writable: false
+        })
+    })
 }

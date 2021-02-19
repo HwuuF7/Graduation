@@ -1,4 +1,7 @@
 .infoMore {
+    position: relative;
+    padding-bottom: 3.8rem;
+
     .detailInfo {
         border: none;
     }
@@ -147,6 +150,33 @@
         }
     }
 
+
+    .bottom-panel {
+        border: 1px solid red;
+        height: 3.8rem;
+        padding: .6rem;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        z-index: 3;
+        background-color: #fff;
+        display: flex;
+
+        .mint-button {
+            border-radius: 1.2rem;
+            flex: 1;
+        }
+
+        .moreAction {
+            margin-left: .6rem;
+            width: 2.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #845ec2;
+        }
+    }
 
     // 回复输入框
     .mint-popup {

@@ -8,9 +8,17 @@ import ModInfo from '@/components/mine/modInfo.vue'
 import ModAttach from '@/components/mine/modAttach/modAttach.vue'
 import Sort from '@/components/sorts/sort.vue'
 import MessageSort from '@/components/common/messageSort/messageSort.vue'
-import AboutMe from '@/components/mine/aboutMe/aboutMe.vue';
+import AboutMe from '@/components/mine/aboutMe/aboutMe.vue'
+import PC from '@/components/PC/HomePC.vue'
+
 import Weixin from '../components/weixin.vue'
 
+
+// 引入两个工具函数
+import {
+    isWeiXin,
+    isMobile
+} from '../utils/index.js'
 Vue.use(VueRouter)
 
 const routes = [{
@@ -23,10 +31,11 @@ const routes = [{
         path: '/login',
         component: Index
     },
-    // {
-    //     path: '/register',
-    //     component: Register
-    // },
+    {
+        // PC端首页
+        path: '/pc',
+        component: PC
+    },
     {
         path: '/test',
         component: Test
@@ -91,45 +100,19 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    // 如果是从分类跳回主页面 要将keepAlive置为false 
-    // 再从主页面进分类时 就可以刷新获取
-    /*  if (from.path === '/info' && to.name === 'InfoMore') {
-         //  由首页跳详情页
-         from.meta.keepalive = true;
-         console.log('1===', from.meta);
-         next()
-     } else if (from.path === '/info' && to.path === '/list') {
-         //  由首页跳分类页
-         from.meta.keepalive = false;
-         to.meta.keepalive = false;
-         console.log('2===');
-         next();
-     } else if (from.path === '/list' && to.name === 'InfoMore') {
-         //  由分类页跳详情页
-         from.meta.keepalive = true;
-         console.log('3===', from);
-         next()
-     } else if (from.path === '/list' && to.path === '/info') {
-         //  由详情页跳首页
-         from.meta.keepalive = false;
-         console.log(from);
-         to.meta.keepalive = false;
-         console.log('4===');
-         next()
-     } else if (from.path === '/info' && to.path === '/sendMessage') {
-         //  由详情页跳首页
-         from.meta.keepalive = false;
-         console.log('5===');
-         next()
-     } else if (from.path === '/sendMessage' && to.path === '/info') {
-         //  由详情页跳首页
-         // to.meta.keepalive = true;
-         console.log('6===', to.meta);
-         next()
-     } else {
-         next()
-     } */
-    next()
+    if (isWeiXin() || isMobile()) {
+        if (to.path === '/pc') {
+            next('/info')
+        } else {
+            next()
+        }
+    } else {
+        if (to.path === '/pc') {
+            next()
+        } else {
+            next('/pc')
+        }
+    }
 })
 
 export default router

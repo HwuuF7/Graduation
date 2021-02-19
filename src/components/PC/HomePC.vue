@@ -13,7 +13,7 @@
 
         <div class="qr-container">
             <div class="logo">
-                <img src="./assets/logo.png" alt="QR-LOGO">
+                <img src="@/assets/imgs/logo.png" alt="QR-LOGO">
             </div>
             <div class="text">
                 <div class="text-top">
@@ -56,9 +56,9 @@
 
 
 <style lang="scss">
-    @import url('./assets/css/global.css');
-    @import url('./assets/css/font-line.css');
-    @import './assets/css/backgroundStars.scss';
+    @import url('../../assets/css/global.css');
+    @import url('../../assets/css/font-line.css');
+    @import '../../assets/css/backgroundStars.scss';
 
 
     .home-container {

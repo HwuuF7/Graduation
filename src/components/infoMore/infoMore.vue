@@ -45,6 +45,15 @@
             <!-- 没有评论数据的时候 -->
             <div class="emptyComments" v-if="commentInfo.length<1"></div>
         </div>
+        <!-- 如果登陆后 发现是自己发布的信息才显示 -->
+        <div class="bottom-panel">
+            <mt-button type='primary' @click.native="promoteMessage">扩散该消息</mt-button>
+            <div class="moreAction" @click='extendAction'>
+                <i class="iconfont icon-gengduocaozuo fz-2"></i>
+            </div>
+        </div>
+
+
         <!-- 点击对应评论进行回复的弹出选择框 -->
         <mt-actionsheet :actions="mutualReplySheetVisible ? replySheetActions : []" v-model="mutualReplySheetVisible">
         </mt-actionsheet>
@@ -74,6 +83,10 @@
                 <mt-button plain type='primary' @click='commitReply'>确定</mt-button>
             </div>
         </mt-popup>
+
+        <!-- 点击底部弹出的更多操作 -->
+        <mt-actionsheet :actions="extendSheetActions" v-model="extendActionSheetVisible">
+        </mt-actionsheet>
     </div>
 </template>
 
@@ -110,6 +123,9 @@
                 EMOJIS: EMOJIS.emojiArr,
                 // 浏览量
                 views: 0,
+                // 底部更多操作
+                extendSheetActions: [],
+                extendActionSheetVisible: false,
             }
         },
 
@@ -361,6 +377,15 @@
             // 选择表情
             chooseEmoji(ev) {
                 this.replyContent += ev.target.innerText;
+            },
+            // 扩散信息
+            promoteMessage() {
+                console.log('扩散信息');
+            },
+            // 删除/刷新/已解决操作
+            extendAction() {
+                console.log('more');
+                this.extendActionSheetVisible = true;
             },
             ...mapMutations(['changeReplytoWho']),
 

@@ -83,7 +83,6 @@
                 <!-- 聊天页 -->
                 <mt-tab-container-item id="CHAT">
                     <div v-for="i in 40" :key='i'>聊天</div>
-                    <p @click="gode" class="testP">跳转</p>
                 </mt-tab-container-item>
 
 
@@ -238,6 +237,9 @@
             }
 
         },
+        created() {
+            // console.log(this.$weixin);
+        },
         activated() {
             console.log('info激活', this.scrollTop);
             // 如果是从详情页回来的 则维持原有浏览高度
@@ -250,9 +252,6 @@
             }
         },
         methods: {
-            gode() {
-                console.log('yes');
-            },
             scrollY(ev) {
                 // 聊天和首页应该都会有滑动需求
                 if (this.selected === 'UESTC') {
@@ -339,6 +338,12 @@
 
             // 点击发送消息
             sendMessage() {
+                if (!this.$store.state.userInfo) {
+                    // 没有登录则跳转登录
+                    console.log('跳转至登录');
+                    return window.location.href = this.$weixin
+                    // 登录界面会接收到返回的code
+                }
                 console.log('发消息点击了！');
                 // 显示发消息对话框
                 this.sendMessageVisible = true;
