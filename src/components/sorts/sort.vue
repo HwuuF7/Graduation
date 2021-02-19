@@ -15,7 +15,6 @@
                     <div v-show="!currentModelInfo.loadEnd && currentModelInfo.loadInfo.length === 0">
                         加载中···
                     </div>
-                    <!-- <p v-for="ic in list" class="testP" :key='ic'>{{ic}}</p> -->
                     <detail-info v-for="info in currentModelInfo.loadInfo" :key="info.infoId" :model='info'
                         @click.native.stop='jumpDetail(info)' />
                     <div v-if="currentModelInfo.loadEnd && currentModelInfo.loadInfo.length === 0" class="no-info">
@@ -40,7 +39,6 @@
         },
         data() {
             return {
-                list: ['ab', 'cd', 'ef', 'g', 'd', 'w', 'e', 'r'],
                 constModule: {
                     'news': {
                         type: 'news',
@@ -102,63 +100,59 @@
                 currentModelInfo: {},
             }
         },
-        created() {
-            console.log(this.$route);
-            let {
-                module: toModule
-            } = this.$route.query;
+        // 从详情页返回时 维持原浏览高度
+        beforeRouteEnter(to, from, next) {
+            //  从详情页返回 使用缓存数据
+            if (from.name === 'InfoMore') {
+                to.meta.isBack = true;
+                next()
 
-
-            // 生成当前模块下的存储信息
-            this.saveInfoMap = this.createInfoMap(this.constModule[toModule]);
-            // 对应导航栏
-            this.differSub = this.constModule[toModule].sortArr;
-            // 当前的分类默认为第0项(这里改变了watch并不生效)
-            this.activeSort = this.differSub[0];
-            // 将当前分类的数据取出来
-            this.currentModelInfo = this.saveInfoMap.get(this.activeSort);
+            } else {
+                to.meta.isBack = false;
+                next(vm => {
+                    // 只有这样被改变 后面的watch才会监听到
+                    vm.activeSort = null;
+                })
+            }
 
         },
-        // 从详情页返回时 维持原浏览高度
-        /*  beforeRouteEnter(to, from, next) {
-             if (from.name === 'InfoMore') {
-                 next(vm => {
-                     console.log('从详情页返回', vm.$route);
-                     console.log(vm);
-                     // 从详情页返回时 滚动条高度维持
-                     // this.$refs[`info_scroll_${this.cateIndex}`][0].scrollTop = this.scrollTop
-                     vm.$refs[`info_scroll_${vm.cateIndex}`][0].scrollTop = vm.currentModelInfo.scrollTop;
-                 })
-             } else {
-                 next()
-             }
-         }, */
         activated() {
-            console.log('激活2', this.activeSort, this.currentModelInfo);
-            // 从详情页返回时 滚动条高度维持
-            // this.$refs[`info_scroll_${this.cateIndex}`][0].scrollTop = this.scrollTop
-            this.$refs[`info_scroll_${this.cateIndex}`][0].scrollTop = this.currentModelInfo.scrollTop;
+            if (this.$route.meta.isBack) {
+                // 从详情页返回时 滚动条高度维持
+                // this.$refs[`info_scroll_${this.cateIndex}`][0].scrollTop = this.scrollTop
+                this.$refs[`info_scroll_${this.cateIndex}`][0].scrollTop = this.currentModelInfo.scrollTop;
+            } else {
+                // 拉取数据
+                let {
+                    module: toModule
+                } = this.$route.query;
+
+
+                // 生成当前模块下的存储信息
+                this.saveInfoMap = this.createInfoMap(this.constModule[toModule]);
+                // 对应导航栏
+                this.differSub = this.constModule[toModule].sortArr;
+                // 当前的分类默认为第0项(这里改变了watch并不生效)
+                this.activeSort = this.differSub[0];
+                // 将当前分类的数据取出来
+                this.currentModelInfo = this.saveInfoMap.get(this.activeSort);
+            }
+            console.log('sort激活', this.activeSort, this.currentModelInfo);
         },
         beforeRouteLeave(to, from, next) {
             if (to.name === 'InfoMore') {
-                from.meta.keepalive = true;
-                console.log(from, '---145---');
                 // 记录离开前的滚动条高度
                 // this.scrollTop = this.$refs[`info_scroll_${this.cateIndex}`][0].scrollTop
                 this.currentModelInfo.scrollTop = this.$refs[`info_scroll_${this.cateIndex}`][0].scrollTop;
                 // 保存数据  切换的时候会进行获取高度
                 this.saveInfoMap.set(this.activeSort, this.currentModelInfo)
                 console.log('before===', this.currentModelInfo.scrollTop);
-                next()
-            } else {
-                from.meta.keepalive = false;
-                console.log(from);
-                next()
             }
+            next()
         },
         deactivated() {
             // console.log(this.$refs['info_scroll_0'][0].scrollTop, this.$refs['info_scroll_1'][0].scrollTop);
-            console.log('deactive', this.activeSort);
+            // console.log('deactive', this.activeSort);
         },
         methods: {
             scrollY(ev) {
@@ -266,6 +260,7 @@
         watch: {
             // 监听切换分类时的数据改变
             async activeSort(newAct, oldAct) {
+                if (newAct === null) return;
                 if (oldAct !== null && this.isScroll) {
                     // console.log('jinlai', this.scrollTop);
                     // 保存旧的页面滚动高度
@@ -295,7 +290,7 @@
                 } = this.currentModelInfo
                 // 判断是否是第一次进入
                 if (!loadEnd && loadInfo.length === 0) {
-                    console.log('发请求了？');
+                    // console.log('发请求了？');
                     // 发起请求获取数据
                     await this.getInfo(getForm)
                 }

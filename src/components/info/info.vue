@@ -216,25 +216,39 @@
                 scrollTop: 0,
             }
         },
-        created() {
-            this.initial()
+        beforeRouteEnter(to, from, next) {
+            // 如果是从详情页返回 主页 则代表使用缓存数据
+            if (from.name === 'InfoMore') {
+                to.meta.isBack = true;
+                console.log('fromInfoMore', to.meta);
+                next(vm => {
+                    vm.searchVal = '';
+                    vm.sendMessageVisible = false;
+                })
+            } else {
+                to.meta.isBack = false;
+                next(vm => {
+                    vm.mainInfoEnd = false;
+                    vm.loading = false;
+                    vm.searchVal = '';
+                    vm.sendMessageVisible = false;
+                    vm.mainInfo = [];
+                    vm.mainForm.page = 1;
+                })
+            }
+
         },
         activated() {
-            console.log('激活');
-            if (this.selected === 'UESTC') {
+            console.log('info激活', this.scrollTop);
+            // 如果是从详情页回来的 则维持原有浏览高度
+            if (this.$route.meta.isBack && this.selected === 'UESTC') {
                 this.$refs.scroll_page.scrollTop = this.scrollTop;
             }
+            // 如果不是从详情页返回的 重新拉取数据
+            if (!this.$route.meta.isBack) {
+                this.initial()
+            }
         },
-        /*  beforeRouteLeave(to, from, next) {
-              if (to.path === "/list") {
-                  console.log('yes');
-                  to.meta.keepAlive = true;
-              } else {
-                  console.log('no');
-                  // to.meta.keepAlive = false;
-              }
-              next()
-         }, */
         methods: {
             gode() {
                 console.log('yes');
