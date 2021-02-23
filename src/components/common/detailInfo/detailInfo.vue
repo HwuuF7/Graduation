@@ -10,7 +10,7 @@
             <!-- 头部用户名 -->
             <p class="mainTop">
                 <span>{{model.userName}}</span>
-                <span class="setTop" v-if="isSetTop">置顶</span>
+                <span class="setTop" v-if="model.isSetTop || isSetTop">置顶</span>
             </p>
             <!-- 中部详细信息 -->
             <div class="mainMid">

@@ -1,4 +1,4 @@
-// 封装时间格式
+// 封装时间格式（几天前）
 export function timeFormat(timestamp) {
     // 确保是时间戳
     timestamp = new Date(timestamp).getTime()
@@ -12,6 +12,30 @@ export function timeFormat(timestamp) {
         if (res !== 0) return `${res}${tags[i]}前`;
     }
 }
+
+
+// 时间格式（年月日 上午/下午 HH:MM）
+export function timeFormatAmPm(date) {
+    date = new Date(date);
+    // date = new Date()
+    let str = '上午';
+    const currentYear = new Date().getFullYear()
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    let hour = date.getHours();
+    if (hour > 13) {
+        hour -= 12;
+        str = '下午';
+    }
+    const min = (date.getMinutes() + '').padStart(2, '0');
+    if (currentYear !== year) {
+        return `${year}年${month}月${day}日 ${str} ${hour}:${min}`
+    } else {
+        return `${month}月${day}日 ${str} ${hour}:${min}`
+    }
+}
+
 
 // 封装含表情内容的解码
 export function emojiDecode(message) {

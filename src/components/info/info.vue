@@ -11,6 +11,9 @@
                     infinite-scroll-disabled="loading" infinite-scroll-distance="10"
                     :infinite-scroll-immediate-check='true' v-if="selected === 'UESTC'">
 
+
+
+
                     <!-- 搜索框 -->
                     <div class="homepage-search">
                         <div class="search-cell">
@@ -56,9 +59,9 @@
                     <div class="homepage-moreinfo">
 
                         <detail-info v-for="info in topInfo" :key="info.infoId" isSetTop :model='info'
-                            @click.native.stop="linkToMore(info,true)"></detail-info>
+                            @click.native.stop="$router.push(`/info/${info.infoId}`)"></detail-info>
                         <detail-info v-for="info in mainInfo" :key='info.infoId' :model='info'
-                            @click.native.stop="linkToMore(info,false)"></detail-info>
+                            @click.native.stop="$router.push(`/info/${info.infoId}`)"></detail-info>
 
                         <p class="testP" v-for="i in testP" :key="i+'c'">{{i}}*i</p>
 
@@ -126,15 +129,10 @@
 
 <script>
     import detailInfo from '@/components/common/detailInfo/detailInfo.vue';
-    import other from '@/components/other/other.vue';
     import mine from '@/components/mine/mine.vue';
-    import {
-        mapMutations
-    } from 'vuex';
     export default {
         components: {
             detailInfo,
-            other,
             mine,
         },
         data() {
@@ -227,6 +225,11 @@
             } else {
                 to.meta.isBack = false;
                 next(vm => {
+                    if (sessionStorage.getItem('tag')) {
+                        vm.selected = sessionStorage.getItem('tag')
+                        sessionStorage.removeItem('tag')
+                    }
+
                     vm.mainInfoEnd = false;
                     vm.loading = false;
                     vm.searchVal = '';
@@ -243,13 +246,15 @@
         activated() {
             console.log('info激活', this.scrollTop);
             // 如果是从详情页回来的 则维持原有浏览高度
-            if (this.$route.meta.isBack && this.selected === 'UESTC') {
+            // if (this.selected === 'UESTC') {
+            if (this.$route.meta.isBack) {
                 this.$refs.scroll_page.scrollTop = this.scrollTop;
-            }
-            // 如果不是从详情页返回的 重新拉取数据
-            if (!this.$route.meta.isBack) {
+
+            } else {
+                // 如果不是从详情页返回的 重新拉取数据
                 this.initial()
             }
+            // }
         },
         methods: {
             scrollY(ev) {
@@ -317,9 +322,14 @@
                 }
                 console.log(infos);
             },
-            async searchInfo() {
+            searchInfo() {
                 if (this.searchVal === '') return this.$reToast('输入不能为空！', 'icon-cuowu')
-                console.log('search', this.searchVal);
+                this.$router.push({
+                    path: '/search',
+                    query: {
+                        key: this.searchVal
+                    }
+                });
             },
             // 内部已经实现了节流 loading就代表了节流标志
             // 触底节流获取信息
@@ -339,6 +349,8 @@
             // 点击发送消息
             sendMessage() {
                 if (!this.$store.state.userInfo) {
+                    //  将当前路由进行保存
+                    sessionStorage.setItem('route', this.$route.fullPath)
                     // 没有登录则跳转登录
                     console.log('跳转至登录');
                     return window.location.href = this.$weixin
@@ -365,16 +377,6 @@
                 });
             },
 
-            // 帖子跳转至详情信息
-            linkToMore(info, isSetTop) {
-                const {
-                    infoId
-                } = info
-                // 将当前点击跳转的信息复制一份存入vuex
-                this.changeInfoDetail([info, isSetTop])
-                this.$router.push(`/info/${infoId}`)
-            },
-            ...mapMutations(['changeInfoDetail'])
         },
         computed: {
             // 搜索框的清除按钮是否可见
@@ -388,11 +390,21 @@
                 if (newTag === 'MINE') {
                     // 判断是否登录
                     if (!this.$store.state.userInfo) {
+                        //  保存当前路由
+                        sessionStorage.setItem('route', this.$route.fullPath);
+                        sessionStorage.setItem('tag', newTag)
                         // 跳转授权登录
                         window.location.href = this.$weixin
                     } else {
                         this.showMine = true
                     }
+                } else if (newTag === 'UESTC') {
+                    this.mainInfoEnd = false;
+                    this.mainForm.page = 1;
+                    this.mainInfo = [];
+                    this.$http.all([this.getTopInfo(), this.getMainInfo()]).then(() => {
+                        console.log(this.mainInfo);
+                    })
                 }
             }
         }

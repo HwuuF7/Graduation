@@ -1,6 +1,8 @@
 .infoMore {
     position: relative;
+    height: 100%;
     padding-bottom: 3.8rem;
+    overflow: auto;
 
     .detailInfo {
         border: none;
@@ -152,7 +154,6 @@
 
 
     .bottom-panel {
-        border: 1px solid red;
         height: 3.8rem;
         padding: .6rem;
         position: fixed;

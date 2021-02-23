@@ -1,70 +1,151 @@
 <template>
-    <div class="aboutMe">
-        <mt-header :title="activeCom.title">
-            <mt-button icon="back" slot='left' @click="goBack"></mt-button>
+    <div class="aboutMe" ref="aboutMe">
+        <mt-header :title="options[activeNum]" fixed>
+            <mt-button icon="back" slot='left' @click="$router.go(-1)"></mt-button>
         </mt-header>
-        <component :is='activeCom.name' />
+        <div class="about-outer">
+            <div v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="10"
+                :infinite-scroll-immediate-check='true' class='scroll-info' v-if="activeNum === '0'">
+                <detail-info v-for="info in activeInfo" :key='info.infoId' :model='info'
+                    @click.native.stop="$router.push(`/info/${info.infoId}`)" />
+            </div>
+            <div v-if="activeNum === '1'" class="scroll-info my-dynamic">
+                <mt-cell-swipe :right=" [{
+                    content: '删除',
+                    style: {
+                        background: 'red',
+                        color: '#fff',
+                        display: 'flex',
+                        alignItems: 'center',
+                    },
+                    handler: () =>  this.deleteFromMyDynamic(123)
+                }]">
+                    <div>
+                        <img src="@/assets/imgs/7f.png">
+                        <div class="intro">
+                            <span>name</span>
+                            <span>哈哈哈contentcontentcontentcontentcontentcontent</span>
+                            <span>{{date |timeFormatAmPm}}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <img src="@/assets/imgs/7f.png">
+                    </div>
+                </mt-cell-swipe>
+            </div>
+        </div>
     </div>
 
 
 </template>
 
 <script>
-    import issue from './issueByMe.vue';
-    import reply from './replyByMe.vue';
-    import favor from './favorByMe.vue'
+    import detailInfo from '@/components/common/detailInfo/detailInfo.vue';
     export default {
         components: {
-            issue,
-            reply,
-            favor
+            detailInfo
         },
         data() {
             return {
-                activeCom: null,
-                options: [{
-                    name: 'issue',
-                    title: '我发布的'
-                }, {
-                    name: 'reply',
-                    title: '我回复的'
-                }, {
-                    name: 'favor',
-                    title: '我收藏的'
-                }]
+                date: new Date(),
+                // 记录当前活跃的显示
+                activeNum: '0',
+                options: ['我的发布', '我的动态'],
+                // 所激活对应的数据
+                activeInfo: [],
+                // 记录离开前的滚动高度
+                scrollTop: 0,
+                // 无限滚动
+                loading: false,
             }
+        },
+        beforeRouteEnter(to, from, next) {
+            if (from.name === 'InfoMore') {
+                to.meta.isBack = true;
+                console.log('fromInfoMore', to.meta);
+                next()
+            } else {
+                to.meta.isBack = false;
+                next(vm => {
+                    // 非法操作
+                    if (!sessionStorage.getItem('activeCom')) {
+                        // 默认给activeCom=0 显示我发布的
+                        sessionStorage.setItem('activeCom', 0);
+                    }
+                    vm.activeNum = sessionStorage.getItem('activeCom')
+                    console.log('before======');
+                    vm.scrollTop = 0;
+                    vm.loading = false;
+                })
+            }
+
         },
         //生命周期 - 创建完成（访问当前this实例）
         created() {
-            // 非法操作
-            if (!localStorage.getItem('activeCom')) {
-                // 默认给activeCom=0 显示我发布的
-                localStorage.setItem('activeCom', 0);
+            console.log('created');
+        },
+        mounted() {
+            console.log('mounted');
+        },
+        activated() {
+            console.log('issue激活');
+            // 如果不是从详情页进入的 则刷新数据
+            if (!this.$route.meta.isBack) {
+                // 获取"我的发布"信息
+                if (this.activeNum === '0') {
+                    this.getReleaseByMe()
+                } else if (this.activeNum === '1') {
+                    // 获取"我的动态"信息
+                    this.getActiveInfo()
+                }
+            } else {
+                // 恢复浏览高度
+                this.$refs.aboutMe.scrollTop = this.scrollTop
             }
-            let active = localStorage.getItem('activeCom')
-            this.activeCom = this.options[active]
-            console.log(this.activeCom);
+        },
+        beforeRouteLeave(to, from, next) {
+            this.scrollTop = this.$refs.aboutMe.scrollTop;
+            next()
         },
         methods: {
-            goBack() {
-                console.log('gobak');
-                this.$router.go(-1)
-            }
-        },
-        //生命周期 - 挂载完成（访问DOM元素）
-        mounted() {
-
+            async getActiveInfo() {
+                const {
+                    data: res
+                } = await this.$http.get('/info/view/topInfo').catch(err => console.log(err))
+                console.log(res);
+                this.activeInfo = res
+            },
+            async getReleaseByMe() {
+                // console.log(this.$store.state.userInfo);
+                const res = await this.$http.get(`/user/myRelease/${this.$store.state.userInfo.userId}`).catch(
+                    err => console.warn(err))
+                if (!res) return this.$reToast('获取信息失败！', 'icon-close')
+                this.activeInfo = res.data;
+                console.log(this.activeInfo);
+            },
+            async loadMore() {
+                console.log('触发更多');
+            },
+            // 向左滑动的交互  从"我的动态"中进行删除
+            deleteFromMyDynamic(id) {
+                console.log('Delete===', id);
+            },
         },
         destroyed() {
-            console.log('摧毁了');
-            localStorage.removeItem('activeCom')
-        }
+            // console.log('摧毁了');
+            // localStorage.removeItem('activeCom')
+        },
+
+        watch: {}
     }
 </script>
 
 <style scoped lang='scss'>
     /* @import url(); 引入css类 */
     .aboutMe {
+        overflow: auto;
+        height: 100%;
+
         .mint-header {
             background: #fff;
             font-size: 1rem;
@@ -73,6 +154,96 @@
 
             ::v-deep .mint-header-title {
                 font-weight: 700;
+            }
+        }
+
+        .about-outer {
+            margin-top: 2.5rem;
+
+            .scroll-info {
+                height: auto;
+            }
+
+            .my-dynamic {
+                .mint-cell-swipe {
+                    background: #f6f6f6;
+                    border-bottom: 1px solid #777;
+
+                    ::v-deep .mint-cell-wrapper {
+                        padding: .3rem .6rem;
+
+                        .mint-cell-title {
+                            flex: 0;
+                        }
+
+                        .mint-cell-value {
+                            flex: 1;
+                            overflow: hidden;
+                            color: red;
+
+                            >div {
+                                overflow: hidden;
+
+                                &:first-child {
+                                    flex: 1;
+                                    display: flex;
+
+                                    >img {
+                                        width: 3rem;
+                                        height: 3.2rem;
+                                        border-radius: .2rem;
+                                    }
+
+                                    .intro {
+                                        margin-left: .2rem;
+                                        flex: 1;
+                                        display: flex;
+                                        flex-flow: column wrap;
+                                        overflow: hidden;
+
+                                        >span {
+                                            font-size: 1rem;
+                                            font-weight: 400;
+                                            line-height: 1;
+                                            overflow: hidden;
+                                            text-overflow: ellipsis;
+                                            display: -webkit-box;
+                                            -webkit-line-clamp: 2;
+                                            -webkit-box-orient: vertical;
+                                            word-break: break-all;
+                                            letter-spacing: .05rem;
+
+                                            &:first-child {
+                                                color: #371cd5;
+                                            }
+
+                                            &:nth-child(2) {
+                                                margin: .2rem 0;
+                                                color: #674d85;
+                                            }
+
+                                            &:last-child {
+                                                font-size: .8rem;
+                                                color: #999;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                &:last-child {
+                                    margin-left: .3rem;
+                                    height: 4rem;
+                                    width: 3.8rem;
+
+                                    >img {
+                                        width: 100%;
+                                        height: 100%;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

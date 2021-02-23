@@ -50,6 +50,8 @@
             // 回复一级评论
             replyToFirst() {
                 if (!this.$store.state.userInfo) {
+                    // 保存当前路由
+                    sessionStorage.setItem('route', this.$route.fullPath);
                     // 没有登录则跳转登录
                     console.log('跳转至登录');
                     return window.location.href = this.$weixin
@@ -58,7 +60,7 @@
                 console.log('回复一级评论');
                 // 将回复对话框显示出来
                 this.$emit('replyToFirst', true)
-            }
+            },
         },
 
     }

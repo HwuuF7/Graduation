@@ -9,7 +9,16 @@
 </template>
 
 <script>
-    export default {}
+    export default {
+        created() {
+            // 如果用户3天内授权过则无需再跳转登录
+            if (this.$getLocalStorage('userInfo')) {
+                this.$store.commit('saveUserInfo', this.$getLocalStorage('userInfo'))
+                // console.log(this.$store.state.userInfo)
+            }
+            // console.log(this.$getLocalStorage('userInfo'), '===APP');
+        }
+    }
 </script>
 
 <style scoped lang='scss'>

@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "113714",
+      "name": "无结果",
+      "font_class": "noresult",
+      "unicode": "e62c",
+      "unicode_decimal": 58924
+    },
+    {
       "icon_id": "765384",
       "name": "询问",
       "font_class": "shouye",

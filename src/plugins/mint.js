@@ -13,6 +13,7 @@ import {
     Toast,
     Indicator,
     Cell,
+    CellSwipe,
     Header,
     Field,
     Radio,
@@ -35,6 +36,7 @@ Vue.component(Tabbar.name, Tabbar);
 Vue.use(InfiniteScroll);
 Vue.component(Spinner.name, Spinner);
 Vue.component(Cell.name, Cell);
+Vue.component(CellSwipe.name, CellSwipe);
 Vue.component(Header.name, Header);
 Vue.component(Field.name, Field);
 Vue.component(Radio.name, Radio);

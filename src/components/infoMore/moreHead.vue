@@ -1,5 +1,5 @@
 <template>
-    <div class="moreHead">
+    <div class="moreHead" v-if="!!model">
         <!-- 头部 -->
         <header>
             <span class="avatar">
@@ -8,7 +8,7 @@
             </span>
             <div class="user">
                 <span>{{model.userName}}</span>
-                <span v-if="isSetTop" class="setTop">置顶</span>
+                <span v-if="model.isSetTop || isSetTop" class="setTop">置顶</span>
             </div>
             <span class="report">举报</span>
         </header>
@@ -38,7 +38,7 @@
             </div>
             <!-- 时间与浏览次数 -->
             <p class="bomVisits">
-                {{model.createTime | timeFormat}}发布，{{views}}人浏览
+                {{model.createTime | timeFormat}}发布，{{model.views}}人浏览
             </p>
         </footer>
 
@@ -60,7 +60,6 @@
         props: {
             model: Object,
             isSetTop: Boolean,
-            views: Number,
         },
         data() {
             return {
@@ -71,7 +70,7 @@
             }
         },
         created() {
-            // console.log(this.$u.config.v);
+            // console.log(this.isSetTop);
         },
         methods: {
             previewPics(pIndex) {

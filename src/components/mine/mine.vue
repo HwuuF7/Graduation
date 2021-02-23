@@ -8,11 +8,8 @@
         <mt-cell title="我的发布" @click.native="toAboutMe(0)">
             <span slot="icon" class='iconfont icon-zuopin'></span>
         </mt-cell>
-        <mt-cell title="我的参与" @click.native="toAboutMe(1)">
+        <mt-cell title="我的动态" @click.native="toAboutMe(1)">
             <span slot="icon" class='iconfont icon-pinglun'></span>
-        </mt-cell>
-        <mt-cell title="我的点赞" @click.native="toAboutMe(2)">
-            <span slot="icon" class='iconfont icon-shoucang'></span>
         </mt-cell>
     </div>
 </template>
@@ -48,21 +45,11 @@
                     console.log('跳转登录');
                 }
             },
-            issueByMe() {
-                console.log('我的发布');
-                this.$router.push('/mine/aboutMe')
-            },
-            replyByMe() {
-                console.log('我的参与');
-            },
-            favorByMe() {
-                console.log('我的点赞');
-            },
             // 跳转关于我的集成组件
             toAboutMe(activeCom) {
                 console.log('goAboutMe');
                 // 刷新操作时保存当前的激活组件
-                localStorage.setItem('activeCom', activeCom)
+                sessionStorage.setItem('activeCom', activeCom)
                 this.$router.push('/mine/aboutMe')
             },
 

@@ -18,12 +18,15 @@ export default new Vuex.Store({
             info: null,
             // 是否置顶
             isSetTop: null,
-        }
+        },
+
     },
     mutations: {
+        // 保存用户登录信息
         saveUserInfo(state, userInfo) {
             state.userInfo = userInfo;
         },
+
         // 点击事件触发一次 第一次true
         // v-model的computed监听到更新值 get一开始为false 后面变为true set执行 触发第二次
         // 第三次？？？

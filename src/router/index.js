@@ -10,6 +10,7 @@ import Sort from '@/components/sorts/sort.vue'
 import MessageSort from '@/components/common/messageSort/messageSort.vue'
 import AboutMe from '@/components/mine/aboutMe/aboutMe.vue'
 import PC from '@/components/PC/HomePC.vue'
+import Search from '@/components/search/search.vue'
 
 import Weixin from '../components/weixin.vue'
 
@@ -77,7 +78,11 @@ const routes = [{
     },
     {
         path: '/mine/aboutMe',
-        component: AboutMe
+        component: AboutMe,
+        meta: {
+            keepalive: true,
+            isBack: false,
+        }
     }, {
         path: '/list',
         component: Sort,
@@ -89,6 +94,15 @@ const routes = [{
     }, {
         path: '/sendMessage',
         component: MessageSort
+    },
+    {
+        path: '/search',
+        component: Search,
+        meta: {
+            keepalive: true,
+            // 是否是从详情页返回 为true则代表使用缓存数据
+            isBack: false,
+        }
     }, {
         path: '/weixin',
         component: Weixin

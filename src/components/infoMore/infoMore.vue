@@ -1,7 +1,7 @@
 <template>
     <div class="infoMore">
 
-        <moreHead :model='infoDetail.info' :isSetTop="infoDetail.isSetTop" :views='views' />
+        <moreHead :model='infoDetail' />
 
 
 
@@ -99,7 +99,6 @@
         mapState,
         mapMutations
     } from 'vuex';
-    import emoji from './emoji.js';
 
 
     export default {
@@ -112,6 +111,8 @@
             return {
                 // 通过路由获取当前的帖子ID信息
                 infoId: '',
+                // 获取的Info数据
+                infoDetail: null,
                 // 获取的评论信息
                 commentInfo: [],
                 popUpVisible: false,
@@ -121,8 +122,6 @@
                 replyRoot: null,
                 showEmoji: false,
                 EMOJIS: EMOJIS.emojiArr,
-                // 浏览量
-                views: 0,
                 // 底部更多操作
                 extendSheetActions: [],
                 extendActionSheetVisible: false,
@@ -132,8 +131,12 @@
         methods: {
             // 获取帖子有关信息
             async getInfoById(infoId) {
-                // 发起请求获取帖子信息
-                await this.$http.all([this.getCommentInfo(infoId), this.getViews(infoId)])
+                let infoAPI = this.$http.get(`/info/view/${infoId}`)
+                const res = await this.$http.all([infoAPI, this.getCommentInfo(infoId)]).catch(err =>
+                    console.log(err)
+                )
+                if (!res) return this.$reToast('获取信息失败', ' icon-close')
+                this.infoDetail = res[0].data;
             },
             // 获取评论信息
             async getCommentInfo(infoId) {
@@ -166,16 +169,6 @@
                     })
                 }
                 return lists
-            },
-            // 获取浏览量
-            async getViews(infoId) {
-                const res = await this.$http.get(`/info/getViews/${infoId}`).catch(err => console.log(err))
-                if (!res) throw new Error('获取浏览量失败！')
-                const {
-                    data: views
-                } = res
-                this.views = views
-                // console.log(views);
             },
             // 点击评论弹出的删除回复
             async deleteReply() {
@@ -284,6 +277,8 @@
                 console.log('根ROOT');
                 // 判断是否已经登录
                 if (!this.userInfo) {
+                    // 保存当前路由
+                    sessionStorage.setItem('route', this.$route.fullPath);
                     // 没有登录则跳转登录
                     console.log('跳转至登录');
                     return window.location.href = this.$weixin
@@ -392,15 +387,9 @@
         },
         created() {
             this.infoId = this.$route.params.infoId
-            console.log(this.infoDetail);
-            // 发起请求获取信息
+            // 发起请求获取帖子信息
             this.getInfoById(this.infoId)
         },
-        /* beforeRouteLeave(to, from, next) {
-            if(to.path === '/info') {
-                to.meta.
-            }
-        }, */
         filters: {
             // 对表情(0x16进制)进行转码
             decodeByHex(hex) {
@@ -446,7 +435,7 @@
                 }
             },
             // 从vuex获取确定回复哪一位
-            ...mapState(['replyToWhoInfo', 'replyLevelFlag', 'infoDetail', 'userInfo']),
+            ...mapState(['replyToWhoInfo', 'replyLevelFlag', 'userInfo']),
         },
         watch: {
             // 监听回复对话框popup的关闭事件

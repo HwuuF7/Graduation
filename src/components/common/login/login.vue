@@ -62,10 +62,15 @@
             async getUserInfo(code) {
                 if (!code) return console.log('没有code');
                 const res = await this.$http.get(`/getInfo?code=${code}`)
-                console.log(res, '======');
+                // vuex存一份
                 this.saveUserInfo(res.data.result)
-                console.log('存储成功===', this.$store.state.userInfo);
-                this.$router.replace('/info')
+                console.log('Vuex存储成功===', this.$store.state.userInfo);
+
+                // 用Localstorage保存一份
+                this.$setLocalStorage('userInfo', res.data.result)
+                console.log('本地存储===', this.$getLocalStorage('userInfo'))
+                // 跳转回登录前的页面
+                this.$router.replace(sessionStorage.getItem('route'))
             },
             ...mapMutations(['saveUserInfo']),
         },

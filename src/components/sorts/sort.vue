@@ -5,7 +5,6 @@
             <mt-tab-item v-for='eachName in differSub' :key='eachName' :id="eachName">{{eachName}}</mt-tab-item>
         </mt-navbar>
         <!-- @scroll.native="scrollY($el)" -->
-        <!-- <div class="info-scroll"> -->
         <mt-tab-container v-model="activeSort">
             <mt-tab-container-item v-for='(eachName,eachIndex) in differSub' :key='eachName' :id="eachName">
                 <div v-infinite-scroll="loadMore" infinite-scroll-disabled="currentModelInfo.loading"
@@ -16,7 +15,7 @@
                         加载中···
                     </div>
                     <detail-info v-for="info in currentModelInfo.loadInfo" :key="info.infoId" :model='info'
-                        @click.native.stop='jumpDetail(info)' />
+                        @click.native.stop='$router.push(`/info/${info.infoId}`)' />
                     <div v-if="currentModelInfo.loadEnd && currentModelInfo.loadInfo.length === 0" class="no-info">
                         <!-- 放图片 -->
                         <p>暂无数据</p>
@@ -24,15 +23,11 @@
                 </div>
             </mt-tab-container-item>
         </mt-tab-container>
-        <!-- </div> -->
     </div>
 </template>
 
 <script>
     import detailInfo from '@/components/common/detailInfo/detailInfo.vue';
-    import {
-        mapMutations
-    } from 'vuex';
     export default {
         components: {
             detailInfo
@@ -238,24 +233,12 @@
                 // 重新设置map
                 this.saveInfoMap.set(this.activeSort, this.currentModelInfo)
             },
-            // 事件捕获跳转到详情页
-            jumpDetail(info, isSetTop) {
-                console.log('跳转到详情页');
-                const {
-                    infoId
-                } = info;
-                // 将当前点击跳转的信息复制一份存入vuex
-                this.changeInfoDetail([info])
-                // 跳转
-                this.$router.push(`/info/${infoId}`);
-            },
             // 懒加载更多数据
             async loadMore() {
                 console.log('触发加载更多');
                 this.currentModelInfo.loading = true;
                 await this.getInfo(this.currentModelInfo.getForm)
             },
-            ...mapMutations(['changeInfoDetail'])
         },
         watch: {
             // 监听切换分类时的数据改变

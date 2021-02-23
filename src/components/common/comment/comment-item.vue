@@ -34,13 +34,14 @@
             // 监听回复谁
             catchReplyEvent(comment, index) {
                 // 判断是否已经登录
-                /*  if (!this.$store.state.userInfo) {
-                     // 没有登录则跳转登录
-                     console.log('跳转至登录');
-                     return window.location.href = this.$weixin
-                     // 登录界面会接收到返回的code
-                 } */
-                // this.replySheetVisible = true
+                if (!this.$store.state.userInfo) {
+                    //  保存当前路由
+                    sessionStorage.setItem('route', this.$route.fullPath);
+                    // 没有登录则跳转登录
+                    console.log('跳转至登录');
+                    return window.location.href = this.$weixin
+                    // 登录界面会接收到返回的code
+                }
                 this.isShowReplySheet(true)
                 // console.log(comment, index);
 

@@ -242,12 +242,7 @@
             },
             // 确认发布
             async sendMessage() {
-                // 判断有无登录
-                if (!this.$store.state.userInfo) {
-                    // 没有登录 就跳至授权登录
-                    console.log('跳转至登录');
-                    return window.location.href = this.$weixin
-                }
+
                 // 用户登录之后 解构出用户信息 
                 const {
                     userInfo
