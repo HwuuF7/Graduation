@@ -11,13 +11,14 @@
                     infinite-scroll-distance="10" :infinite-scroll-immediate-check='true'
                     :class="`info-scroll info_scroll_${eachIndex}`" :ref="`info_scroll_${eachIndex}`"
                     @scroll.self.stop="scrollY($event)">
-                    <div v-show="!currentModelInfo.loadEnd && currentModelInfo.loadInfo.length === 0">
-                        加载中···
+                    <div v-show="!currentModelInfo.loadEnd && currentModelInfo.loadInfo.length === 0" class="loading">
+                        <span></span>
                     </div>
                     <detail-info v-for="info in currentModelInfo.loadInfo" :key="info.infoId" :model='info'
                         @click.native.stop='$router.push(`/info/${info.infoId}`)' />
                     <div v-if="currentModelInfo.loadEnd && currentModelInfo.loadInfo.length === 0" class="no-info">
                         <!-- 放图片 -->
+                        <img src="@/assets/imgs/empty-image.png" alt="">
                         <p>暂无数据</p>
                     </div>
                 </div>

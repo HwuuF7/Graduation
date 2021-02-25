@@ -7,6 +7,52 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>flogo.ico">
     <title><%= htmlWebpackPlugin.options.title %></title>
+    <style type='text/css'>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            list-style: none;
+        }
+
+        #app {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: auto;
+        }
+
+        .load {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background-color: #263238;
+        }
+
+        .load>span {
+            display: inline-block;
+            width: 2rem;
+            height: 4.5rem;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            color: #FF3D00;
+            border: .125rem solid #fff;
+            border-radius: 0 0 .25rem .25rem;
+            transform: translate(-50%, -50%) perspective(140px) rotateX(-45deg);
+            animation: cup 2s linear infinite alternate;
+        }
+
+        @keyframes cup {
+            0% {
+                box-shadow: 0 0 inset
+            }
+
+            100% {
+                box-shadow: 0 -4.4rem inset
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -14,7 +60,12 @@
         <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled.
             Please enable it to continue.</strong>
     </noscript>
-    <div id="app"></div>
+    <div id="app">
+        <!-- 首屏加载动画 -->
+        <div class="load">
+            <span></span>
+        </div>
+    </div>
     <% if(htmlWebpackPlugin.options.isProd){ %>
     <!-- 引用cdn -->
     <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.11/vue.min.js"></script>

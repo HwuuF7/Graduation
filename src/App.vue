@@ -27,28 +27,10 @@
     // 1vw = 3.75px
     // @import url('./assets/css/global.css');
 
-    #app {
-        width: 100vw;
-        height: 100vh;
-        overflow: auto;
-        // position: relative;
-    }
-
-    /*  @media screen and (max-width: 1024px) {
-        #app {
-            color: green;
-            // font-size: 2rem;
-            font-size: 5vw;
-            
-    
-        }
-    }
-
-    @media screen and (min-width: 1024px) {
-        #app {
-            color: red;
-            font-size: 3rem;
-        }
-
-    } */
+    // #app {
+    //     width: 100vw;
+    //     height: 100vh;
+    //     overflow: auto;
+    //     position: relative;
+    // }
 </style>

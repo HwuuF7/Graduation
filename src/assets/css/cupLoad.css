@@ -1,0 +1,21 @@
+.load>span {
+    display: inline-block;
+    width: 32px;
+    height: 72px;
+    position: relative;
+    color: #FF3D00;
+    border: 2px solid blue;
+    border-radius: 0 0 4px 4px;
+    transform: perspective(140px) rotateX(-45deg);
+    animation: cup 2s linear infinite alternate;
+}
+
+@keyframes cup {
+    0% {
+        box-shadow: 0 0 inset
+    }
+
+    100% {
+        box-shadow: 0 -70px inset
+    }
+}
