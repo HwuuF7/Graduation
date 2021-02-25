@@ -1,17 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Test from '../components/test.vue'
-import Info from '@/components/info/info.vue'
-import InfoMore from '@/components/infoMore/infoMore.vue'
-import Index from '@/components/index/index.vue'
 import ModInfo from '@/components/mine/modInfo.vue'
 import ModAttach from '@/components/mine/modAttach/modAttach.vue'
-import Sort from '@/components/sorts/sort.vue'
-import MessageSort from '@/components/common/messageSort/messageSort.vue'
-import AboutMe from '@/components/mine/aboutMe/aboutMe.vue'
-import PC from '@/components/PC/HomePC.vue'
-import Search from '@/components/search/search.vue'
-
 import Weixin from '../components/weixin.vue'
 
 
@@ -30,12 +21,12 @@ const routes = [{
     },
     {
         path: '/login',
-        component: Index
+        component: () => import('@/components/index/index')
     },
     {
         // PC端首页
         path: '/pc',
-        component: PC
+        component: () => import('@/components/PC/HomePC')
     },
     {
         path: '/test',
@@ -43,7 +34,7 @@ const routes = [{
     },
     {
         path: '/info',
-        component: Info,
+        component: () => import('@/components/info/info'),
         meta: {
             // 保持浏览状态
             keepalive: true,
@@ -61,12 +52,11 @@ const routes = [{
     {
         name: 'InfoMore',
         path: '/info/:infoId',
-        component: InfoMore
+        component: () => import('@/components/infoMore/infoMore')
     },
     {
         path: '/mine/modinfo',
         component: ModInfo,
-
         // children: [{
         //     path: '/mine/modinfo/:mod',
         //     component: ModAttach
@@ -78,14 +68,14 @@ const routes = [{
     },
     {
         path: '/mine/aboutMe',
-        component: AboutMe,
+        component: () => import('@/components/mine/aboutMe/aboutMe'),
         meta: {
             keepalive: true,
             isBack: false,
         }
     }, {
         path: '/list',
-        component: Sort,
+        component: () => import('@/components/sorts/sort.vue'),
         meta: {
             keepalive: true,
             // 是否是从详情页返回 为true则代表使用缓存数据
@@ -93,11 +83,11 @@ const routes = [{
         }
     }, {
         path: '/sendMessage',
-        component: MessageSort
+        component: () => import('@/components/common/messageSort/messageSort')
     },
     {
         path: '/search',
-        component: Search,
+        component: () => import('@/components/search/search'),
         meta: {
             keepalive: true,
             // 是否是从详情页返回 为true则代表使用缓存数据

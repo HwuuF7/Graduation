@@ -1,5 +1,5 @@
 <template>
-    <div class="infoMore">
+    <div class="infoMore" :style="{'paddingBottom': isShowSpread ? '3.8rem' : '0'}">
 
         <moreHead :model='infoDetail' />
 
@@ -7,7 +7,7 @@
 
         <!-- 聊天与收藏区域 -->
         <div class="info-contact">
-            <p>联系方式</p>
+            <!-- <p>联系方式</p> -->
             <div>
                 <!-- <p>联系人:</p>
                 <p>电话:</p>
@@ -29,7 +29,7 @@
                 <p>关注尽享评论消息通知</p>
             </div>
             <div class="info-qrCode-img">
-                <img src="../../assets/imgs/test.jpg" alt="">
+                <img src="@/assets/imgs/logo.png" alt="">
             </div>
         </div>
         <div class="line-10"></div>
@@ -46,7 +46,7 @@
             <div class="emptyComments" v-if="commentInfo.length<1"></div>
         </div>
         <!-- 如果登陆后 发现是自己发布的信息才显示 -->
-        <div class="bottom-panel">
+        <div class="bottom-panel" v-if="isShowSpread">
             <mt-button type='primary' @click.native="promoteMessage">扩散该消息</mt-button>
             <div class="moreAction" @click='extendAction'>
                 <i class="iconfont icon-gengduocaozuo fz-2"></i>
@@ -123,7 +123,6 @@
                 showEmoji: false,
                 EMOJIS: EMOJIS.emojiArr,
                 // 底部更多操作
-                extendSheetActions: [],
                 extendActionSheetVisible: false,
             }
         },
@@ -382,6 +381,18 @@
                 console.log('more');
                 this.extendActionSheetVisible = true;
             },
+            // 删除该发布帖子
+            async deleteInfoById() {
+                console.log('删除帖子');
+            },
+            // 刷新该帖子（每天每个帖子三次机会 将该帖子重回至顶）
+            async freshInfoById() {
+                console.log('刷新帖子');
+            },
+            // 将当前帖子置为已解决状态
+            async doneInfoById() {
+                console.log('已解决');
+            },
             ...mapMutations(['changeReplytoWho']),
 
         },
@@ -404,8 +415,8 @@
                     names = ['删除回复', '回复'];
                     methods = [this.deleteReply, this.replyTo];
                 } else {
-                    names = ['回复'],
-                        methods = [this.replyTo];
+                    names = ['回复'];
+                    methods = [this.replyTo];
                 }
                 return names.map((name, index) => {
                     return {
@@ -433,6 +444,21 @@
                 return (pageIndex) => {
                     return this.EMOJIS.slice(pageIndex * 24, (pageIndex + 1) * 24)
                 }
+            },
+            // 是否显示扩散
+            isShowSpread() {
+                return this.userInfo && this.infoDetail && this.userInfo.userId === this.infoDetail.userId
+            },
+            // 可选的更多操作
+            extendSheetActions() {
+                const names = ['删除', '刷新', '已解决'];
+                const methods = [this.deleteInfoById, this.freshInfoById, this.doneInfoById];
+                return names.map((name, index) => {
+                    return {
+                        name,
+                        method: methods[index]
+                    }
+                })
             },
             // 从vuex获取确定回复哪一位
             ...mapState(['replyToWhoInfo', 'replyLevelFlag', 'userInfo']),

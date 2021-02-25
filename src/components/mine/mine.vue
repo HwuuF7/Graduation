@@ -1,10 +1,16 @@
 <template>
     <div class='mine'>
-        <p class='mine-title'>基础信息</p>
+        <!--  <p class='mine-title'>基础信息</p>
         <mt-cell title="资料修改" is-link @click.native="toMod(false)"></mt-cell>
         <p class='mine-title'>账号管理</p>
         <mt-cell title="账号修改" is-link @click.native="toMod(true)"></mt-cell>
-        <p class='mine-title'>与我有关</p>
+        <p class='mine-title'>与我有关</p> -->
+        <!-- 顶部个人头像 -->
+        <div class="self-info">
+            <img :src='userInfo.headImg'>
+            <h4>{{userInfo.userName}}</h4>
+        </div>
+        <div class="wave"></div>
         <mt-cell title="我的发布" @click.native="toAboutMe(0)">
             <span slot="icon" class='iconfont icon-zuopin'></span>
         </mt-cell>
