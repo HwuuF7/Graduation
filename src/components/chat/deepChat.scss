@@ -1,0 +1,148 @@
+.deepChat {
+    padding-top: 2.5rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .mint-header {
+        background-color: #00917c;
+
+        ::v-deep .mint-header-title {
+            font-size: 1rem;
+        }
+    }
+
+    p.testP {
+        height: 100px;
+        border-bottom: 1px solid #654062;
+    }
+
+    ul {
+        flex: 1;
+        overflow: auto;
+        overflow-y: scroll;
+        // -webkit-overflow-scrolling: touch;
+        border: 1px solid red;
+
+        li {
+            padding: .6rem;
+
+            .message-item {
+                display: flex;
+                align-items: center;
+                flex-flow: row wrap;
+
+                span {
+                    display: inline-block;
+
+                    &:first-child {
+                        width: 2.4rem;
+                        height: 2.4rem;
+
+                        >img {
+                            width: 100%;
+                            height: 100%;
+                            border-radius: .2rem;
+                        }
+
+                        color: skyblue;
+                    }
+
+                    &:last-child {
+                        color: #333;
+                        position: relative;
+                        max-width: 80%;
+                        min-height: 2rem;
+                        word-break: break-all;
+                        font-size: .9rem;
+                        padding: .4rem;
+                        border: 1px solid #fff;
+                        background-color: #dbdbdb;
+                        border-radius: .2rem;
+                        margin: .2rem 0 .2rem .7rem;
+
+                        &::before {
+                            content: '';
+                            position: absolute;
+                            width: 0;
+                            height: 0;
+                            top: 50%;
+                            left: 0;
+                            transform: translate(-100%, -50%);
+                            border: .5rem solid transparent;
+                            border-right-color: #dbdbdb;
+                        }
+                    }
+                }
+            }
+
+            .message-reverse {
+                justify-content: flex-end;
+
+                span {
+                    &:first-child {
+                        order: 1;
+                    }
+
+                    &:last-child {
+                        order: 0;
+                        margin: .2rem .7rem .2rem 0;
+                        background-color: #a3c3f6;
+
+                        &::before {
+                            content: none;
+                        }
+
+                        &::after {
+                            content: '';
+                            position: absolute;
+                            width: 0;
+                            height: 0;
+                            top: 50%;
+                            right: 0;
+                            transform: translate(100%, -50%);
+                            border: .5rem solid transparent;
+                            border-left-color: #a3c3f6;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    footer {
+        width: 100%;
+        max-height: 5.62rem;
+        z-index: 1;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        padding: .3rem 0;
+        background-color: rgba(0, 0, 0, .1);
+
+        .sendMsg {
+            width: 70%;
+            min-height: 1.4rem;
+            max-height: 5rem;
+            outline: 0;
+            border: 1px solid #a0b3d6;
+            border-radius: .3rem;
+            font-size: .8rem;
+            line-height: 1.6rem;
+            padding: .2rem;
+            word-wrap: break-word;
+            word-break: break-all;
+            overflow-x: hidden;
+            overflow-y: auto;
+            border-color: rgba(82, 168, 236, 0.8);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, .1), 0 0 8px rgba(82, 168, 236, .6);
+        }
+
+        // [contenteditable="true"] {
+        //     background-color: grey;
+        // }
+
+
+        .sendBtn {}
+    }
+}

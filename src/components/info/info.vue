@@ -1,17 +1,15 @@
 <template>
     <div class="page-all" @scroll="scrollY($el)" ref="scroll_page">
 
-        <div class="page-scroll">
-            <!-- 内容主体区域 -->
-
+        <!-- <div class="page-scroll"> -->
+        <!-- 内容主体区域 -->
+        <div class="main">
             <mt-tab-container v-model="selected">
 
                 <!-- 信息页 -->
                 <mt-tab-container-item id="UESTC" class="uestc-info" v-infinite-scroll="loadMore"
                     infinite-scroll-disabled="loading" infinite-scroll-distance="10"
                     :infinite-scroll-immediate-check='true' v-if="selected === 'UESTC'">
-
-
 
 
                     <!-- 搜索框 -->
@@ -63,7 +61,7 @@
                         <detail-info v-for="info in mainInfo" :key='info.infoId' :model='info'
                             @click.native.stop="$router.push(`/info/${info.infoId}`)"></detail-info>
 
-                        <p class="testP" v-for="i in testP" :key="i+'c'">{{i}}*i</p>
+                        <!-- <p class="testP" v-for="i in testP" :key="i+'c'">{{i}}*i</p> -->
 
 
                     </div>
@@ -83,19 +81,20 @@
                 </mt-tab-container-item>
 
 
+
                 <!-- 聊天页 -->
                 <mt-tab-container-item id="CHAT">
-                    <div v-for="i in 40" :key='i'>聊天</div>
+                    <chat :refresh='refreshChat' />
                 </mt-tab-container-item>
-
 
                 <!-- 我的 -->
                 <mt-tab-container-item id="MINE">
                     <mine v-if="showMine" />
                 </mt-tab-container-item>
-            </mt-tab-container>
 
+            </mt-tab-container>
         </div>
+        <!-- </div> -->
 
 
         <!-- 底部跳转栏区域 -->
@@ -130,10 +129,12 @@
 <script>
     import detailInfo from '@/components/common/detailInfo/detailInfo.vue';
     import mine from '@/components/mine/mine.vue';
+    import chat from '@/components/chat/chat.vue';
     export default {
         components: {
             detailInfo,
             mine,
+            chat
         },
         data() {
             return {
@@ -211,6 +212,8 @@
                 // 根据登录状态是否显示"我的"
                 showMine: false,
                 scrollTop: 0,
+                // 刷新chatDom
+                refreshChat: false,
             }
         },
         beforeRouteEnter(to, from, next) {
@@ -387,6 +390,7 @@
         watch: {
             // 底部选择进行切换的时候 要重新拉取数据
             selected(newTag) {
+                this.refreshChat = false;
                 if (newTag === 'MINE') {
                     // 判断是否登录
                     if (!this.$store.state.userInfo) {
@@ -402,9 +406,12 @@
                     this.mainInfoEnd = false;
                     this.mainForm.page = 1;
                     this.mainInfo = [];
-                    this.$http.all([this.getTopInfo(), this.getMainInfo()]).then(() => {
-                        console.log(this.mainInfo);
-                    })
+                    this.$http.all([this.getTopInfo(), this.getMainInfo()])
+                    // .then(() => {
+                    //     console.log(this.mainInfo);
+                    // })
+                } else if (newTag === 'CHAT') {
+                    this.refreshChat = true;
                 }
             }
         }

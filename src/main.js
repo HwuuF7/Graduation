@@ -11,6 +11,7 @@ import './plugins/mint.js'
 import {
     timeFormat,
     timeFormatAmPm,
+    timeFormat7Day,
     emojiDecode
 } from './utils/timeFormat.js'
 
@@ -25,6 +26,7 @@ Vue.component(graLoad.name, graLoad)
 // 时间格式化
 Vue.filter('timeFormat', timeFormat)
 Vue.filter('timeFormatAmPm', timeFormatAmPm)
+Vue.filter('timeFormat7Day', timeFormat7Day)
 Vue.filter('emojiDecode', emojiDecode)
 
 Vue.config.productionTip = false

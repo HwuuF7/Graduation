@@ -1,21 +1,15 @@
 .page-all {
     background: #fff;
-    // position: relative;
-    overflow: auto;
-    height: 100%;
-    padding-bottom: 3.44rem;
+    position: relative;
 
-    .page-scroll {
-
+    .main {
         .mint-tab-container {
-            height: auto;
-
             .mint-tab-container-wrap {
-                .mint-tab-container-item.uestc-info {
-
+                .mint-tab-container-item {
+                    height: calc(100vh - 3.44rem);
+                    overflow: auto;
 
                     // 搜索框
-
                     .homepage-search {
                         background-color: #fff;
                         padding: .5rem .7rem;
@@ -87,6 +81,7 @@
                         }
                     }
 
+
                     // 轮播图
                     .homepage-swipper {
                         // height: 10vh;
@@ -104,6 +99,7 @@
                             }
                         }
                     }
+
 
                     // 小菜单
                     .homepage-menu {
@@ -129,10 +125,8 @@
                         }
                     }
 
-                    // 详情信息
-                    .homepage-moreinfo {}
-
-                    div.loadingMore {
+                    // 加载动画
+                    .loadingMore {
                         display: flex;
                         justify-content: center;
                         align-items: center;
@@ -187,15 +181,11 @@
 
                         }
                     }
-
-
-
-
                 }
             }
+
         }
     }
-
 
     .sendMessagePop {
         width: 80vw;

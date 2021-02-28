@@ -179,7 +179,6 @@
                         .mint-cell-value {
                             flex: 1;
                             overflow: hidden;
-                            color: red;
 
                             >div {
                                 overflow: hidden;
@@ -215,11 +214,14 @@
 
                                             &:first-child {
                                                 color: #371cd5;
+                                                font-size: 1.2rem;
+
                                             }
 
                                             &:nth-child(2) {
                                                 margin: .2rem 0;
                                                 color: #674d85;
+                                                font-size: .9rem;
                                             }
 
                                             &:last-child {

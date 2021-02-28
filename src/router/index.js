@@ -21,7 +21,8 @@ const routes = [{
     },
     {
         path: '/login',
-        component: () => import('@/components/index/index')
+        // component: () => import('@/components/index/index')
+        component: () => import('@/components/common/loading')
     },
     {
         // PC端首页
@@ -93,7 +94,13 @@ const routes = [{
             // 是否是从详情页返回 为true则代表使用缓存数据
             isBack: false,
         }
-    }, {
+    },
+    {
+        name: 'deepChat',
+        path: '/chat',
+        component: () => import('@/components/chat/deepChat'),
+    },
+    {
         path: '/weixin',
         component: Weixin
     }

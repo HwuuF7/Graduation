@@ -1,6 +1,5 @@
 <template>
     <div>
-        来这里
     </div>
 </template>
 
@@ -16,6 +15,10 @@
         },
         //生命周期 - 创建完成（访问当前this实例）
         created() {
+            this.$indicator.open({
+                text: '加载中...',
+                spinnerType: 'fading-circle'
+            });
             let code = this.$route.query.code || ''
             this.getUserInfo(code)
         },
@@ -38,6 +41,9 @@
                 this.$router.replace(sessionStorage.getItem('route'))
             },
             ...mapMutations(['saveUserInfo']),
+        },
+        destroyed() {
+            this.$indicator.close();
         }
     }
 </script>

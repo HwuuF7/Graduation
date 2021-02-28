@@ -24,7 +24,7 @@ export function timeFormatAmPm(date) {
     const month = date.getMonth() + 1;
     const day = date.getDate();
     let hour = date.getHours();
-    if (hour > 13) {
+    if (hour > 12) {
         hour -= 12;
         str = '下午';
     }
@@ -36,6 +36,53 @@ export function timeFormatAmPm(date) {
     }
 }
 
+// 7天时间格式化
+export function timeFormat7Day(date) {
+    date = new Date(date)
+    let str = '上午';
+    // 获取几号 86400
+    const oldStamp = date.getTime()
+    const currentDate = new Date()
+    // 当前时间戳
+    const currentStamp = currentDate.getTime();
+    // 今日的0点时间戳
+    const todayZero = (new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate())).getTime()
+    // 今日的相差
+    const todayMis = Math.round((currentStamp - todayZero) / 1000);
+    // 相差秒数
+    const mistiming = Math.round((currentStamp - oldStamp) / 1000);
+    const week = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+
+    /* ===============分割========== */
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    // 获取周几
+    const weekday = week[date.getDay()];
+    let hour = date.getHours();
+    if (hour > 12) {
+        hour -= 12;
+        str = '下午';
+    }
+    const min = (date.getMinutes() + '').padStart(2, '0');
+    // 大于一周的信息 返回年月日
+    if (mistiming > Math.round(7 * 86400)) {
+        return `${year}/${month}/${day}`
+    } else {
+        // 否则 显示 星期几 当天内的显示 时：分
+        // 小于等于一天
+        if (mistiming <= todayMis) {
+            return `${str} ${hour}:${min}`
+        } else if (mistiming > todayMis && mistiming <= Math.round(2 * todayMis)) {
+            // 大于一天 小于等于两天
+            return '昨天'
+        } else {
+            return weekday
+        }
+
+
+    }
+}
 
 // 封装含表情内容的解码
 export function emojiDecode(message) {
