@@ -19,7 +19,13 @@ export default new Vuex.Store({
             // 是否置顶
             isSetTop: null,
         },
-
+        // 存放 [聊天groupID,陪聊对象] 
+        groupInfo: null,
+        // 存取app实例 方便操作WebSocket
+        wsInfo: null,
+        // 接收通信信息
+        // 对象形式 groupID(代表双方唯一通话):[]
+        receiveWSMsgs: {},
     },
     mutations: {
         // 保存用户登录信息
@@ -45,18 +51,54 @@ export default new Vuex.Store({
         changeInfoDetail(state, [info, isSetTop]) {
             state.infoDetail.info = info;
             state.infoDetail.isSetTop = isSetTop || false;
-        }
+        },
+        // 深入聊天时的groupInfo
+        changeGroupInfo(state, groupInfo) {
+            state.groupInfo = groupInfo;
+        },
+        // 改变Websocket信息
+        changeWsInfo(state, wsInfo) {
+            state.wsInfo = wsInfo;
+        },
+        // 添加对话记录 [聊天组ID,信息,status[0=>push,1=>concat,2=>覆写]]
+        addWSMsgs(state, [groupID, msgInfo, status]) {
+            // 初始化时
+            // 将旧对象全部深拷贝
+            let pastAll = JSON.parse(JSON.stringify(state.receiveWSMsgs))
+            let past;
+
+
+            // 如果当前聊天组信息为undefined 表明这是初始化
+            if (!pastAll[groupID]) {
+                // 给一个空数组
+                pastAll[groupID] = []
+            }
+            past = pastAll[groupID]
+
+            console.log('past===', past);
+            // 如果是 状态[0] 则要push
+            if (status === 0) {
+                past.push(msgInfo)
+            } else if (status === 1) {
+                // 获取记录进行拼接
+                past = msgInfo.concat(past)
+            } else if (status === 2) {
+                console.log('覆写了===');
+                // 覆写当前消息
+                past.splice(0, past.length, ...msgInfo)
+            }
+            // console.log(past, pastAll);
+            state.receiveWSMsgs = pastAll;
+        },
+
     },
     actions: {},
-    // getters: {
-    //     // mutalRpySheetVisible: (state) => {
-    //     //     get: function () {
-    //     //         return state.replySheetVisible;
-    //     //     },
-    //     //     set: function (v) {
-    //     //         state.commit('hideReplySheet', v);
-    //     //     }
-    //     // }
-    // },
+    getters: {
+        // 获取特定聊天组的记录
+        logsByGroupId(state) {
+            // console.log('[]====', state.receiveWSMsgs[state.groupInfo.groupId]);
+            return state.receiveWSMsgs[state.groupInfo.groupId]
+        }
+    },
     modules: {}
 })

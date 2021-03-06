@@ -5,8 +5,8 @@
 
 
 
-        <!-- 聊天与收藏区域 -->
-        <div class="info-contact">
+        <!-- 聊天与点赞区域 -->
+        <div class="info-contact" v-if='!isShowSpread'>
             <!-- <p>联系方式</p> -->
             <div>
                 <!-- <p>联系人:</p>
@@ -126,16 +126,21 @@
                 extendActionSheetVisible: false,
             }
         },
+        created() {
+            this.infoId = this.$route.params.infoId
+            // 发起请求获取帖子信息
+            this.getInfoById(this.infoId);
+            this.getCommentInfo(this.infoId);
+
+        },
 
         methods: {
             // 获取帖子有关信息
             async getInfoById(infoId) {
-                let infoAPI = this.$http.get(`/info/view/${infoId}`)
-                const res = await this.$http.all([infoAPI, this.getCommentInfo(infoId)]).catch(err =>
-                    console.log(err)
-                )
+                const res = await this.$http.get(`/info/view/${infoId}`)
                 if (!res) return this.$reToast('获取信息失败', ' icon-close')
-                this.infoDetail = res[0].data;
+                this.infoDetail = res.data;
+                console.log(this.infoDetail);
             },
             // 获取评论信息
             async getCommentInfo(infoId) {
@@ -239,7 +244,8 @@
                         commentLevel: 2,
                         content: this.$emojiEncode(this.replyContent),
                         // 回复一级评论时parentCommentId为空 则设置为commentId即可
-                        parentCommentId: this.replyToWhoInfo.parentCommentId || this.replyToWhoInfo.commentId,
+                        parentCommentId: this.replyToWhoInfo.parentCommentId || this.replyToWhoInfo
+                            .commentId,
                         // 回复一级评论的二级评论这一字段为0  方便判断
                         replyCommentId: 0,
                         replyCommentUserId: this.replyToWhoInfo.userId,
@@ -303,10 +309,12 @@
             // 微信推送信息
             async pushMessage() {
                 let level = this.replyRoot ? 1 : 2;
-                let toUserId = this.replyRoot ? this.infoDetail.info.userId : this.replyToWhoInfo.userId;
+                let toUserId = this.replyRoot ? this.infoDetail.info.userId : this.replyToWhoInfo
+                    .userId;
                 // 如果是点击自己回复自己的二级评论 则认为是回复一级评论 
                 // BUG解决：进行一级评论时 replyToWhoInfo为null
-                if (this.replyToWhoInfo && this.replyToWhoInfo.originUserId && (this.userInfo.userId === this
+                if (this.replyToWhoInfo && this.replyToWhoInfo.originUserId && (this.userInfo.userId ===
+                        this
                         .replyToWhoInfo.originUserId)) {
                     toUserId = this.replyToWhoInfo.replyCommentUserId;
                 }
@@ -328,8 +336,60 @@
                 // await this.$http.post('/message', postForm).catch(err => console.log(err))
             },
             // 发起聊天 ==>调用俊威
-            startChat() {
+            async startChat() {
                 console.log('开始聊天');
+                // 判断是否已经登录
+                if (!this.userInfo) {
+                    // 保存当前路由
+                    sessionStorage.setItem('route', this.$route.fullPath);
+                    // 没有登录则跳转登录
+                    console.log('跳转至登录');
+                    return window.location.href = this.$weixin
+                    // 登录界面会接收到返回的code
+                }
+                let isChatQuery = {
+                    myId: this.userInfo.userId,
+                    chatId: this.infoDetail.userId,
+                }
+                // 判断之前是否建立过聊天组
+                const {
+                    data: res
+                } = await this.$ws.get('/check/chat', {
+                    params: isChatQuery
+                })
+                let buildGroup;
+                if (res.code === 10003) {
+                    // 如果没有聊过天 则要建立聊天组
+                    console.log(res.msg);
+                    let chatBody = {
+                        masterUserId: this.userInfo.userId,
+                        masterUserImg: this.userInfo.headImg,
+                        masterUserName: this.userInfo.userName,
+                        slaveUserId: this.infoDetail.userId,
+                        slaveUserImg: this.infoDetail.headImg,
+                        slaveUserName: this.infoDetail.userName,
+                    }
+                    const snd = await this.$ws.post('/build/group', chatBody)
+                    buildGroup = snd.data
+                    console.log(buildGroup);
+                }
+                // 成功与否都要将groupId及toUser进行同步vuex
+                let toUser = {
+                    userId: this.infoDetail.userId,
+                    userImg: this.infoDetail.headImg,
+                    userName: this.infoDetail.userName,
+                }
+                let groupInfo = {
+                    // 陪聊对象
+                    toUser,
+                    // 聊天组ID
+                    groupId: res.groupId || buildGroup.groupId
+                }
+                this.changeGroupInfo(groupInfo);
+                console.log('同步vuex', this.$store.state.groupInfo);
+
+                // 跳转至具体聊天页
+                this.$router.push('/chat')
             },
             // 添加收藏
             startFav(ev) {
@@ -364,7 +424,8 @@
                         likeLevel: 1,
                         likeStatus: isLike,
                     }
-                    let result = await this.$http.post('/info/like', likeObj).catch(err => console.log(err))
+                    let result = await this.$http.post('/info/like', likeObj).catch(err =>
+                        console.log(err))
                     console.log(result)
                 })
             },
@@ -393,13 +454,8 @@
             async doneInfoById() {
                 console.log('已解决');
             },
-            ...mapMutations(['changeReplytoWho']),
+            ...mapMutations(['changeReplytoWho', 'changeGroupInfo']),
 
-        },
-        created() {
-            this.infoId = this.$route.params.infoId
-            // 发起请求获取帖子信息
-            this.getInfoById(this.infoId)
         },
         filters: {
             // 对表情(0x16进制)进行转码
@@ -445,7 +501,7 @@
                     return this.EMOJIS.slice(pageIndex * 24, (pageIndex + 1) * 24)
                 }
             },
-            // 是否显示扩散
+            // 是否显示扩散 或者显示点赞和聊天
             isShowSpread() {
                 return this.userInfo && this.infoDetail && this.userInfo.userId === this.infoDetail.userId
             },

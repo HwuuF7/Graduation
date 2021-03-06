@@ -100,6 +100,11 @@ const routes = [{
         path: '/chat',
         component: () => import('@/components/chat/deepChat'),
     },
+    /* {
+        name: 'deepChatYan',
+        path: '/chatyanshi',
+        component: () => import('@/components/chat/deepyanshi'),
+    }, */
     {
         path: '/weixin',
         component: Weixin

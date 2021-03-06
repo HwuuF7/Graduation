@@ -37,6 +37,8 @@
                 // 用Localstorage保存一份
                 this.$setLocalStorage('userInfo', res.data.result)
                 console.log('本地存储===', this.$getLocalStorage('userInfo'))
+                // 建立ws
+                this.$store.state.wsInfo.init();
                 // 跳转回登录前的页面
                 this.$router.replace(sessionStorage.getItem('route'))
             },

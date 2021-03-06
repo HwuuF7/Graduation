@@ -37,11 +37,12 @@
                             }
 
                             .intro {
-                                margin-left: .2rem;
+                                margin-left: .4rem;
                                 flex: 1;
                                 display: flex;
                                 flex-flow: column wrap;
                                 overflow: hidden;
+                                justify-content: space-evenly;
 
                                 >span {
                                     font-weight: 400;
@@ -56,12 +57,11 @@
 
                                     &:first-child {
                                         color: #371cd5;
-                                        font-size: 1.2rem;
+                                        font-size: .9rem;
                                     }
 
                                     &:last-child {
-                                        font-size: .9rem;
-                                        margin: .2rem 0;
+                                        font-size: .8rem;
                                         color: #674d85;
                                     }
 

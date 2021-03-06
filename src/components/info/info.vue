@@ -1,5 +1,5 @@
 <template>
-    <div class="page-all" @scroll="scrollY($el)" ref="scroll_page">
+    <div class="page-all">
 
         <!-- <div class="page-scroll"> -->
         <!-- 内容主体区域 -->
@@ -9,7 +9,8 @@
                 <!-- 信息页 -->
                 <mt-tab-container-item id="UESTC" class="uestc-info" v-infinite-scroll="loadMore"
                     infinite-scroll-disabled="loading" infinite-scroll-distance="10"
-                    :infinite-scroll-immediate-check='true' v-if="selected === 'UESTC'">
+                    :infinite-scroll-immediate-check='true' v-if="selected === 'UESTC'" @scroll="scrollY($el)"
+                    ref="scroll_item">
 
 
                     <!-- 搜索框 -->
@@ -84,7 +85,8 @@
 
                 <!-- 聊天页 -->
                 <mt-tab-container-item id="CHAT">
-                    <chat :refresh='refreshChat' />
+                    <chat v-if="!!$store.state.userInfo && showChat" ref='chat' />
+                    <!-- <chat-yan :refresh='refreshChat' /> -->
                 </mt-tab-container-item>
 
                 <!-- 我的 -->
@@ -130,11 +132,12 @@
     import detailInfo from '@/components/common/detailInfo/detailInfo.vue';
     import mine from '@/components/mine/mine.vue';
     import chat from '@/components/chat/chat.vue';
+    // import chatYan from '@/components/chat/chatyanshi.vue';
     export default {
         components: {
             detailInfo,
             mine,
-            chat
+            chat,
         },
         data() {
             return {
@@ -209,14 +212,15 @@
                     // 'chats': '闲来有聊',
                     // 'dinners': '约饭走起'
                 },
-                // 根据登录状态是否显示"我的"
+                // 根据登录状态是否显示"我的/CHAT"
                 showMine: false,
+                showChat: true,
                 scrollTop: 0,
-                // 刷新chatDom
-                refreshChat: false,
+                isFromLogin: false,
             }
         },
         beforeRouteEnter(to, from, next) {
+            // console.log(from);
             // 如果是从详情页返回 主页 则代表使用缓存数据
             if (from.name === 'InfoMore') {
                 to.meta.isBack = true;
@@ -225,20 +229,31 @@
                     vm.searchVal = '';
                     vm.sendMessageVisible = false;
                 })
-            } else {
-                to.meta.isBack = false;
+            } else if (from.path === '/') {
+                sessionStorage.clear()
+                next();
+            } else if (from.path === '/login') {
                 next(vm => {
+                    vm.isFromLogin = true;
                     if (sessionStorage.getItem('tag')) {
                         vm.selected = sessionStorage.getItem('tag')
                         sessionStorage.removeItem('tag')
                     }
-
+                });
+            } else {
+                to.meta.isBack = false;
+                next(vm => {
+                    // vm.sel
                     vm.mainInfoEnd = false;
                     vm.loading = false;
                     vm.searchVal = '';
                     vm.sendMessageVisible = false;
                     vm.mainInfo = [];
                     vm.mainForm.page = 1;
+                    if (vm.$refs.chat) {
+                        // console.log(from);
+                        vm.$refs.chat.getChatGroups()
+                    }
                 })
             }
 
@@ -247,32 +262,35 @@
             // console.log(this.$weixin);
         },
         activated() {
-            console.log('info激活', this.scrollTop);
             // 如果是从详情页回来的 则维持原有浏览高度
             // if (this.selected === 'UESTC') {
             if (this.$route.meta.isBack) {
-                this.$refs.scroll_page.scrollTop = this.scrollTop;
-
+                this.$refs.scroll_item.$el.scrollTop = this.scrollTop;
             } else {
+                this.scrollTop = 0;
                 // 如果不是从详情页返回的 重新拉取数据
                 this.initial()
             }
+            console.log('info激活', this.scrollTop);
             // }
         },
         methods: {
             scrollY(ev) {
+                console.log(ev);
                 // 聊天和首页应该都会有滑动需求
                 if (this.selected === 'UESTC') {
                     this.scrollTop = ev.scrollTop;
+
+                    console.log('gggoo', [ev], ev.scrollTop);
                 }
             },
-            async initial() {
+            initial() {
                 // 获取轮播图数据
-                await this.getSwipperInfo()
+                this.getSwipperInfo()
                 // 获取置顶信息
-                await this.getTopInfo()
+                this.getTopInfo()
                 // 获取非置顶信息
-                await this.getMainInfo()
+                this.getMainInfo()
             },
             // 获取轮播图数据
             async getSwipperInfo() {
@@ -297,6 +315,7 @@
                     this.topInfo = infos
                 }
                 console.log(infos);
+
             },
             // 获取非置顶信息 
             // 返回值为获取到的数据条目
@@ -324,6 +343,7 @@
                     this.mainInfoEnd = true;
                 }
                 console.log(infos);
+
             },
             searchInfo() {
                 if (this.searchVal === '') return this.$reToast('输入不能为空！', 'icon-cuowu')
@@ -390,7 +410,8 @@
         watch: {
             // 底部选择进行切换的时候 要重新拉取数据
             selected(newTag) {
-                this.refreshChat = false;
+                // 强制刷新
+                this.showChat = false;
                 if (newTag === 'MINE') {
                     // 判断是否登录
                     if (!this.$store.state.userInfo) {
@@ -400,21 +421,49 @@
                         // 跳转授权登录
                         window.location.href = this.$weixin
                     } else {
-                        this.showMine = true
+                        this.showMine = true;
+                        this.showChat = false;
                     }
                 } else if (newTag === 'UESTC') {
+                    this.showChat = false;
                     this.mainInfoEnd = false;
                     this.mainForm.page = 1;
                     this.mainInfo = [];
-                    this.$http.all([this.getTopInfo(), this.getMainInfo()])
-                    // .then(() => {
-                    //     console.log(this.mainInfo);
-                    // })
+                    this.getTopInfo();
+                    this.getMainInfo();
+
                 } else if (newTag === 'CHAT') {
-                    this.refreshChat = true;
+                    // 判断是否登录
+                    if (!this.$store.state.userInfo) {
+                        //  保存当前路由
+                        sessionStorage.setItem('route', this.$route.fullPath);
+                        sessionStorage.setItem('tag', newTag)
+                        // 跳转授权登录
+                        window.location.href = this.$weixin
+                    } else {
+                        // 如果是从登录回来的 则不需要刷新两次CHAT
+                        if (!this.isFromLogin) {
+                            this.$nextTick(() => {
+                                this.showMine = true;
+                                this.showChat = true;
+                            })
+                        } else {
+                            this.isFromLogin = false;
+                            this.showChat = true;
+                        }
+
+                    }
                 }
             }
-        }
+        },
+        beforeRouteLeave(to, from, next) {
+            if (to.name === 'InfoMore') {
+                console.log();
+                this.scrollTop = this.$refs.scroll_item.$el.scrollTop;
+            }
+            next()
+        },
+
 
     }
 </script>

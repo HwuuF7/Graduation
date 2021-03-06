@@ -1,16 +1,14 @@
 import axios from 'axios'
 // axios配置
-axios.defaults.baseURL = 'http://api.xiaochengxuxcx.com';
-// 添加请求拦截器
-axios.interceptors.request.use((config) => {
-    // 在发送请求之前做些什么
-    // config.headers.common['Authorization'] = 'good';
-    // console.log(config);
-    return config;
-}, function (error) {
-    // 对请求错误做些什么
-    return Promise.reject(error);
-});
+// 通用请求
+const http = axios.create({
+    baseURL: 'http://api.xiaochengxuxcx.com',
+})
+//   聊天请求
+const ws = axios.create({
+    baseURL: 'http://kingwait.com',
+})
+
 
 
 // 获取事件冒泡的路径 兼容性
@@ -186,18 +184,23 @@ const getLocalStorage = function (key) {
 }
 
 
-
+// 生成随机数ID
+const getRanID = function (length) {
+    return Math.floor((Math.random() + Math.floor(Math.random() * 9 + 1)) * Math.pow(10, length - 1)).toString();
+}
 
 
 
 const globalFun = {
     $parentPush: parentPush,
-    $http: axios,
+    $http: http,
+    $ws: ws,
     $weixin: href,
     $emojiEncode: emojiEncode,
     $paramsToFormData: paramsToFormData,
     $setLocalStorage: setLocalStorage,
-    $getLocalStorage: getLocalStorage
+    $getLocalStorage: getLocalStorage,
+    $getRanID: getRanID,
 }
 
 /* export default {

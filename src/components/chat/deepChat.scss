@@ -22,7 +22,7 @@
         overflow: auto;
         overflow-y: scroll;
         // -webkit-overflow-scrolling: touch;
-        border: 1px solid red;
+        // border: 1px solid red;
 
         li {
             padding: .6rem;
@@ -45,7 +45,6 @@
                             border-radius: .2rem;
                         }
 
-                        color: skyblue;
                     }
 
                     &:last-child {
