@@ -1,6 +1,7 @@
 <template>
     <div class='chat'>
-        <ul class="chat-item">
+        <ul class="chat-item" v-infinite-scroll="loadMoreGroup" infinite-scroll-disabled="loading"
+            infinite-scroll-distance="10" :infinite-scroll-immediate-check='true'>
             <li v-for="chat in chatGroups" :key="chat.groupId" @click="gotoChat(chat)">
                 <mt-cell-swipe :right="[
                 {
@@ -24,9 +25,11 @@
                     <span>{{chat['msgList'].createTime | timeFormat7Day}}</span>
                 </mt-cell-swipe>
             </li>
+            <li>
+                <p class="testP" v-for="i in 10" :key='i'>{{i}}</p>
+            </li>
         </ul>
 
-        <p class="testP" v-for="i in 10" :key='i'>{{i}}</p>
     </div>
 </template>
 
@@ -40,13 +43,19 @@
                 queryGroup: {
                     userId: null,
                     pageNum: 1,
-                }
+                    // 获取聊天组的最大数
+                    pageSize: 10,
+                },
+                // 加载更多标志
+                loading: false,
+                loadEnd: false,
             }
         },
         created() {
             console.log('chat==');
             // 登录之后才会显示这一组件 因此能确保拿到userId
             this.queryGroup.userId = this.$store.state.userInfo.userId;
+            // console.log('重置pagenum', this.chatGroups, this.queryGroup.pageNum);
             this.getChatGroups()
         },
         methods: {
@@ -55,10 +64,22 @@
                 const res = await this.$ws.get('/msg/load_record', {
                     params: this.queryGroup
                 })
-                this.chatGroups = res.data.data;
+                let resLen = res.data.data.length;
+                if (resLen > 0) {
+                    this.chatGroups = this.chatGroups.concat(res.data.data)
+                    if (resLen !== this.queryGroup.pageSize) {
+                        this.loadEnd = true;
+                    } else {
+                        this.queryGroup.pageNum++;
+                    }
+                } else {
+                    // 一个聊天组都没有
+                    // console.log('无聊天组');
+                    this.loadEnd = true;
+                }
                 console.log(this.chatGroups);
                 // 同步至vuex中 groupId-> []
-                this.chatGroups.forEach(chat => {
+                res.data.data.forEach(chat => {
                     this.$store.commit('addWSMsgs', [chat.groupId, [chat.msgList], 2])
                 });
                 console.log(this.$store.state.receiveWSMsgs);
@@ -78,10 +99,20 @@
                     groupId: chat.groupId
                 }
                 // console.log('gotoChat===', groupInfo);
+
                 // 同步至vuex中
-                this.$store.commit('changeGroupInfo', groupInfo);
+                this.$store.commit('changeGroupInfo', ['toUser', groupInfo.toUser]);
+                this.$store.commit('changeGroupInfo', ['groupId', groupInfo.groupId]);
                 this.$router.push('/chat')
-            }
+            },
+            // 加载更多聊天组
+            async loadMoreGroup() {
+                this.loading = true;
+                if (this.loadEnd) return console.log('加载截止');
+                console.log('加载更多聊天组....');
+                await this.getChatGroups();
+                this.loading = false;
+            },
         },
     }
 </script>

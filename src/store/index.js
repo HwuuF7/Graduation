@@ -19,8 +19,13 @@ export default new Vuex.Store({
             // 是否置顶
             isSetTop: null,
         },
-        // 存放 [聊天groupID,陪聊对象] 
-        groupInfo: null,
+        // 存放 从信息详情页跳转至聊天详情页的信息
+        groupInfo: {
+            // 陪聊对象
+            toUser: null,
+            // 聊天组ID
+            groupId: null,
+        },
         // 存取app实例 方便操作WebSocket
         wsInfo: null,
         // 接收通信信息
@@ -53,8 +58,8 @@ export default new Vuex.Store({
             state.infoDetail.isSetTop = isSetTop || false;
         },
         // 深入聊天时的groupInfo
-        changeGroupInfo(state, groupInfo) {
-            state.groupInfo = groupInfo;
+        changeGroupInfo(state, [key, val]) {
+            state.groupInfo[key] = val;
         },
         // 改变Websocket信息
         changeWsInfo(state, wsInfo) {
@@ -75,7 +80,7 @@ export default new Vuex.Store({
             }
             past = pastAll[groupID]
 
-            console.log('past===', past);
+            // console.log('past===', past);
             // 如果是 状态[0] 则要push
             if (status === 0) {
                 past.push(msgInfo)
@@ -83,7 +88,7 @@ export default new Vuex.Store({
                 // 获取记录进行拼接
                 past = msgInfo.concat(past)
             } else if (status === 2) {
-                console.log('覆写了===');
+                // console.log('覆写了===');
                 // 覆写当前消息
                 past.splice(0, past.length, ...msgInfo)
             }

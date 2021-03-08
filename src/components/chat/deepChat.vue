@@ -51,15 +51,45 @@
             next(vm => {})
         },
         //生命周期 - 创建完成（访问当前this实例）
-        created() {
-            console.log('deep-create');
-            // console.log(this.$store.state.groupInfo.groupId);
+        async created() {
+            console.log('deep-create===', this.$store.state.groupInfo.groupId);
             // 从vuex中获取聊天组ID
             this.groupQuery.groupId = this.$store.state.groupInfo.groupId;
-            // 查询当前聊天组的记录 [覆写Vuex中的数据]
-            this.getGroupInfo(this.groupQuery.groupId, 2);
+            // 如果聊天组ID不为null 查询聊天记录
+            if (!!this.groupQuery.groupId) {
+                console.log('查询===');
+                // 查询当前聊天组的记录 [覆写Vuex中的数据]
+                this.getGroupInfo(this.groupQuery.groupId, 2);
+                // 调用vuex发送消息 [确认将未读消息转为已读]
+                this.$store.state.wsInfo.ws.send(JSON.stringify({
+                    msgType: 3
+                }))
+            } else {
+                this.canShow = true;
+            }
+
         },
         methods: {
+            // 创建聊天组
+            async createChatGroup() {
+                let {
+                    userInfo,
+                    groupInfo
+                } = this.$store.state
+                // console.log(userInfo, groupInfo);
+                let chatBody = {
+                    masterUserId: userInfo.userId,
+                    masterUserImg: userInfo.headImg,
+                    masterUserName: userInfo.userName,
+                    slaveUserId: groupInfo.toUser.userId,
+                    slaveUserImg: groupInfo.toUser.userImg,
+                    slaveUserName: groupInfo.toUser.userName,
+                }
+                // console.log('创建聊天组==', chatBody)
+                const res = await this.$ws.post('/build/group', chatBody)
+                this.$store.commit('changeGroupInfo', ['groupId', res.data.groupId]);
+                // console.log('创建--', groupInfo)
+            },
             // 获取当前聊天组的记录 第二个参数关系到vuex中的数据保存
             async getGroupInfo(groupId, vuexStatus) {
                 const res = await this.$ws.get('/msg/group', {
@@ -69,11 +99,11 @@
                 // 将记录保存至Vuex中
                 this.$store.commit('addWSMsgs', [groupId, res.data.data.list.reverse(), vuexStatus])
                 console.log(this.$store.state.receiveWSMsgs)
-                // 等同步完后才显示记录 因为loggings会有上一次的数据
+                // 显示页面布局
                 this.canShow = true;
             },
             // 发送消息
-            sendMsg() {
+            async sendMsg() {
                 // 如果断开了链接 要重新链接
                 if (this.$store.state.wsInfo.isDisconnect) {
                     this.$reToast(`发送失败!正在重连...`, 'icon-cuowu')
@@ -81,6 +111,13 @@
                 }
                 let msg = this.$emojiEncode(this.$refs.msg.innerText.trim());
                 if (msg.length < 1) return this.$reToast('输入不能为空', 'icon-cuowu');
+
+                // 如果聊天组ID为空
+                if (!this.$store.state.groupInfo.groupId) {
+                    // 创建聊天组
+                    await this.createChatGroup()
+                }
+
                 // 生成15位随机ID
                 let msgId = this.$getRanID(15);
                 // ws请求体
@@ -115,13 +152,22 @@
         },
         watch: {
             // 最新消息要滑动窗口至底部
-            'loggings.length'(newLength) {
+            /* 'loggings.length'(newLength) {
                 if (newLength > 0) {
+                    console.log('hhhh?');
                     this.$nextTick(() => {
                         this.$refs['msg-ul'].lastChild.scrollIntoView(false)
                     })
                 }
-            },
+            }, */
+            // 最新消息要滑动窗口至底部
+            canShow() {
+                this.$nextTick(() => {
+                    if (!!this.$refs['msg-ul'].lastChild) {
+                        this.$refs['msg-ul'].lastChild.scrollIntoView(false)
+                    }
+                })
+            }
         }
     }
 </script>

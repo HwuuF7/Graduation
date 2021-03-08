@@ -217,6 +217,7 @@
                 showChat: true,
                 scrollTop: 0,
                 isFromLogin: false,
+
             }
         },
         beforeRouteEnter(to, from, next) {
@@ -250,10 +251,11 @@
                     vm.sendMessageVisible = false;
                     vm.mainInfo = [];
                     vm.mainForm.page = 1;
-                    if (vm.$refs.chat) {
-                        // console.log(from);
-                        vm.$refs.chat.getChatGroups()
-                    }
+                    vm.showChat = false;
+                    vm.$nextTick(() => {
+                        vm.showChat = true;
+                        vm.showMine = true;
+                    })
                 })
             }
 
@@ -399,6 +401,7 @@
                     }
                 });
             },
+
 
         },
         computed: {

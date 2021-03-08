@@ -87,9 +87,9 @@
                 this.isDisconnect = true;
                 this.isError = true;
                 if (this.hearID) clearInterval(this.hearID)
-                this.ws = this.wsCreate()
+                this.init()
                 // 更新store中的值
-                this.$store.commit('changeWsInfo', this.ws)
+                this.$store.commit('changeWsInfo', this)
             },
             wsClose(e) {
                 console.log('APP=关闭连接===', e);
@@ -97,9 +97,9 @@
                 if (this.isError || this.isPos) return;
                 // 否则的话 由[CLOSE]进行重连
                 if (this.hearID) clearInterval(this.hearID)
-                this.ws = this.wsCreate()
+                this.init()
                 // 更新store中的值
-                this.$store.commit('changeWsInfo', this.ws)
+                this.$store.commit('changeWsInfo', this)
             },
 
         },

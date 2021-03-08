@@ -347,6 +347,8 @@
                     return window.location.href = this.$weixin
                     // 登录界面会接收到返回的code
                 }
+
+                // 判断是否聊过天
                 let isChatQuery = {
                     myId: this.userInfo.userId,
                     chatId: this.infoDetail.userId,
@@ -357,35 +359,19 @@
                 } = await this.$ws.get('/check/chat', {
                     params: isChatQuery
                 })
-                let buildGroup;
-                if (res.code === 10003) {
-                    // 如果没有聊过天 则要建立聊天组
-                    console.log(res.msg);
-                    let chatBody = {
-                        masterUserId: this.userInfo.userId,
-                        masterUserImg: this.userInfo.headImg,
-                        masterUserName: this.userInfo.userName,
-                        slaveUserId: this.infoDetail.userId,
-                        slaveUserImg: this.infoDetail.headImg,
-                        slaveUserName: this.infoDetail.userName,
-                    }
-                    const snd = await this.$ws.post('/build/group', chatBody)
-                    buildGroup = snd.data
-                    console.log(buildGroup);
-                }
+
                 // 成功与否都要将groupId及toUser进行同步vuex
                 let toUser = {
                     userId: this.infoDetail.userId,
                     userImg: this.infoDetail.headImg,
                     userName: this.infoDetail.userName,
                 }
-                let groupInfo = {
-                    // 陪聊对象
-                    toUser,
-                    // 聊天组ID
-                    groupId: res.groupId || buildGroup.groupId
-                }
-                this.changeGroupInfo(groupInfo);
+                let {
+                    groupId = null
+                } = res
+
+                this.changeGroupInfo(['toUser', toUser]);
+                this.changeGroupInfo(['groupId', groupId]);
                 console.log('同步vuex', this.$store.state.groupInfo);
 
                 // 跳转至具体聊天页

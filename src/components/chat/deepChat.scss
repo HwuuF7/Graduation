@@ -23,6 +23,8 @@
         overflow-y: scroll;
         // -webkit-overflow-scrolling: touch;
         // border: 1px solid red;
+        background-image: url('../../assets/imgs/deepChatBg.jpg');
+        background-position: center center;
 
         li {
             padding: .6rem;
@@ -55,8 +57,7 @@
                         word-break: break-all;
                         font-size: .9rem;
                         padding: .4rem;
-                        border: 1px solid #fff;
-                        background-color: #dbdbdb;
+                        background-color: #fff;
                         border-radius: .2rem;
                         margin: .2rem 0 .2rem .7rem;
 
@@ -69,7 +70,7 @@
                             left: 0;
                             transform: translate(-100%, -50%);
                             border: .5rem solid transparent;
-                            border-right-color: #dbdbdb;
+                            border-right-color: #fff;
                         }
                     }
                 }
