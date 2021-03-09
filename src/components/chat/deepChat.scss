@@ -3,6 +3,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+    // touch-action: none;
 
     .mint-header {
         background-color: #00917c;
@@ -17,16 +18,25 @@
         border-bottom: 1px solid #654062;
     }
 
-    ul {
+    .message {
+        color: #435560;
+        position: static;
         flex: 1;
         overflow: auto;
         overflow-y: scroll;
-        // -webkit-overflow-scrolling: touch;
+        -webkit-overflow-scrolling: touch;
         // border: 1px solid red;
         background-image: url('../../assets/imgs/deepChatBg.jpg');
         background-position: center center;
 
+        .mint-loadmore-top {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
         li {
+            transition: all .3s ease;
             padding: .6rem;
 
             .message-item {

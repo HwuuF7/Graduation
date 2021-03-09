@@ -78,9 +78,25 @@
             wsMessage(e) {
                 console.log('服务器返回===', e.data);
                 let storeObj = JSON.parse(e.data).content
+                // 如果vuex不存在该聊天组的信息
+                if (!this.$store.state.receiveWSMsgs[storeObj.groupId]) {
+                    // 向store中开创该聊天组信息
+                    this.$store.commit('addWSMsgs', [storeObj.groupId, [storeObj], 2])
+                } else {
+                    // 否则向store中添加该记录
+                    this.$store.commit('addWSMsgs', [storeObj.groupId, storeObj, 0])
 
-                // 向store中新添通话记录
-                this.$store.commit('addWSMsgs', [storeObj.groupId, storeObj, 0])
+                }
+                // 同样地 将未读消息也进行同步
+                if (!this.$store.state.unReadCount.groupMsg[storeObj.groupId]) {
+                    // 向store中开创该聊天组信息
+                    this.$store.state.unReadCount.groupMsg[storeObj.groupId] = [storeObj.msgId];
+                } else {
+                    // 否则向store中添加该记录
+                    this.$store.state.unReadCount.groupMsg[storeObj.groupId].push(storeObj.msgId);
+                }
+                // 将消息数+1  
+                this.$store.state.unReadCount.total += 1;
             },
             wsError(e) {
                 console.log('APP=WebSocket失败===', e);

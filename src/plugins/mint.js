@@ -22,7 +22,9 @@ import {
     Popup,
     Switch,
     Checklist,
-    Search
+    Search,
+    Loadmore,
+    Badge
 } from 'mint-ui'
 
 Vue.component(Button.name, Button);
@@ -45,6 +47,8 @@ Vue.component(Popup.name, Popup);
 Vue.component(Switch.name, Switch);
 Vue.component(Checklist.name, Checklist);
 Vue.component(Search.name, Search);
+Vue.component(Loadmore.name, Loadmore);
+Vue.component(Badge.name, Badge);
 // Vue.component(Toast.name, Toast);
 // Vue.use(Button)
 Vue.prototype.$toast = Toast;

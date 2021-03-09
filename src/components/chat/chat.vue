@@ -57,8 +57,36 @@
             this.queryGroup.userId = this.$store.state.userInfo.userId;
             // console.log('重置pagenum', this.chatGroups, this.queryGroup.pageNum);
             this.getChatGroups()
+            // 获取未读消息
+            if (this.$store.state.unReadCount.isFirst) {
+                this.getUnread()
+            }
         },
         methods: {
+            // 获取未读信息
+            async getUnread() {
+                const res = await this.$ws.get('/msg/unread', {
+                    params: {
+                        receiveId: this.$store.state.userInfo.userId
+                    }
+                })
+                let unreadLogs = res.data.data
+                console.log('未读信息===', unreadLogs);
+                // 存放组ID对应的消息
+                let groupMsg = {};
+                unreadLogs.forEach((log) => {
+                    // 如果不存在
+                    if (!groupMsg[log.groupId]) {
+                        groupMsg[log.groupId] = [log.msgId];
+                    } else {
+                        groupMsg[log.groupId].push(log.msgId)
+                    }
+                })
+                this.$store.commit('changeUnReadStatus', ['total', unreadLogs.length])
+                this.$store.commit('changeUnReadStatus', ['groupMsg', groupMsg])
+                this.$store.commit('changeUnReadStatus', ['isFirst', false])
+                console.log('=====', this.$store.state.unReadCount);
+            },
             // 获取当前用户的聊天组
             async getChatGroups() {
                 const res = await this.$ws.get('/msg/load_record', {

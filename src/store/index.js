@@ -31,6 +31,15 @@ export default new Vuex.Store({
         // 接收通信信息
         // 对象形式 groupID(代表双方唯一通话):[]
         receiveWSMsgs: {},
+        // 未读消息的标记
+        unReadCount: {
+            // 登录后只获取一次
+            isFirst: true,
+            // 总的条数
+            total: 0,
+            // 每个聊天组对应的未读信息ID
+            groupMsg: null
+        }
     },
     mutations: {
         // 保存用户登录信息
@@ -86,15 +95,19 @@ export default new Vuex.Store({
                 past.push(msgInfo)
             } else if (status === 1) {
                 // 获取记录进行拼接
-                past = msgInfo.concat(past)
+                pastAll[groupID] = msgInfo.concat(past)
             } else if (status === 2) {
                 // console.log('覆写了===');
                 // 覆写当前消息
                 past.splice(0, past.length, ...msgInfo)
             }
-            // console.log(past, pastAll);
+            // console.log('ALL===', pastAll);
             state.receiveWSMsgs = pastAll;
         },
+        // 改变未读信息的状态
+        changeUnReadStatus(state, [key, val]) {
+            state.unReadCount[key] = val;
+        }
 
     },
     actions: {},

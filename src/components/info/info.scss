@@ -1,6 +1,7 @@
 .page-all {
     background: #fff;
     position: relative;
+    overflow: hidden;
 
     .main {
         .mint-tab-container {
@@ -223,6 +224,18 @@
         }
     }
 
+
+    .mint-tabbar {
+        .mint-tab-item {
+            position: relative;
+
+            .mint-badge {
+                position: absolute;
+                top: 5%;
+                right: 10%;
+            }
+        }
+    }
 
 }
 
