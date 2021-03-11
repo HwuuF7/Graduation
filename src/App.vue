@@ -90,7 +90,8 @@
                 // 同样地 将未读消息也进行同步
                 if (!this.$store.state.unReadCount.groupMsg[storeObj.groupId]) {
                     // 向store中开创该聊天组信息
-                    this.$store.state.unReadCount.groupMsg[storeObj.groupId] = [storeObj.msgId];
+                    this.$set(this.$store.state.unReadCount.groupMsg, storeObj.groupId, [storeObj.msgId])
+                    // console.log('添加---', this.$store.state.unReadCount.groupMsg);
                 } else {
                     // 否则向store中添加该记录
                     this.$store.state.unReadCount.groupMsg[storeObj.groupId].push(storeObj.msgId);

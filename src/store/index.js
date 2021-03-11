@@ -38,8 +38,8 @@ export default new Vuex.Store({
             // 总的条数
             total: 0,
             // 每个聊天组对应的未读信息ID
-            groupMsg: null
-        }
+            groupMsg: {}
+        },
     },
     mutations: {
         // 保存用户登录信息

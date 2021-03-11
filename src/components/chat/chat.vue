@@ -2,7 +2,7 @@
     <div class='chat'>
         <ul class="chat-item" v-infinite-scroll="loadMoreGroup" infinite-scroll-disabled="loading"
             infinite-scroll-distance="10" :infinite-scroll-immediate-check='true'>
-            <li v-for="chat in chatGroups" :key="chat.groupId" @click="gotoChat(chat)">
+            <li v-for="(chat,groupId) in $store.state.receiveWSMsgs" :key="groupId" @click="gotoChat(groupId)">
                 <mt-cell-swipe :right="[
                 {
                 content: '删除',
@@ -15,18 +15,22 @@
             ]">
                     <!-- 左边盒子放置头像、名字、信息 -->
                     <div>
-                        <img :src="chat['chatInfo'].userImg">
+                        <div class="avatar">
+                            <img v-if="!!groupSend[groupId]" :src="groupSend[groupId].userImg">
+                            <!-- 当未读消息不为{} 且 未读消息对象中有该聊天组ID 且 未读消息对象中的该聊天组信息长度>0才显示 -->
+                            <mt-badge size="small" type='error'
+                                v-if="!!$store.state.unReadCount.groupMsg && !!$store.state.unReadCount.groupMsg[groupId] && $store.state.unReadCount.groupMsg[groupId].length > 0">
+                                {{$store.state.unReadCount.groupMsg[groupId].length}}</mt-badge>
+                        </div>
+
                         <div class="intro">
-                            <span>{{chat['chatInfo'].userName}}</span>
-                            <span>{{chat['msgList'].msg | emojiDecode}}</span>
+                            <span v-if="!!groupSend[groupId]">{{groupSend[groupId].userName}}</span>
+                            <span>{{chat[chat.length - 1].msg | emojiDecode}}</span>
                         </div>
                     </div>
                     <!-- 右边放置时间 -->
-                    <span>{{chat['msgList'].createTime | timeFormat7Day}}</span>
+                    <span>{{chat[chat.length - 1].createTime | timeFormat7Day}}</span>
                 </mt-cell-swipe>
-            </li>
-            <li>
-                <p class="testP" v-for="i in 10" :key='i'>{{i}}</p>
             </li>
         </ul>
 
@@ -37,8 +41,8 @@
     export default {
         data() {
             return {
-                // 聊天组
-                chatGroups: [],
+                // 存储聊天组的发送方信息 [groupId] => sendUserInfo
+                groupSend: {},
                 // 获取聊天组的查询参数
                 queryGroup: {
                     userId: null,
@@ -55,7 +59,6 @@
             console.log('chat==');
             // 登录之后才会显示这一组件 因此能确保拿到userId
             this.queryGroup.userId = this.$store.state.userInfo.userId;
-            // console.log('重置pagenum', this.chatGroups, this.queryGroup.pageNum);
             this.getChatGroups()
             // 获取未读消息
             if (this.$store.state.unReadCount.isFirst) {
@@ -72,18 +75,20 @@
                 })
                 let unreadLogs = res.data.data
                 console.log('未读信息===', unreadLogs);
-                // 存放组ID对应的消息
-                let groupMsg = {};
-                unreadLogs.forEach((log) => {
-                    // 如果不存在
-                    if (!groupMsg[log.groupId]) {
-                        groupMsg[log.groupId] = [log.msgId];
-                    } else {
-                        groupMsg[log.groupId].push(log.msgId)
-                    }
-                })
-                this.$store.commit('changeUnReadStatus', ['total', unreadLogs.length])
-                this.$store.commit('changeUnReadStatus', ['groupMsg', groupMsg])
+                if (unreadLogs.length > 0) {
+                    // 存放组ID对应的消息
+                    let groupMsg = {};
+                    unreadLogs.forEach((log) => {
+                        // 如果不存在
+                        if (!groupMsg[log.groupId]) {
+                            groupMsg[log.groupId] = [log.msgId];
+                        } else {
+                            groupMsg[log.groupId].push(log.msgId)
+                        }
+                    })
+                    this.$store.commit('changeUnReadStatus', ['total', unreadLogs.length])
+                    this.$store.commit('changeUnReadStatus', ['groupMsg', groupMsg])
+                }
                 this.$store.commit('changeUnReadStatus', ['isFirst', false])
                 console.log('=====', this.$store.state.unReadCount);
             },
@@ -94,7 +99,11 @@
                 })
                 let resLen = res.data.data.length;
                 if (resLen > 0) {
-                    this.chatGroups = this.chatGroups.concat(res.data.data)
+                    // 将发送用户的信息保存起来
+                    res.data.data.forEach((item) => {
+                        this.groupSend[item.groupId] = item.chatInfo;
+                    })
+                    console.log('groupSend===', this.groupSend);
                     if (resLen !== this.queryGroup.pageSize) {
                         this.loadEnd = true;
                     } else {
@@ -105,7 +114,6 @@
                     // console.log('无聊天组');
                     this.loadEnd = true;
                 }
-                console.log(this.chatGroups);
                 // 同步至vuex中 groupId-> []
                 res.data.data.forEach(chat => {
                     this.$store.commit('addWSMsgs', [chat.groupId, [chat.msgList], 2])
@@ -117,14 +125,13 @@
                 console.log('delete===', id);
             },
             // 深入聊天
-            gotoChat(chat) {
-
+            gotoChat(groupId) {
                 // 构建vuex中的groupInfo
                 let groupInfo = {
                     // 陪聊对象
-                    toUser: chat.chatInfo,
+                    toUser: this.groupSend[groupId],
                     // 聊天组ID
-                    groupId: chat.groupId
+                    groupId,
                 }
                 // console.log('gotoChat===', groupInfo);
 

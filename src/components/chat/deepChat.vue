@@ -25,8 +25,8 @@
                     </div>
                 </li>
                 <!-- <li>
-                <p class='testP' v-for="i in 7" :key='i'></p>
-            </li> -->
+                    <p class='testP' v-for="i in 7" :key='i'>{{unReadLoggings}}</p>
+                </li> -->
             </ul>
             <div slot="top" class="mint-loadmore-top">
                 <mt-spinner v-show="topStatus === 'loading'" :type="0" color='rgba(100, 100, 100,.4)' :size='18'>
@@ -58,12 +58,13 @@
                 canShow: false,
                 topStatus: '',
                 topLoadEnd: false,
+                // 区分接收消息和上拉加载的滑底标志 如果为true 则不应该置底
+                isLoadTop: false,
             }
         },
         beforeRouteEnter(to, from, next) {
             next(vm => {})
         },
-        //生命周期 - 创建完成（访问当前this实例）
         async created() {
             console.log('deep-create===', this.$store.state.groupInfo.groupId);
             // 从vuex中获取聊天组ID
@@ -73,9 +74,6 @@
                 console.log('查询===');
                 // 查询当前聊天组的记录 [覆写Vuex中的数据]
                 this.getGroupInfo(this.groupQuery.groupId, 2);
-                // [确认将未读消息转为已读]
-                this.convertRead(this.groupQuery.groupId)
-
             } else {
                 this.canShow = true;
             }
@@ -178,14 +176,17 @@
             },
             // 上拉加载记录
             async loadTop() {
+                this.isLoadTop = true;
                 if (this.topLoadEnd) {
                     console.log('加载完了!!!');
+                    this.isLoadTop = false;
                     return this.$refs.loadmoreTop.onTopLoaded();
                 }
                 // 加载记录进行拼接
                 console.log('加载更多----');
                 await this.getGroupInfo(this.groupQuery.groupId, 1)
                 this.$refs.loadmoreTop.onTopLoaded();
+                this.isLoadTop = false;
             },
             handleTopChange(status) {
                 this.topStatus = status;
@@ -205,7 +206,7 @@
                 this.$store.state.unReadCount.groupMsg[groupId] = [];
                 console.log('转已读!!=', this.$store.state.unReadCount);
 
-            }
+            },
         },
         computed: {
             //  从vuex中获取对应聊天组用于渲染的消息记录
@@ -213,27 +214,42 @@
                 // console.log('11111', this.$store.getters.logsByGroupId);
                 return this.$store.getters.logsByGroupId;
             },
+            // 从vuex中获取对应聊天组的[未读消息]
+            unReadLoggings() {
+                if (!!this.$store.state.unReadCount.groupMsg[this.groupQuery.groupId]) {
+                    return this.$store.state.unReadCount.groupMsg[this.groupQuery.groupId]
+                } else {
+                    return []
+                }
+
+            },
         },
         watch: {
             // 最新消息要滑动窗口至底部
-            /* 'loggings.length'(newLength) {
-                if (newLength > 0) {
-                    console.log('hhhh?');
+            'loggings.length'(newLength) {
+                if (newLength > 0 && !this.isLoadTop) {
+                    // console.log('hhhh?');
                     this.$nextTick(() => {
                         this.$refs['msg-ul'].lastChild.scrollIntoView(false)
                     })
                 }
-            }, */
-            // 最新消息要滑动窗口至底部
-            canShow() {
-                // 首次进入时所滑动至底
-                this.$nextTick(() => {
-                    if (!!this.$refs['msg-ul'].lastChild) {
-                        console.log('进入');
-                        this.$refs['msg-ul'].lastChild.scrollIntoView(false)
-                    }
-                })
-            }
+            },
+            'unReadLoggings.length'(newLength) {
+                if (newLength > 0) {
+                    console.log('会变化====');
+                    this.convertRead(this.groupQuery.groupId)
+                }
+            },
+            /*  // 最新消息要滑动窗口至底部
+             canShow() {
+                 // 首次进入时所滑动至底
+                 this.$nextTick(() => {
+                     if (!!this.$refs['msg-ul'].lastChild) {
+                         console.log('进入');
+                         this.$refs['msg-ul'].lastChild.scrollIntoView(false)
+                     }
+                 })
+             } */
         }
     }
 </script>

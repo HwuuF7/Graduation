@@ -108,7 +108,7 @@
             <mt-tab-item id="CHAT">
                 <span slot="icon" class="iconfont icon-drxx59 fz-12"></span>
                 <span>CHAT</span>
-                <mt-badge size="normal" type='error' v-if="$store.state.userInfo && $store.state.unReadCount.total > 0">
+                <mt-badge size="large" type='error' v-if="$store.state.userInfo && $store.state.unReadCount.total > 0">
                     {{$store.state.unReadCount.total}}</mt-badge>
             </mt-tab-item>
             <mt-tab-item id="MINE">
