@@ -1,6 +1,5 @@
 <template>
     <div class="infoMore" :style="{'paddingBottom': isShowSpread ? '3.8rem' : '0'}">
-
         <moreHead :model='infoDetail' />
 
 
@@ -53,6 +52,10 @@
             </div>
         </div>
 
+        <div class="backButton" @click="backtToInfo" v-if="showBack">
+            <i class="iconfont icon-zhuye"></i>
+            <span>主页</span>
+        </div>
 
         <!-- 点击对应评论进行回复的弹出选择框 -->
         <mt-actionsheet :actions="mutualReplySheetVisible ? replySheetActions : []" v-model="mutualReplySheetVisible">
@@ -109,6 +112,8 @@
         },
         data() {
             return {
+                // 是否显示回【主页】按钮
+                showBack: false,
                 // 通过路由获取当前的帖子ID信息
                 infoId: '',
                 // 获取的Info数据
@@ -124,6 +129,18 @@
                 EMOJIS: EMOJIS.emojiArr,
                 // 底部更多操作
                 extendActionSheetVisible: false,
+            }
+        },
+        beforeRouteEnter(to, from, next) {
+            // console.log('INFFFFF===', from, to);
+            // 如果是通过机器人进入的 则才显示返回按钮
+            if (from.path === '/') {
+                next(vm => {
+                    // 显示[主页]按钮
+                    vm.showBack = true
+                })
+            } else {
+                next()
             }
         },
         created() {
@@ -439,6 +456,13 @@
             // 将当前帖子置为已解决状态
             async doneInfoById() {
                 console.log('已解决');
+            },
+            // 返回首页
+            backtToInfo() {
+                // 强制刷新Info
+                this.$route.meta.useAlive = false;
+                console.log('=====返回=====');
+                this.$router.push('/');
             },
             ...mapMutations(['changeReplytoWho', 'changeGroupInfo']),
 

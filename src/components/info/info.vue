@@ -62,9 +62,6 @@
                         <detail-info v-for="info in mainInfo" :key='info.infoId' :model='info'
                             @click.native.stop="$router.push(`/info/${info.infoId}`)"></detail-info>
 
-                        <!-- <p class="testP" v-for="i in testP" :key="i+'c'">{{i}}*i</p> -->
-
-
                     </div>
 
 
@@ -91,7 +88,7 @@
 
                 <!-- 我的 -->
                 <mt-tab-container-item id="MINE">
-                    <mine v-if="showMine" />
+                    <mine v-if="!!$store.state.userInfo &&showMine" />
                 </mt-tab-container-item>
 
             </mt-tab-container>
@@ -143,8 +140,6 @@
         },
         data() {
             return {
-                // 每次加载的条目
-                testP: 5,
                 // 加载更多的滚动状态 false代表会继续加载 
                 loading: false,
                 // 是否显示发信息按钮 配合加载更多数据时使用
@@ -226,7 +221,15 @@
             // console.log(from);
             // 如果是从详情页返回 主页 则代表使用缓存数据
             if (from.name === 'InfoMore') {
-                to.meta.isBack = true;
+                console.log('from===', from.meta);
+                // 判断是否使用缓存
+                if (from.meta.useAlive) {
+                    to.meta.isBack = true;
+
+                } else {
+                    from.meta.useAlive = true;
+                    to.meta.isBack = false;
+                }
                 console.log('fromInfoMore', to.meta);
                 next(vm => {
                     vm.searchVal = '';
@@ -246,7 +249,6 @@
             } else {
                 to.meta.isBack = false;
                 next(vm => {
-                    // vm.sel
                     vm.mainInfoEnd = false;
                     vm.loading = false;
                     vm.searchVal = '';
@@ -261,9 +263,6 @@
                 })
             }
 
-        },
-        created() {
-            // console.log(this.$weixin);
         },
         activated() {
             // 如果是从详情页回来的 则维持原有浏览高度
@@ -325,7 +324,9 @@
             // 返回值为获取到的数据条目
             async getMainInfo() {
 
-                const res = await this.$http.get(`/info/view/queryall?page=${this.mainForm.page}`).catch(err =>
+                const res = await this.$http.get('/info/view/queryall', {
+                    params: this.mainForm
+                }).catch(err =>
                     console.log(err))
                 if (!res) return this.$reToast('获取失败', 'icon-close')
                 const {
@@ -474,13 +475,5 @@
 </script>
 
 <style lang='scss'>
-    /* @import url(); 引入css类 */
     @import './info.scss';
-
-    .homepage-moreinfo {
-        p.testP {
-            height: 100px;
-            border-bottom: 1px solid #654062;
-        }
-    }
 </style>

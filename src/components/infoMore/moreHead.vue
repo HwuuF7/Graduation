@@ -159,6 +159,8 @@
 
         main {
             >p {
+                word-break: break-all;
+
                 span {
                     display: inline-block;
                     height: 1.2rem;

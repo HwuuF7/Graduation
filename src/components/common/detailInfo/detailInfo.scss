@@ -57,6 +57,7 @@
             line-height: 1.3rem;
 
             p.mainMidP {
+                word-break: break-all;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 display: -webkit-box;

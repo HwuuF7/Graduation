@@ -12,7 +12,7 @@
                         <span class="commentator">{{comment.replyCommentUserName}}</span>
                         <span>:</span>
                     </template>
-                    <span class="content">{{comment.content | emojiDecode}}</span>
+                    {{comment.content | emojiDecode}}
                 </p>
 
                 <comment-item :replyInfo='comment.replyLists' :secondary='true'></comment-item>
@@ -108,31 +108,33 @@
     .comment-item {
         >ul {
             li.reply-item {
+                font-size: .8rem;
+                color: #333;
 
-                span {
-                    color: #55657d;
-                    font-size: .8rem;
-                    line-height: 1rem;
+                p {
+                    padding-bottom: .18rem;
 
-                    &.content,
-                    &.isReply {
-                        color: #333;
-                    }
+                    span {
+                        color: #55657d;
+                        line-height: 1rem;
 
-                    &:nth-child(even) {
-                        margin: 0 .3rem;
-                    }
+                        &.isReply {
+                            color: #333;
+                        }
 
-                    &.content {
-                        display: inline-block;
-                        padding-bottom: .18rem;
-                    }
+                        &:nth-child(even) {
+                            margin: 0 .3rem;
+                        }
 
-                    &.commentator:first-child {
-                        display: inline-block;
-                        padding-top: .18rem;
+
+                        &.commentator:first-child {
+                            display: inline-block;
+                            padding-top: .18rem;
+                        }
                     }
                 }
+
+
 
             }
         }

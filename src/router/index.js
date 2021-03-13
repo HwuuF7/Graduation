@@ -53,7 +53,11 @@ const routes = [{
     {
         name: 'InfoMore',
         path: '/info/:infoId',
-        component: () => import('@/components/infoMore/infoMore')
+        component: () => import('@/components/infoMore/infoMore'),
+        meta: {
+            // 是否使用缓存
+            useAlive: true
+        }
     },
     {
         path: '/mine/modinfo',
@@ -112,6 +116,7 @@ const routes = [{
 ]
 
 const router = new VueRouter({
+    mode: 'history',
     routes
 })
 

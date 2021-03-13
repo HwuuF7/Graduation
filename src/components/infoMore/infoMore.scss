@@ -151,6 +151,25 @@
         }
     }
 
+    .backButton {
+        position: fixed;
+        border-radius: .2rem;
+        z-index: 3;
+        bottom: 10%;
+        right: .6rem;
+        width: 2.6rem;
+        height: 2.8rem;
+        font-size: .8rem;
+        line-height: 1rem;
+        text-align: center;
+        padding-top: .2rem;
+        background-color: rgba(0, 0, 0, .5);
+        color: #fff;
+        display: flex;
+        flex-flow: column wrap;
+        justify-content: center;
+        align-items: center;
+    }
 
     .bottom-panel {
         height: 3.8rem;
