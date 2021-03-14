@@ -290,7 +290,9 @@
                 }
                 this.$reToast('评论成功!', 'icon-queren')
                 // 重新拉取数据
-                await this.$http.all([this.getCommentInfo(this.infoId), this.pushMessage()])
+                await this.getCommentInfo(this.infoId);
+                // 推送信息
+                await this.pushMessage();
                 // 关闭对话框
                 this.popUpVisible = false;
             },
