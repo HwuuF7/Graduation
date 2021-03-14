@@ -101,15 +101,12 @@
             //  从详情页返回 使用缓存数据
             if (from.name === 'InfoMore') {
                 to.meta.isBack = true;
-                next()
+
 
             } else {
                 to.meta.isBack = false;
-                next(vm => {
-                    // 只有这样被改变 后面的watch才会监听到
-                    vm.activeSort = null;
-                })
             }
+            next()
 
         },
         activated() {
@@ -143,6 +140,8 @@
                 // 保存数据  切换的时候会进行获取高度
                 this.saveInfoMap.set(this.activeSort, this.currentModelInfo)
                 console.log('before===', this.currentModelInfo.scrollTop);
+            } else {
+                this.activeSort = ''
             }
             next()
         },
@@ -244,8 +243,8 @@
         watch: {
             // 监听切换分类时的数据改变
             async activeSort(newAct, oldAct) {
-                if (newAct === null) return;
-                if (oldAct !== null && this.isScroll) {
+                if (!newAct) return;
+                if (!!oldAct && this.isScroll) {
                     // console.log('jinlai', this.scrollTop);
                     // 保存旧的页面滚动高度
                     let oldModelInfo = this.saveInfoMap.get(oldAct);
@@ -274,7 +273,7 @@
                 } = this.currentModelInfo
                 // 判断是否是第一次进入
                 if (!loadEnd && loadInfo.length === 0) {
-                    // console.log('发请求了？');
+                    console.log('发请求了？');
                     // 发起请求获取数据
                     await this.getInfo(getForm)
                 }

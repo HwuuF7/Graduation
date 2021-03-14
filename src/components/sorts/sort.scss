@@ -65,6 +65,10 @@ $loadingBg: #bbb;
                     }
                 }
 
+                .detailInfo:last-child {
+                    border-bottom: none;
+                }
+
                 // 暂无数据的样式
                 div.no-info {
                     position: absolute;
