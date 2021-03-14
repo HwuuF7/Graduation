@@ -12,13 +12,6 @@ export default new Vuex.Store({
         /*  用于判断是回复二级评论 还是多级评论 
          true为二级评论  false为多级评论 */
         replyLevelFlag: null,
-        // 点击帖子详情跳转带过去的信息
-        infoDetail: {
-            // 数据
-            info: null,
-            // 是否置顶
-            isSetTop: null,
-        },
         // 存放 从信息详情页跳转至聊天详情页的信息
         groupInfo: {
             // 陪聊对象

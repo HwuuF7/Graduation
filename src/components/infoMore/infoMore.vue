@@ -300,14 +300,14 @@
             replyToRoot() {
                 console.log('根ROOT');
                 // 判断是否已经登录
-                if (!this.userInfo) {
-                    // 保存当前路由
-                    sessionStorage.setItem('route', this.$route.fullPath);
-                    // 没有登录则跳转登录
-                    console.log('跳转至登录');
-                    return window.location.href = this.$weixin
-                    // 登录界面会接收到返回的code
-                }
+                /*  if (!this.userInfo) {
+                     // 保存当前路由
+                     sessionStorage.setItem('route', this.$route.fullPath);
+                     // 没有登录则跳转登录
+                     console.log('跳转至登录');
+                     return window.location.href = this.$weixin
+                     // 登录界面会接收到返回的code
+                 } */
                 // 显示回复对话框
                 this.popUpVisible = true;
                 // 置回复根评论为true
@@ -328,8 +328,7 @@
             // 微信推送信息
             async pushMessage() {
                 let level = this.replyRoot ? 1 : 2;
-                let toUserId = this.replyRoot ? this.infoDetail.info.userId : this.replyToWhoInfo
-                    .userId;
+                let toUserId = this.replyRoot ? this.infoDetail.userId : this.replyToWhoInfo.userId;
                 // 如果是点击自己回复自己的二级评论 则认为是回复一级评论 
                 // BUG解决：进行一级评论时 replyToWhoInfo为null
                 if (this.replyToWhoInfo && this.replyToWhoInfo.originUserId && (this.userInfo.userId ===
@@ -338,7 +337,7 @@
                     toUserId = this.replyToWhoInfo.replyCommentUserId;
                 }
                 let postForm = {
-                    infoId: this.infoDetail.info.infoId,
+                    infoId: this.infoDetail.infoId,
                     userName: this.userInfo.userName,
                     level,
                     toUserId

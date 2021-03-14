@@ -1,8 +1,8 @@
 module.exports = {
     // hash模式
-    // publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
+    publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
     // history模式
-    publicPath: process.env.NODE_ENV === 'production' ? '/preview/' : '/',
+    // publicPath: process.env.NODE_ENV === 'production' ? '/preview/' : '/',
     assetsDir: 'static',
     chainWebpack: config => {
         config.when(process.env.NODE_ENV === 'production',
