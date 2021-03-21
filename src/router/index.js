@@ -22,12 +22,12 @@ const routes = [{
     {
         path: '/login',
         // component: () => import('@/components/index/index')
-        component: () => import('@/components/common/loading')
+        component: () => import( /* webpackChunkName:"loading" */ '@/components/common/loading')
     },
     {
         // PC端首页
         path: '/pc',
-        component: () => import('@/components/PC/HomePC')
+        component: () => import( /* webpackChunkName:"homePC" */ '@/components/PC/HomePC')
     },
     {
         path: '/test',
@@ -35,7 +35,7 @@ const routes = [{
     },
     {
         path: '/info',
-        component: () => import('@/components/info/info'),
+        component: () => import( /* webpackChunkName:"info" */ '@/components/info/info'),
         meta: {
             // 保持浏览状态
             keepalive: true,
@@ -53,7 +53,7 @@ const routes = [{
     {
         name: 'InfoMore',
         path: '/info/:infoId',
-        component: () => import('@/components/infoMore/infoMore'),
+        component: () => import( /* webpackChunkName:"infoMore" */ '@/components/infoMore/infoMore'),
         meta: {
             // 是否使用缓存
             useAlive: true
@@ -73,14 +73,14 @@ const routes = [{
     },
     {
         path: '/mine/aboutMe',
-        component: () => import('@/components/mine/aboutMe/aboutMe'),
+        component: () => import( /* webpackChunkName:"aboutMe" */ '@/components/mine/aboutMe/aboutMe'),
         meta: {
             keepalive: true,
             isBack: false,
         }
     }, {
         path: '/list',
-        component: () => import('@/components/sorts/sort.vue'),
+        component: () => import( /* webpackChunkName:"sort" */ '@/components/sorts/sort'),
         meta: {
             keepalive: true,
             // 是否是从详情页返回 为true则代表使用缓存数据
@@ -88,11 +88,11 @@ const routes = [{
         }
     }, {
         path: '/sendMessage',
-        component: () => import('@/components/common/messageSort/messageSort')
+        component: () => import( /* webpackChunkName:"messageSort" */ '@/components/common/messageSort/messageSort')
     },
     {
         path: '/search',
-        component: () => import('@/components/search/search'),
+        component: () => import( /* webpackChunkName:"search" */ '@/components/search/search'),
         meta: {
             keepalive: true,
             // 是否是从详情页返回 为true则代表使用缓存数据
@@ -102,7 +102,7 @@ const routes = [{
     {
         name: 'deepChat',
         path: '/chat',
-        component: () => import('@/components/chat/deepChat'),
+        component: () => import( /* webpackChunkName:"deepChat" */ '@/components/chat/deepChat'),
     },
     /* {
         name: 'deepChatYan',

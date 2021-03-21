@@ -13,16 +13,16 @@
 
         <div class="qr-container">
             <div class="logo">
-                <img src="@/assets/imgs/logo.png" alt="QR-LOGO">
+                <img src="@/assets/imgs/logo.jpg" alt="QR-LOGO">
             </div>
             <div class="text">
                 <div class="text-top">
                     <div class="flex-line"></div>
                     <h1 class="main">
-                        <svg class="font-line" viewBox="0 0 200 60">
+                        <svg class="font-line" viewBox="0 0 280 60">
                             <symbol id="line-text">
                                 <text text-anchor="middle" x="50%" y="50%" dy=".4em">
-                                    成电翻江
+                                    FILI中山院
                                 </text>
                             </symbol>
 
@@ -126,7 +126,7 @@
 
                     h1.main {
                         position: relative;
-                        width: 240px;
+                        width: 280px;
                         height: 60px;
                         line-height: 60px;
                         max-width: 600px;

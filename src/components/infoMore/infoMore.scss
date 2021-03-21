@@ -111,6 +111,10 @@
             >p {
                 line-height: 1.6;
 
+                &:first-child {
+                    font-weight: 800;
+                }
+
                 &:last-child {
                     color: #999;
                     font-size: .8rem;

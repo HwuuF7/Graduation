@@ -24,11 +24,11 @@
         <!-- 关注二维码区域 -->
         <div class="info-qrCode">
             <div class="info-qrCode-message">
-                <p>成电翻江</p>
+                <p>FILI中山院</p>
                 <p>关注尽享评论消息通知</p>
             </div>
             <div class="info-qrCode-img">
-                <img src="@/assets/imgs/logo.png" alt="">
+                <img src="@/assets/imgs/logo.jpg" alt="">
             </div>
         </div>
         <div class="line-10"></div>
@@ -289,10 +289,10 @@
                     return this.$reToast('评论失败!', 'icon-close')
                 }
                 this.$reToast('评论成功!', 'icon-queren')
+                // 推送信息
+                this.pushMessage(this.replyContent);
                 // 重新拉取数据
                 await this.getCommentInfo(this.infoId);
-                // 推送信息
-                await this.pushMessage();
                 // 关闭对话框
                 this.popUpVisible = false;
             },
@@ -300,14 +300,14 @@
             replyToRoot() {
                 console.log('根ROOT');
                 // 判断是否已经登录
-                /*  if (!this.userInfo) {
-                     // 保存当前路由
-                     sessionStorage.setItem('route', this.$route.fullPath);
-                     // 没有登录则跳转登录
-                     console.log('跳转至登录');
-                     return window.location.href = this.$weixin
-                     // 登录界面会接收到返回的code
-                 } */
+                if (!this.userInfo) {
+                    // 保存当前路由
+                    sessionStorage.setItem('route', this.$route.fullPath);
+                    // 没有登录则跳转登录
+                    console.log('跳转至登录');
+                    return window.location.href = this.$weixin
+                    // 登录界面会接收到返回的code
+                }
                 // 显示回复对话框
                 this.popUpVisible = true;
                 // 置回复根评论为true
@@ -326,7 +326,7 @@
                 this.changeReplytoWho([comment, true])
             },
             // 微信推送信息
-            async pushMessage() {
+            async pushMessage(content) {
                 let level = this.replyRoot ? 1 : 2;
                 let toUserId = this.replyRoot ? this.infoDetail.userId : this.replyToWhoInfo.userId;
                 // 如果是点击自己回复自己的二级评论 则认为是回复一级评论 
@@ -340,7 +340,8 @@
                     infoId: this.infoDetail.infoId,
                     userName: this.userInfo.userName,
                     level,
-                    toUserId
+                    toUserId,
+                    content
                 }
                 console.log(postForm, '282---');
                 // 转换数据

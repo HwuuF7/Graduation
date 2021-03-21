@@ -3,14 +3,16 @@
         infinite-scroll-distance="10" :infinite-scroll-immediate-check='true'>
         <detail-info v-for="info in infos" :key='info.infoId' :model='info'
             @click.native.stop="$router.push(`/info/${info.infoId}`)" />
-        <div v-if="none">
-            无结果
+        <div v-if="none" class="empty">
+            <img src="@/assets/imgs/empty-image.png">
+            <p>暂无相关信息</p>
         </div>
     </div>
 </template>
 
 <script>
-    import detailInfo from '@/components/common/detailInfo/detailInfo.vue';
+    // import detailInfo from '@/components/common/detailInfo/detailInfo.vue';
+    const detailInfo = () => import( /* webpackChunkName:"infoMore" */ '@/components/common/detailInfo/detailInfo.vue');
     export default {
         components: {
             detailInfo
@@ -81,6 +83,19 @@
         p.testP {
             height: 100px;
             border-bottom: 1px solid #654062;
+        }
+
+        .empty {
+            display: flex;
+            flex-flow: column wrap;
+            height: 100%;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+
+            p {
+                opacity: .7;
+            }
         }
     }
 </style>

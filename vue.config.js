@@ -10,7 +10,7 @@ module.exports = {
             config => {
                 config.plugin('html').tap(args => {
                     args[0].isProd = true;
-                    args[0].title = '成电翻江';
+                    args[0].title = 'FILI中山院';
                     return args
                 });
                 config.set('externals', {

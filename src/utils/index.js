@@ -2,7 +2,7 @@ import axios from 'axios'
 // axios配置
 // 通用请求
 const http = axios.create({
-    baseURL: 'http://api.xiaochengxuxcx.com',
+    baseURL: 'http://api.filifun.com',
 })
 //   聊天请求
 const ws = axios.create({
