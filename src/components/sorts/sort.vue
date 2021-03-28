@@ -85,7 +85,7 @@
                 activeSort: null,
                 // 子页面对应子分类导航栏[数组]
                 differSub: null,
-                // 记录当前的catogory索引 用于保存scrollTop 默认为0
+                // 记录当前的category索引 用于保存scrollTop 默认为0
                 cateIndex: 0,
                 scrollTop: 0,
                 // 是否滑动过
@@ -166,7 +166,7 @@
                         // 获取的必要表单数据
                         getForm: {
                             // 当前激活的某一项导航
-                            catogory: sort,
+                            category: sort,
                             // 对应的模块大分类
                             type: moduleInfo.type,
                             // 从哪开始加载
@@ -199,7 +199,7 @@
                 // 格式和之前首页展示的一样
                 // this.modelInfo=xx
 
-                const res = await this.$http.get('/catogory/catogoryPage', {
+                const res = await this.$http.get('/category/categoryPage', {
                     params: getForm
                 }).catch(err => console.log(err))
                 if (!res) return this.$reToast('获取信息失败！', 'icon-close')

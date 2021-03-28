@@ -128,6 +128,7 @@
                 showEmoji: false,
                 EMOJIS: EMOJIS.emojiArr,
                 // 底部更多操作
+                extendSheetActions:[],
                 extendActionSheetVisible: false,
             }
         },
@@ -143,20 +144,23 @@
                 next()
             }
         },
-        created() {
+        async created() {
             this.infoId = this.$route.params.infoId
             // 发起请求获取帖子信息
-            this.getInfoById(this.infoId);
-            this.getCommentInfo(this.infoId);
+            await this.getInfoById(this.infoId);
+            await this.getCommentInfo(this.infoId);
 
         },
-
         methods: {
             // 获取帖子有关信息
             async getInfoById(infoId) {
                 const res = await this.$http.get(`/info/view/${infoId}`)
                 if (!res) return this.$reToast('获取信息失败', ' icon-close')
                 this.infoDetail = res.data;
+                if(this.isShowSpread) {
+                    // 构造底部操作选项
+                    this.createExtendSheetActions(this.infoDetail.isOver)
+                }
                 console.log(this.infoDetail);
             },
             // 获取评论信息
@@ -354,7 +358,7 @@
                 }).catch(err => console.log(err))
                 // await this.$http.post('/message', postForm).catch(err => console.log(err))
             },
-            // 发起聊天 ==>调用俊威
+            // 发起聊天 
             async startChat() {
                 console.log('开始聊天');
                 // 判断是否已经登录
@@ -450,14 +454,54 @@
             // 删除该发布帖子
             async deleteInfoById() {
                 console.log('删除帖子');
+                const postData =  new FormData()
+                postData.append('infoId',this.infoId)
+                const {data:isSuc} = await this.$http.post(`/info/infodel`,postData)
+                if(isSuc) {
+                    this.$reToast('已删除','icon-xiaolianwawa');
+                    // 回到首页
+                    // this.backtToInfo()
+                    // this.$router.push('/')
+                    this.$route.meta.useAlive = false;
+                    this.$router.push({name:'aboutMe'});
+                }else {
+                    this.$reToast('服务器错误!','icon-close')
+                    // 刷新本页
+                    this.getInfoById(this.infoId);
+                    this.getCommentInfo(this.infoId);
+                }
             },
             // 刷新该帖子（每天每个帖子三次机会 将该帖子重回至顶）
             async freshInfoById() {
                 console.log('刷新帖子');
+                const postData =  new FormData()
+                postData.append('infoId',this.infoId)
+                const {data:isSuc} = await this.$http.post(`/info/refresh`,postData)
+                if(isSuc) {
+                    this.$reToast('已刷新','icon-xiaolianwawa');
+                }else {
+                    this.$reToast('服务器错误!','icon-close')
+                }
+                // 刷新本页
+                this.getInfoById(this.infoId);
+                this.getCommentInfo(this.infoId);
             },
             // 将当前帖子置为已解决状态
             async doneInfoById() {
                 console.log('已解决');
+                const postData =  new FormData()
+                postData.append('infoId',this.infoId)
+                const {data:isSuc} = await this.$http.post(`/info/solved`,postData)
+                if(isSuc) {
+                    this.$reToast('已解决','icon-xiaolianwawa');
+                    //  减少请求 换取数据更新
+                    this.createExtendSheetActions(1)
+                }else {
+                    this.$reToast('服务器错误!','icon-close')
+                    // 刷新本页
+                    this.getInfoById(this.infoId);
+                    this.getCommentInfo(this.infoId);
+                }
             },
             // 返回首页
             backtToInfo() {
@@ -465,6 +509,20 @@
                 this.$route.meta.useAlive = false;
                 console.log('=====返回=====');
                 this.$router.push('/');
+            },
+            // 可选的更多操作
+            createExtendSheetActions(isOver) {
+            //    console.log('isOver--',isOver);
+                let  names = ['删除', '刷新'];
+                names = isOver!==1 ? names.concat(['已解决']):[...names]
+                //  console.log('names--',names);
+                const methods = [this.deleteInfoById, this.freshInfoById, this.doneInfoById];
+                this.extendSheetActions =  names.map((name, index) => {
+                    return {
+                        name,
+                        method: methods[index]
+                    }
+                })
             },
             ...mapMutations(['changeReplytoWho', 'changeGroupInfo']),
 
@@ -515,21 +573,11 @@
             },
             // 是否显示扩散 或者显示点赞和聊天
             isShowSpread() {
-                return this.userInfo && this.infoDetail && this.userInfo.userId === this.infoDetail.userId
+                return this.userInfo && this.infoDetail && this.userInfo.userId === this.infoDetail.userId && this.nowSelected === 'MINE'
             },
-            // 可选的更多操作
-            extendSheetActions() {
-                const names = ['删除', '刷新', '已解决'];
-                const methods = [this.deleteInfoById, this.freshInfoById, this.doneInfoById];
-                return names.map((name, index) => {
-                    return {
-                        name,
-                        method: methods[index]
-                    }
-                })
-            },
+            
             // 从vuex获取确定回复哪一位
-            ...mapState(['replyToWhoInfo', 'replyLevelFlag', 'userInfo']),
+            ...mapState(['replyToWhoInfo', 'replyLevelFlag', 'userInfo','nowSelected']),
         },
         watch: {
             // 监听回复对话框popup的关闭事件

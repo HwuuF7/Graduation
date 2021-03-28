@@ -73,6 +73,7 @@ const routes = [{
     },
     {
         path: '/mine/aboutMe',
+        name:'aboutMe',
         component: () => import( /* webpackChunkName:"aboutMe" */ '@/components/mine/aboutMe/aboutMe'),
         meta: {
             keepalive: true,

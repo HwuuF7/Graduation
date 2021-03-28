@@ -10,7 +10,7 @@
                     @click.native.stop="$router.push(`/info/${info.infoId}`)" />
             </div>
             <div v-if="activeNum === '1'" class="scroll-info my-dynamic">
-                <mt-cell-swipe :right=" [{
+                <!-- <mt-cell-swipe :right=" [{
                     content: '删除',
                     style: {
                         background: 'red',
@@ -31,7 +31,8 @@
                     <div>
                         <img src="@/assets/imgs/7f.png">
                     </div>
-                </mt-cell-swipe>
+                </mt-cell-swipe> -->
+                我的动态
             </div>
         </div>
     </div>
@@ -60,9 +61,9 @@
             }
         },
         beforeRouteEnter(to, from, next) {
-            if (from.name === 'InfoMore') {
+            if (from.name === 'InfoMore' && !!from.meta.useAlive) {
                 to.meta.isBack = true;
-                console.log('fromInfoMore', to.meta);
+                console.log('fromInfoMore', to.meta,from.meta);
                 next()
             } else {
                 to.meta.isBack = false;
@@ -91,6 +92,7 @@
             console.log('issue激活');
             // 如果不是从详情页进入的 则刷新数据
             if (!this.$route.meta.isBack) {
+                console.log('ISSUE刷新');
                 // 获取"我的发布"信息
                 if (this.activeNum === '0') {
                     this.getReleaseByMe()
@@ -99,6 +101,7 @@
                     this.getActiveInfo()
                 }
             } else {
+                console.log('ISSUE不刷新');
                 // 恢复浏览高度
                 this.$refs.aboutMe.scrollTop = this.scrollTop
             }

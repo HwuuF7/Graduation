@@ -225,16 +225,31 @@
                 // 判断是否使用缓存
                 if (from.meta.useAlive) {
                     to.meta.isBack = true;
-
+                    to.meta.keepalive = true;
+                    next(vm => {
+                        vm.searchVal = '';
+                        vm.sendMessageVisible = false;
+                    })
                 } else {
                     from.meta.useAlive = true;
                     to.meta.isBack = false;
+                    to.meta.keepalive =false;
+                    next(vm => {
+                        vm.mainInfoEnd = false;
+                        vm.loading = false;
+                        vm.searchVal = '';
+                        vm.sendMessageVisible = false;
+                        vm.mainInfo = [];
+                        vm.mainForm.page = 1;
+                       /*  vm.showChat = false;
+                        vm.$nextTick(() => {
+                            vm.showChat = true;
+                            vm.showMine = true;
+                        }) */
+                    })
                 }
                 console.log('fromInfoMore', to.meta);
-                next(vm => {
-                    vm.searchVal = '';
-                    vm.sendMessageVisible = false;
-                })
+               
             } else if (from.path === '/') {
                 sessionStorage.clear()
                 next();
@@ -263,6 +278,13 @@
                 })
             }
 
+        },
+        mounted() {
+            if(!this.$route.meta.keepalive) {
+                // console.log('-===>?');
+                this.scrollTop = 0;
+                this.initial();
+            }
         },
         activated() {
             // 如果是从详情页回来的 则维持原有浏览高度
@@ -416,6 +438,8 @@
         watch: {
             // 底部选择进行切换的时候 要重新拉取数据
             selected(newTag) {
+                // 保存当前位置
+                this.$store.commit('changeNowSelected',newTag)
                 // 强制刷新
                 this.showChat = false;
                 if (newTag === 'MINE') {

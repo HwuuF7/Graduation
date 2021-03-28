@@ -21,7 +21,7 @@
                 </p>
                 <!-- 明码标价区域 -->
                 <div v-if="isUnused">
-                    <p class='mainMidP'>交易类型：{{model.catogory}}</p>
+                    <p class='mainMidP'>交易类型：{{model.category}}</p>
                     <p class="mainMidP"> 价格：{{model.price}}</p>
                 </div>
 
@@ -37,7 +37,10 @@
                     <img v-for="(pic,picIndex) in model.pictures" :key='picIndex' :src="pic" alt="你看不到的秘密">
                 </div>
                 <!-- 时间与浏览次数 -->
-                <p class="timeVisits">{{model.createTime | timeFormat}}，{{model.views ? model.views : 0}}人浏览
+                <p class="timeVisits">
+                    <span v-if="!!model.updateTime"> {{model.updateTime | timeFormat}}更新</span>
+                    <span v-else> {{model.createTime | timeFormat}}发布</span>
+                    <span>，  {{model.views}}人浏览</span>
                 </p>
                 <!-- 电话图标 -->
                 <!-- <span class="bomTel" v-if="!!!model.isOver">小</span> -->
@@ -46,7 +49,7 @@
 
         </div>
         <!-- 已结束的章 -->
-        <div class="expired" v-if="!!model.isOver"></div>
+        <div class="expired" v-if="model.isOver === 1"></div>
     </div>
 </template>
 

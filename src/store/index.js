@@ -5,6 +5,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
+        // 控制显示【扩散该信息的底部栏】 只有跳转到MINE的时候才进行显示
+        nowSelected: 'UESTC',
         // 用户信息
         userInfo: null,
         replySheetVisible: false,
@@ -100,8 +102,12 @@ export default new Vuex.Store({
         // 改变未读信息的状态
         changeUnReadStatus(state, [key, val]) {
             state.unReadCount[key] = val;
-        }
-
+        },
+        // 更改现在的底部TAG选中位置
+        changeNowSelected(state,val) {
+            // console.log('改变了--',val);
+            state.nowSelected = val;
+        },
     },
     actions: {},
     getters: {

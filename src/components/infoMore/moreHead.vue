@@ -19,7 +19,7 @@
                 {{model.content | emojiDecode}}
             </p>
             <div v-if="isUnused">
-                <p>交易类型：{{model.catogory}}</p>
+                <p>交易类型：{{model.category}}</p>
                 <p> 价格：{{model.price}}</p>
             </div>
         </main>
@@ -38,7 +38,9 @@
             </div>
             <!-- 时间与浏览次数 -->
             <p class="bomVisits">
-                {{model.createTime | timeFormat}}发布，{{model.views}}人浏览
+                <span v-if="!!model.updateTime"> {{model.updateTime | timeFormat}}更新</span>
+                <span v-else> {{model.createTime | timeFormat}}发布</span>
+                <span>，  {{model.views}}人浏览</span>
             </p>
         </footer>
 
@@ -70,7 +72,7 @@
             }
         },
         created() {
-            // console.log(this.isSetTop);
+            // console.log('updateTime==',this.model.updateTime);
         },
         methods: {
             previewPics(pIndex) {

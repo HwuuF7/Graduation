@@ -33,7 +33,7 @@ const categorys = {
     "helps": ['打听', '求助']
 }
 
-// 3、根据不同的子分类(catogory = '招聘') 
+// 3、根据不同的子分类(category = '招聘') 
 // 有不同的标志提示(innerTag)、tags、defaultDesc 
 const uniqueInfo = [
     ['招聘', {

@@ -7,10 +7,13 @@
 
         <div class="show-img">
             <ul class="img-list">
-                <li v-for="(url,index) in imgList" :key="index">
-                    <!-- <img class="del" src="../../../assets/imgs/money.png" @click.stop="delImg(index)" /> -->
-                    <img :src="url" @click.stop="previewPicture(url,index)">
-                </li>
+                <template v-if="showImgList">
+                    <li v-for="(url,index) in realImgList" :key="index">
+                        <!-- <img class="del" src="../../../assets/imgs/money.png" @click.stop="delImg(index)" /> -->
+                        <img :src="url" @click.stop="previewPicture(url,index)">
+                    </li>
+                </template>
+
                 <li class="loadingLi" v-show="loadingPopVisible">
                     <span ref='loadingLi'></span>
                 </li>
@@ -132,7 +135,9 @@
                     url: null,
                     // 图片Index 删除用
                     index: null,
-                }
+                },
+                // 将上传的图片进行保存一份至当前组件 方便删除同步
+                curPics:[],
             }
         },
         created() {
@@ -150,17 +155,29 @@
                 if (!ev.target.files[0].size) return;
                 // 将files数组进行遍历读取
                 let files = ev.target.files;
+                // console.log('fileLen--',files.length);
                 if (files.length > this.limit) {
                     return this.$message({
-                        message: '已超过上传数量限制'
+                        message: '已超过上传数量6张限制'
                     })
                 }
-                files.forEach(file => this.fileAdd(file))
+                // 构造imgList
+                const zeroArr =new Array(files.length).fill('J');
+                // 起始的偏移索引位置
+                let baseIndex = this.imgList.length;
+                this.imgList= this.imgList.concat(...zeroArr)
+                // console.log('imL--',this.imgList);
+                files.forEach((file,picIndex) => this.fileAdd(file,picIndex+baseIndex))
+                // console.log('previewList---',this.previewList);
+                // 这里调用发送图片的API
+                // console.log('调用发图片--');
+                this.sendPicturesData(files)
                 // 清空选择的值(可以选相同照片)
                 ev.target.value = '';
 
             },
-            fileAdd(file) {
+            fileAdd(file,picIndex) {
+                // console.log('file--',file);
                 //判断是否为图片文件
                 if (file.type.indexOf('image') == -1) {
                     return this.$message({
@@ -179,7 +196,7 @@
                 // 先进行备份 后面留置formData使用
                 this.previewList.push(file)
                 // 生成配置函数
-                const evConfig = this.produceEvConfig(this)
+                const evConfig = this.produceEvConfig(this,picIndex)
                 let reader = new PartFileReader(file, 'readAsArrayBuffer', evConfig)
 
                 //总大小
@@ -192,6 +209,10 @@
                 } = this.preDelInfo
                 this.size -= this.previewList[index].size;
                 this.previewList.splice(index, 1);
+                // 删除图片
+                this.curPics.splice(index,1);
+                // 像父组件进行同步
+                this.$emit('pics',this.curPics);
                 this.imgList.splice(index, 1);
                 this.limit = this.maxSelect - this.imgList.length;
                 // 关闭预览弹出框
@@ -219,13 +240,49 @@
                     return []
                 }
             },
+            // 上传图片至服务器
+            async sendPicturesData(files) {
+                // 往formData表单数组添加图片信息
+                files.forEach(file => {
+                    this.formData.append('files', file, file.name)
+                })
+                const res = await this.$http.post('/info/view/uploadImg', this.formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }).catch(err => {
+                    console.log(err);
+                })
+                // 这里是请求错误
+                if (!res) {
+                    return this.sendErr()
+                }
+                // 解构出图片
+                const {
+                    data: pictures
+                } = res
+                // 这里是返回出错
+                if (pictures.length < 1) {
+                    return this.sendErr()
+                }
+                // 清空FORMDATA
+                this.formData.delete('files')
+                // console.log('pics====',pictures);
+                // 保存
+                this.curPics.push(...pictures);
+                // this.imgList.push(...pictures);
+                // this.loadingPopVisible = false;
+                // 同步至父组件中
+                this.$emit('pics', this.curPics)
+            },
             // 修改进度条和修改data数据
-            produceEvConfig(vue) {
+            produceEvConfig(vue,picIndex) {
                 let buffer = [];
                 return {
                     loadStart(e, percent) {
                         vue.$refs.loadingLi.innerText = `${percent}%`
                         vue.loadingPopVisible = true;
+
                     },
                     progress(e) {},
                     load(e, loaded, total, fileType, percent) {
@@ -245,10 +302,21 @@
                             });
                             let newReader = new FileReader()
                             newReader.onload = (e) => {
+                                // base64的图片形式
                                 let url = e.target.result;
-                                vue.imgList.push(
-                                    url
-                                );
+                                // console.log('url---',url);
+                                // console.log('vue---',vue.imgList);
+                                vue.$nextTick(()=> {
+                                    // 对号入座
+                                    // vue.imgList[picIndex] = url;
+                                    vue.imgList.splice(picIndex,1,url)
+                                })
+                                // vue.imgList.push(
+                                //     url
+                                // );
+                                // 对号入座
+                                // vue.imgList[picIndex] = url;
+                                // vue.imgList.splice(picIndex,1,url)
                             }
                             newReader.readAsDataURL(merge)
 
@@ -278,6 +346,13 @@
         computed: {
             showAddBtn() {
                 return this.limit > 0
+            },
+            showImgList() {
+                // console.log('触发--');
+                return this.imgList[0] !== 'J'
+            },
+            realImgList() {
+                return this.imgList.filter((img)=>img!=='J')
             }
         },
     }

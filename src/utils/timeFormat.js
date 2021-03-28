@@ -1,7 +1,7 @@
 // 封装时间格式（几天前）
 export function timeFormat(timestamp) {
     // 确保是时间戳
-    timestamp = new Date(timestamp).getTime()
+    timestamp = new Date(timestamp).getTime() - 3e3;
     // 时间差(秒数)
     const mistiming = Math.round((Date.now() - timestamp) / 1000);
     if (mistiming < 0) return new RangeError('日期时间不正确!')

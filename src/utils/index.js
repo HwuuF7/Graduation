@@ -89,7 +89,7 @@ const paramsToFormData = function (obj) {
 
 
 // 微信授权登录地址
-const url = encodeURIComponent('http://api.xiaochengxuxcx.com/weixin'),
+const url = encodeURIComponent('http://api.filifun.com/weixin'),
     appid = 'wxc1390f7813b132e9',
     href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${url}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect`;
 

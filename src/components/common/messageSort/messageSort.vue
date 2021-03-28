@@ -5,13 +5,13 @@
     <!-- 发消息表单 -->
     <div class='messageSort'>
         <mt-cell title="意图" @click.native.capture="selectPurpose">
-            <p ref="catogory">{{messageForm.catogory}}</p>
+            <p ref="category">{{messageForm.category}}</p>
         </mt-cell>
         <mt-cell title="分类" @click.native.capture="selectProfession" v-show='showInnerTags'>
             <p ref="innerTag">{{messageForm.innerTag}}</p>
         </mt-cell>
         <!-- <mt-field label="意图" placeholder='请选择消息意图' disableClear 
-            v-model="messageForm.catogory">
+            v-model="messageForm.category">
         </mt-field> -->
         <!-- <mt-field label="分类" placeholder='请选择具体分类' disableClear @focus.native.capture="selectProfession"
             v-model="messageForm.innerTag" v-show='showInnerTags'>
@@ -58,7 +58,7 @@
             </mt-cell>
             <div class="upload">
                 <p class="upload-title">图片上传</p>
-                <addPictures ref='addPictures' :maxSelect='6' />
+                <addPictures ref='addPictures' :maxSelect='6' @pics='receivePics'/>
             </div>
             <mt-field type='textarea' rows='5' v-model.trim='originContent' :placeholder='specificDesc'>
             </mt-field>
@@ -98,8 +98,8 @@
                 messageForm: {
                     // 用户标识 
                     openId: '',
-                    // 大分类 -->catogory ['招聘','求职']
-                    catogory: '请选择消息意图',
+                    // 大分类 -->category ['招聘','求职']
+                    category: '请选择消息意图',
                     // 标签 
                     tags: [],
                     // 图片
@@ -199,9 +199,9 @@
                 if (bORs === 'B') {
                     // 大分类
                     return () => {
-                        this.messageForm.catogory = purTag;
-                        console.log(this.$refs.catogory);
-                        this.$refs.catogory.style.color = '#000';
+                        this.messageForm.category = purTag;
+                        console.log(this.$refs.category);
+                        this.$refs.category.style.color = '#000';
                         this.surePurpose()
                     }
                 } else {
@@ -227,18 +227,24 @@
             surePurpose() {
 
                 let {
-                    catogory
+                    category
                 } = this.messageForm
                 // 获取小分类
-                if (this.preInnerTagsActionsMap.has(catogory)) {
-                    this.innerTagsActions = this.preInnerTagsActionsMap.get(catogory)
+                if (this.preInnerTagsActionsMap.has(category)) {
+                    this.innerTagsActions = this.preInnerTagsActionsMap.get(category)
                 } else {
                     //  选完大分类 没有二级分类 则将二级分类设置为一级分类相同 发送至后端
-                    this.messageForm.innerTag = catogory
+                    this.messageForm.innerTag = category
                 }
-                const specificInfo = this.preModuleInfoMap.get(catogory)
+                const specificInfo = this.preModuleInfoMap.get(category)
                 this.specificTags = specificInfo['tags'];
                 this.specificDesc = specificInfo['defaultDesc']
+            },
+            // 接收子组件传来的图片
+            receivePics(pics) {
+                // console.log('sonPics---',pics);
+                // 将图片同步至form表单中
+                this.messageForm.pictures = pics;
             },
             // 确认发布
             async sendMessage() {
@@ -259,7 +265,6 @@
                 // 对发布内容进行表情编码
                 this.messageForm.content = this.$emojiEncode(this.originContent);
 
-                const picForm = this.$refs.addPictures.sendPictures()
 
                 // post请求头配置
                 let config = {
@@ -269,48 +274,13 @@
                 }
 
                 let finalRes;
-                // 没有图片 直接发
-                if (picForm.length === 0) {
-                    // 数据转化
-                    const postMsg = new URLSearchParams(this.messageForm).toString()
-                    finalRes = await this.$http.post('/info/release', postMsg, config).catch(
-                        err => {
-                            console.log(err);
-                        })
-
-
-                } else {
-                    // 先发图片
-                    const res = await this.$http.post('/info/view/uploadImg', picForm, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    }).catch(err => {
+                
+                // 数据转化
+                const postMsg = new URLSearchParams(this.messageForm).toString()
+                finalRes = await this.$http.post('/info/release', postMsg, config).catch(err => {
                         console.log(err);
-                    })
-                    // 这里是请求错误
-                    if (!res) {
-                        return this.sendErr()
-
-                    }
-                    // 解构出图片
-                    const {
-                        data: pictures
-                    } = res
-                    // 这里是返回出错
-                    if (pictures.length < 1) {
-                        return this.sendErr()
-
-                    }
-                    // 改造数据
-                    this.messageForm.pictures = pictures;
-                    // 数据转化
-                    const postMsg = new URLSearchParams(this.messageForm).toString()
-                    finalRes = await this.$http.post('/info/release', postMsg, config).catch(err => {
-                        console.log(err);
-                    })
-                    console.log('发布2', this.messageForm);
-                }
+                })
+                console.log('发布3', this.messageForm);
 
                 // 这里是请求错误
                 if (!finalRes) {
@@ -368,8 +338,8 @@
                     // 用户标识 
                     openId: this.$store.state.userInfo.openId,
                     // openId: 'oAXSp6Wo7ugTt8hQ2EJw5Jmim4YE',
-                    // 大分类 -->catogory ['招聘','求职']
-                    catogory: '请选择',
+                    // 大分类 -->category ['招聘','求职']
+                    category: '请选择',
                     // 标签 
                     tags: [],
                     // 图片
@@ -394,11 +364,11 @@
         computed: {
             // 是否展示选择具体(小)分类 比如文体户外、生活用品
             showInnerTags() {
-                return this.messageForm.catogory !== '请选择消息意图' && this.innerTagsActions.length > 0
+                return this.messageForm.category !== '请选择消息意图' && this.innerTagsActions.length > 0
             },
             // 是否展示标签 比如二手书籍、准新正品 和上面不一样
             showTags() {
-                return this.messageForm.catogory !== '请选择消息意图' && this.specificTags.length > 0
+                return this.messageForm.category !== '请选择消息意图' && this.specificTags.length > 0
             },
             showSort(sortName) {
                 return this.showSpecificSort
