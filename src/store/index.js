@@ -108,6 +108,10 @@ export default new Vuex.Store({
             // console.log('改变了--',val);
             state.nowSelected = val;
         },
+        // 跳转至我的动态/发布时请求的路径不同
+        changeActiveCom(state,activeCom) {
+
+        },
     },
     actions: {},
     getters: {

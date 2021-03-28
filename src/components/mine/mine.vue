@@ -56,7 +56,10 @@
                 console.log('goAboutMe');
                 // 刷新操作时保存当前的激活组件
                 sessionStorage.setItem('activeCom', activeCom)
-                this.$router.push('/mine/aboutMe')
+                this.$nextTick(()=> {
+                    console.warn('goAboutMe2--');
+                    this.$router.push('/mine/aboutMe')
+                })
             },
 
         },

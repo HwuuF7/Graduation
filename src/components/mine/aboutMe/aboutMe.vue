@@ -6,8 +6,10 @@
         <div class="about-outer">
             <div v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="10"
                 :infinite-scroll-immediate-check='true' class='scroll-info' v-if="activeNum === '0'">
-                <detail-info v-for="info in activeInfo" :key='info.infoId' :model='info'
-                    @click.native.stop="$router.push(`/info/${info.infoId}`)" />
+                <template v-if="activeInfo.length > 0">
+                    <detail-info v-for="info in activeInfo" :key='info.infoId' :model='info'
+                        @click.native.stop="$router.push(`/info/${info.infoId}`)" />
+                </template>
             </div>
             <!-- <div v-if="activeNum === '1'" class="scroll-info my-dynamic"> -->
                 <!-- <mt-cell-swipe :right=" [{
@@ -32,28 +34,31 @@
                         <img src="@/assets/imgs/7f.png">
                     </div>
                 </mt-cell-swipe> -->
-                <ul v-if="activeNum === '1'" class="scroll-info my-dynamic" v-infinite-scroll="loadMore" infinite-scroll-disabled="loading"
+                <ul v-else-if="activeNum === '1'" class="scroll-info my-dynamic" v-infinite-scroll="loadMore" infinite-scroll-disabled="loading"
             infinite-scroll-distance="10" :infinite-scroll-immediate-check='true'>
-                    <li v-for="(info,index) in activeInfo" :key="index"  @click.stop="$router.push(`/info/${info.infoId}`)">
-                        <mt-cell-swipe>
-                            <!-- 左边盒子放置头像、名字、信息 -->
-                            <div class="dy-left">
-                                <div class="avatar">
-                                    <img :src="info.headImg" alt="用户头像">
-                                </div>
+                    <template v-if="activeInfo.length > 0">
+                        <li v-for="(info,index) in activeInfo" :key="index"  @click.stop="$router.push(`/info/${info.infoId}`)">
+                            <mt-cell-swipe>
+                                <!-- 左边盒子放置头像、名字、信息 -->
+                                <div class="dy-left">
+                                    <div class="avatar">
+                                        <img :src="info.headImg" alt="用户头像">
+                                    </div>
 
-                                <div class="intro">
-                                    <span >{{info.userName}}</span>
-                                    <span>{{info.content | emojiDecode}}</span>
-                                    <span>{{info.createTime | timeFormat7Day}}</span>
+                                    <div class="intro">
+                                        <span class="hello">{{info.userName}}</span>
+                                        <span>{{info.content | emojiDecode}}</span>
+                                        <span>{{info.createTime | timeFormat7Day}}</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <!-- 右边放置相关内容图片 -->
-                            <div  class="dy-right" v-if="!!info.pictures">
-                                <img :src="info.pictures" alt="相关图片">
-                            </div>
-                        </mt-cell-swipe>
-                    </li>
+                                <!-- 右边放置相关内容图片 -->
+                                <div  class="dy-right" v-if="!!info.pictures || info.pictures.length <1">
+                                    <img :src="info.pictures" alt="相关图片">
+                                </div>
+                            </mt-cell-swipe>
+                        </li>
+                    </template>
+
                 </ul>
             <!-- </div> -->
         </div>
@@ -70,7 +75,6 @@
         },
         data() {
             return {
-                date: new Date(),
                 // 记录当前活跃的显示
                 activeNum: '0',
                 options: ['我的发布', '我的动态'],
@@ -96,7 +100,7 @@
                         sessionStorage.setItem('activeCom', 0);
                     }
                     vm.activeNum = sessionStorage.getItem('activeCom')
-                    console.log('before======');
+                    console.log('before======',typeof vm.activeNum);
                     vm.scrollTop = 0;
                     vm.loading = false;
                 })
@@ -116,12 +120,16 @@
             if (!this.$route.meta.isBack) {
                 console.log('ISSUE刷新');
                 // 获取"我的发布"信息
-                if (this.activeNum === '0') {
+               /*  if (this.activeNum === '0') {
                     this.getReleaseByMe()
                 } else if (this.activeNum === '1') {
                     // 获取"我的动态"信息
                     this.getActiveInfo()
-                }
+                } */
+                this.$nextTick(()=> {
+                    console.warn('调用GETMINE--');
+                    this.getMineInfo()
+                })
             } else {
                 console.log('ISSUE不刷新');
                 // 恢复浏览高度
@@ -130,9 +138,24 @@
         },
         beforeRouteLeave(to, from, next) {
             this.scrollTop = this.$refs.aboutMe.scrollTop;
+            if(to.path === '/info') {
+                // 所激活对应的数据
+                this.activeInfo =  [];
+                this.loading  = false;
+            }
             next()
         },
         methods: {
+            async getMineInfo() {
+                console.log('getMine--');
+                const URIopt = ['myRelease','mytrends'];
+                let uri = this.activeNum === '0' ? URIopt[0] : URIopt[1];
+                const res = await this.$http.get(`/user/${uri}/${this.$store.state.userInfo.userId}`).catch(
+                    err => console.warn(err))
+                if (!res) return this.$reToast('获取信息失败！', 'icon-close')
+                this.activeInfo = res.data;
+                console.log(this.activeInfo);
+            },
             async getActiveInfo() {
                 const {
                     data: res
