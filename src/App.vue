@@ -29,11 +29,14 @@
             // 如果用户3天内授权过则无需再跳转登录
             // console.log(this.$getLocalStorage('userInfo'), '===APP');
             if (this.$getLocalStorage('userInfo')) {
+                // console.warn('---has');
                 // 在vuex中保存
                 this.$store.commit('saveUserInfo', this.$getLocalStorage('userInfo'))
                 // console.log(this.$store.state.userInfo)
                 // 创建WS
                 this.init()
+                // 埋点
+                this.acculateAct(this.$store.state.userInfo.userId,'uv_home')
             }
 
         },
@@ -117,6 +120,20 @@
                 this.init()
                 // 更新store中的值
                 this.$store.commit('changeWsInfo', this)
+            },
+            // 埋点
+            async acculateAct(userId,pageView) {
+                let postData = new FormData()
+                postData.append('userId',userId)
+                postData.append('pageView', pageView)
+                this.$http.post('/actionlog',postData,{
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }).catch((e)=> {
+                    console.warn(e);
+                })
+               
             },
 
         },

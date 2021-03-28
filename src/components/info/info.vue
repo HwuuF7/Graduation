@@ -261,7 +261,17 @@
                         sessionStorage.removeItem('tag')
                     }
                 });
-            } else {
+            }else if (from.name === 'aboutMe') {
+                // console.warn('from aboutMe',to.meta);
+                to.meta.isBack = true;
+                next(vm=> {
+                    vm.showChat = false;
+                    vm.$nextTick(() => {
+                        vm.showChat = true;
+                        vm.showMine = true;
+                    })
+                });
+            }else {
                 to.meta.isBack = false;
                 next(vm => {
                     vm.mainInfoEnd = false;
@@ -290,7 +300,9 @@
             // 如果是从详情页回来的 则维持原有浏览高度
             // if (this.selected === 'UESTC') {
             if (this.$route.meta.isBack) {
-                this.$refs.scroll_item.$el.scrollTop = this.scrollTop;
+                if(!!this.$refs.scroll_item) {
+                    this.$refs.scroll_item.$el.scrollTop = this.scrollTop;
+                }
             } else {
                 this.scrollTop = 0;
                 // 如果不是从详情页返回的 重新拉取数据

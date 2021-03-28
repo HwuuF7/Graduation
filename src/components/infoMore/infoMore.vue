@@ -46,7 +46,7 @@
         </div>
         <!-- 如果登陆后 发现是自己发布的信息才显示 -->
         <div class="bottom-panel" v-if="isShowSpread">
-            <mt-button type='primary' @click.native="promoteMessage">扩散该消息</mt-button>
+            <mt-button type='primary' @click.native="promoteMessage" :disabled='infoDetail.isOver === 1'>扩散该消息</mt-button>
             <div class="moreAction" @click='extendAction'>
                 <i class="iconfont icon-gengduocaozuo fz-2"></i>
             </div>
@@ -494,8 +494,10 @@
                 const {data:isSuc} = await this.$http.post(`/info/solved`,postData)
                 if(isSuc) {
                     this.$reToast('已解决','icon-xiaolianwawa');
+                    this.infoDetail.isOver = 1;
                     //  减少请求 换取数据更新
                     this.createExtendSheetActions(1)
+                    this.$route.meta.useAlive = false;
                 }else {
                     this.$reToast('服务器错误!','icon-close')
                     // 刷新本页

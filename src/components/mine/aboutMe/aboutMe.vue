@@ -9,7 +9,7 @@
                 <detail-info v-for="info in activeInfo" :key='info.infoId' :model='info'
                     @click.native.stop="$router.push(`/info/${info.infoId}`)" />
             </div>
-            <div v-if="activeNum === '1'" class="scroll-info my-dynamic">
+            <!-- <div v-if="activeNum === '1'" class="scroll-info my-dynamic"> -->
                 <!-- <mt-cell-swipe :right=" [{
                     content: '删除',
                     style: {
@@ -32,8 +32,30 @@
                         <img src="@/assets/imgs/7f.png">
                     </div>
                 </mt-cell-swipe> -->
-                我的动态
-            </div>
+                <ul v-if="activeNum === '1'" class="scroll-info my-dynamic" v-infinite-scroll="loadMore" infinite-scroll-disabled="loading"
+            infinite-scroll-distance="10" :infinite-scroll-immediate-check='true'>
+                    <li v-for="(info,index) in activeInfo" :key="index"  @click.stop="$router.push(`/info/${info.infoId}`)">
+                        <mt-cell-swipe>
+                            <!-- 左边盒子放置头像、名字、信息 -->
+                            <div class="dy-left">
+                                <div class="avatar">
+                                    <img :src="info.headImg" alt="用户头像">
+                                </div>
+
+                                <div class="intro">
+                                    <span >{{info.userName}}</span>
+                                    <span>{{info.content | emojiDecode}}</span>
+                                    <span>{{info.createTime | timeFormat7Day}}</span>
+                                </div>
+                            </div>
+                            <!-- 右边放置相关内容图片 -->
+                            <div  class="dy-right" v-if="!!info.pictures">
+                                <img :src="info.pictures" alt="相关图片">
+                            </div>
+                        </mt-cell-swipe>
+                    </li>
+                </ul>
+            <!-- </div> -->
         </div>
     </div>
 
@@ -114,8 +136,8 @@
             async getActiveInfo() {
                 const {
                     data: res
-                } = await this.$http.get('/info/view/topInfo').catch(err => console.log(err))
-                console.log(res);
+                } = await this.$http.get(`/user/mytrends/${this.$store.state.userInfo.userId}`).catch(err => console.log(err))
+                console.log('动态---',res);
                 this.activeInfo = res
             },
             async getReleaseByMe() {
@@ -183,67 +205,74 @@
                             flex: 1;
                             overflow: hidden;
 
-                            >div {
+                            >div.dy-left {
+                                display: flex;
                                 overflow: hidden;
+                                flex:1;
+                                .avatar {
+                                    position: relative;
+                                    width: 3rem;
+                                    height: 3.2rem;
+                                    border-radius: .2rem;
+                                    align-self: center;
 
-                                &:first-child {
+                                    img {
+                                        width: 100%;
+                                        height: 100%;
+                                    }
+                                }
+                                
+                                .intro {
+                                    min-height: 4rem;
+                                    margin-left: .4rem;
                                     flex: 1;
                                     display: flex;
+                                    flex-flow: column wrap;
+                                    overflow: hidden;
+                                    justify-content: space-around;
+                                    font-family: Tahoma, Helvetica, Arial, '宋体', "Times New Roman", Georgia, sans-serif;
 
-                                    >img {
-                                        width: 3rem;
-                                        height: 3.2rem;
-                                        border-radius: .2rem;
-                                    }
 
-                                    .intro {
-                                        margin-left: .2rem;
-                                        flex: 1;
-                                        display: flex;
-                                        flex-flow: column wrap;
+                                    >span {
+                                        font-weight: 400;
+                                        line-height: 1.1rem;
                                         overflow: hidden;
+                                        vertical-align: middle;
+                                        text-overflow: ellipsis;
+                                        display: -webkit-box;
+                                        -webkit-line-clamp: 2;
+                                        -webkit-box-orient: vertical;
+                                        word-break: break-all;
+                                        letter-spacing: .05rem;
 
-                                        >span {
-                                            font-size: 1rem;
-                                            font-weight: 400;
-                                            line-height: 1;
-                                            overflow: hidden;
-                                            text-overflow: ellipsis;
-                                            display: -webkit-box;
-                                            -webkit-line-clamp: 2;
-                                            -webkit-box-orient: vertical;
-                                            word-break: break-all;
-                                            letter-spacing: .05rem;
+                                        &:first-child {
+                                            color: #371cd5;
+                                            font-size: .9rem;
+                                        }
 
-                                            &:first-child {
-                                                color: #371cd5;
-                                                font-size: 1.2rem;
-
-                                            }
-
-                                            &:nth-child(2) {
-                                                margin: .2rem 0;
-                                                color: #674d85;
-                                                font-size: .9rem;
-                                            }
-
-                                            &:last-child {
-                                                font-size: .8rem;
-                                                color: #999;
-                                            }
+                                        &:nth-child(2) {
+                                            font-size: .8rem;
+                                            color: #674d85;
+                                        }
+                                        &:last-child {
+                                            font-size: .7rem;
+                                            color: #ccc;
                                         }
                                     }
                                 }
 
-                                &:last-child {
-                                    margin-left: .3rem;
-                                    height: 4rem;
-                                    width: 3.8rem;
+                                
+                            }
 
-                                    >img {
-                                        width: 100%;
-                                        height: 100%;
-                                    }
+                            >div.dy-right {
+                                width: 3rem;
+                                height: 3.2rem;
+                                border-radius: .2rem;
+                                align-self: center;
+
+                                img {
+                                    width: 100%;
+                                    height: 100%;
                                 }
                             }
                         }
