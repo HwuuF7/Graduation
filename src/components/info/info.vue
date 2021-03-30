@@ -214,7 +214,7 @@
                 showChat: true,
                 scrollTop: 0,
                 isFromLogin: false,
-
+                isCreated:true,
             }
         },
         beforeRouteEnter(to, from, next) {
@@ -289,26 +289,78 @@
             }
 
         },
-        mounted() {
-            if(!this.$route.meta.keepalive) {
-                // console.log('-===>?');
+        async created() {
+            // this.scrollTop = 0;
+           /*  await this.initial();
+            console.log('create==');
+            this.$route.meta.keepalive = true;
+            this.isCreated = true;
+            let sTop = JSON.parse(localStorage.getItem('scrollTop'));
+            // console.log('sc--',typeof JSON.parse(localStorage.getItem('scrollTop')));
+            if(sTop > 0) {
+                this.$nextTick(()=> {
+                    this.$refs.scroll_item.$el.scrollTop =sTop;
+                    console.log('mounted--');
+                })
+                localStorage.setItem('scrollTop',JSON.stringify(0))
+            } */
+        },
+        async mounted() {
+          /*   let sTop = JSON.parse(localStorage.getItem('scrollTop'));
+            // console.log('sc--',typeof JSON.parse(localStorage.getItem('scrollTop')));
+            if(sTop > 0) {
+                this.$nextTick(()=> {
+                    this.$refs.scroll_item.$el.scrollTop =sTop;
+                    console.log('mounted--');
+                })
+            }
+            localStorage.setItem('scrollTop',JSON.stringify(0)) */
+           /*  if(!this.$route.meta.keepalive) {
                 this.scrollTop = 0;
                 this.initial();
+                this.$route.meta.keepalive = true;
+                console.log('-===>?',this.$route.meta);
+            } */
+            this.isCreated = true;
+
+            await this.initial();
+            console.log('create==');
+            this.$route.meta.keepalive = true;
+            let sTop = JSON.parse(localStorage.getItem('scrollTop'));
+            // console.log('sc--',typeof JSON.parse(localStorage.getItem('scrollTop')));
+            if(sTop > 0) {
+                // this.$nextTick(()=> {
+                    this.$refs.scroll_item.$el.scrollTop =sTop;
+                    console.log('mounted--');
+                // })
+                localStorage.setItem('scrollTop',JSON.stringify(0))
             }
         },
         activated() {
             // 如果是从详情页回来的 则维持原有浏览高度
             // if (this.selected === 'UESTC') {
-            if (this.$route.meta.isBack) {
-                if(!!this.$refs.scroll_item) {
-                    this.$refs.scroll_item.$el.scrollTop = this.scrollTop;
+            if(!this.isCreated) {
+                if (this.$route.meta.isBack) {
+                    if(!!this.$refs.scroll_item) {
+                        this.$refs.scroll_item.$el.scrollTop = this.scrollTop;
+                    }
+                } else {
+                    this.scrollTop = 0;
+                    // 如果不是从详情页返回的 重新拉取数据
+                    this.initial()
+                    this.$route.meta.keepalive = true;
                 }
-            } else {
-                this.scrollTop = 0;
-                // 如果不是从详情页返回的 重新拉取数据
-                this.initial()
+                if(localStorage.getItem('scrollTop')) {
+                    localStorage.removeItem('scrollTop')
+                }
+                console.log('info激活', this.scrollTop);
             }
-            console.log('info激活', this.scrollTop);
+            console.log('activ--',this.isCreated);
+            this.isCreated = false;
+            /* if(JSON.parse( localStorage.getItem('scrollTop')) > 0){
+                this.$refs.scroll_item.$el.scrollTop = this.scrollTop;
+                localStorage.removeItem('scrollTop')
+            } */
             // }
         },
         methods: {
@@ -321,13 +373,13 @@
                     console.log('gggoo', [ev], ev.scrollTop);
                 }
             },
-            initial() {
+            async initial() {
                 // 获取轮播图数据
                 this.getSwipperInfo()
                 // 获取置顶信息
-                this.getTopInfo()
+                await this.getTopInfo()
                 // 获取非置顶信息
-                this.getMainInfo()
+                await this.getMainInfo()
             },
             // 获取轮播图数据
             async getSwipperInfo() {
@@ -500,8 +552,9 @@
         },
         beforeRouteLeave(to, from, next) {
             if (to.name === 'InfoMore') {
-                console.log();
+                // console.log();
                 this.scrollTop = this.$refs.scroll_item.$el.scrollTop;
+                localStorage.setItem('scrollTop',JSON.stringify(this.scrollTop))
             }
             next()
         },

@@ -52,7 +52,7 @@
             </div>
         </div>
 
-        <div class="backButton" @click="backtToInfo" v-if="showBack">
+        <div class="backButton" @click="backtToInfo" v-if="showBack || $store.state.userInfo">
             <i class="iconfont icon-zhuye"></i>
             <span>主页</span>
         </div>
